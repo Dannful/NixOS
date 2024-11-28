@@ -4,7 +4,8 @@
   imports = [
     ./i3wm.nix
     ./rofi.nix
-    ./polybar.nix
+    ../../modules/polybar/polybar.nix
+    ../../modules/zed/zed.nix
     ./kitty.nix
     ./autorandr.nix
   ];
