@@ -27,6 +27,13 @@
             ./personal/configuration.nix
           ];
         };
+        work = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs system; };
+
+          modules = [
+            ./work/configuration.nix
+          ];
+        };
       };
     };
 }
