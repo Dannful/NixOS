@@ -33,10 +33,8 @@ in {
     enable = true;
 
     package = pkgs.polybar.override {
-      i3GapsSupport = true;
+      i3Support = true;
       alsaSupport = true;
-      iwSupport = true;
-      githubSupport = true;
     };
 
     script = "polybar -q -r top & polybar -q -r bottom &";
@@ -99,8 +97,6 @@ in {
         padding = 0;
 
         font-0 = "FiraCode Nerd Font:size=12;3";
-
-        modules-left = "powermenu ddlS";
 
         modules-right = "ddrS cpu dulS ddrT memory dulT ddrP battery";
 
@@ -229,21 +225,21 @@ in {
         format = "<label-state> <label-mode>";
         format-background = tertiary;
 
-        ws-icon-0 = "1;";
-        ws-icon-1 = "2;";
-        ws-icon-2 = "3;﬏";
-        ws-icon-3 = "4;";
-        ws-icon-4 = "5;";
-        ws-icon-5 = "6;";
-        ws-icon-6 = "7;";
-        ws-icon-7 = "8;";
-        ws-icon-8 = "9;";
-        ws-icon-9 = "10;";
+        ws-icon-0 = "1";
+        ws-icon-1 = "2";
+        ws-icon-2 = "3";
+        ws-icon-3 = "4";
+        ws-icon-4 = "5";
+        ws-icon-5 = "6";
+        ws-icon-6 = "7";
+        ws-icon-7 = "8";
+        ws-icon-8 = "9";
+        ws-icon-9 = "10";
 
         label-mode = "%mode%";
         label-mode-padding = 1;
 
-        label-unfocused = "%icon%";
+        label-unfocused = "%index% %icon%";
         label-unfocused-foreground = quinternary;
         label-unfocused-padding = 1;
 
@@ -252,14 +248,14 @@ in {
         label-focused-foreground = secondary;
         label-focused-padding = 1;
 
-        label-visible = "%icon%";
+        label-visible = "%index% %icon%";
         label-visible-padding = 1;
 
-        label-urgent = "%index%";
+        label-urgent = "%index% %icon%";
         label-urgent-foreground = urgency;
         label-urgent-padding = 1;
 
-        label-separator = "";
+        label-separator = " / ";
       };
 
       "module/title" = {
@@ -336,26 +332,6 @@ in {
         label = "TEMP %temperature-c%";
         label-warn = "TEMP %temperature-c%";
         label-warn-foreground = "#f00";
-      };
-
-      "module/powermenu" = {
-        type = "custom/menu";
-        expand-right = true;
-
-        format = "<label-toggle> <menu>";
-        format-background = secondary;
-        format-padding = 1;
-
-        label-open = "⏻ ";
-        label-close = " ";
-        label-separator = "  ";
-
-        menu-0-0 = "  Suspend";
-        menu-0-0-exec = "systemctl suspend";
-        menu-0-1 = "  Reboot";
-        menu-0-1-exec = "systemctl reboot";
-        menu-0-2 = "  Shutdown";
-        menu-0-2-exec = "systemctl poweroff";
       };
 
       #"module/wireless-network" = {

@@ -112,7 +112,6 @@
     ];
     shell = pkgs.zsh;
   };
-  programs.zsh.enable = true;
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };

@@ -56,7 +56,7 @@
   #  /etc/profiles/per-user/dannly/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
   };
 
   # Let Home Manager install and manage itself.
