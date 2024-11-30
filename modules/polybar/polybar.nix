@@ -33,7 +33,7 @@ in {
     enable = true;
 
     package = pkgs.polybar.override {
-      i3Support = true;
+      i3GapsSupport = true;
       alsaSupport = true;
       iwSupport = true;
       githubSupport = true;
@@ -65,11 +65,11 @@ in {
 
         radius = 0;
 
-        font-0 = "JetbrainsMono Nerd Font:size=12;3";
+        font-0 = "FiraCode Nerd Font:size=12;3";
 
         modules-left = "distro-icon dulS ddrT i3 dulT";
         modules-center = "title";
-        modules-right = "durT audio ddlT date";
+        modules-right = "temperature durT audio ddlT date";
 
         locale = "en_US.UTF-8";
       };
@@ -98,7 +98,7 @@ in {
         tray-scale = 1;
         padding = 0;
 
-        font-0 = "JetbrainsMono Nerd Font:size=12;3";
+        font-0 = "FiraCode Nerd Font:size=12;3";
 
         modules-left = "powermenu ddlS";
 
@@ -142,21 +142,17 @@ in {
       "module/audio" = {
         type = "internal/alsa";
 
-        format-volume = "  VOL <label-volume>";
+        format-volume = "  <label-volume>";
         format-volume-padding = 1;
         format-volume-foreground = secondary;
         format-volume-background = tertiary;
         label-volume = "%percentage%%";
 
-        format-muted = "<label-muted>";
+        format-muted = "  ";
         format-muted-padding = 1;
-        format-muted-foreground = secondary;
+        format-muted-foreground = urgency;
         format-muted-background = tertiary;
-        format-muted-prefix = "  ";
-        format-muted-prefix-foreground = urgency;
         format-muted-overline = bg;
-
-        label-muted = "VOL Muted";
       };
 
       "module/battery" = {
@@ -319,7 +315,7 @@ in {
 
         interval = "0.5";
 
-        thermal-zone = 0; # TODO: Find a better way to fill that
+        thermal-zone = 0;
         warn-temperature = 60;
         units = true;
 
@@ -350,15 +346,15 @@ in {
         format-background = secondary;
         format-padding = 1;
 
-        label-open = "";
-        label-close = "";
+        label-open = "⏻ ";
+        label-close = " ";
         label-separator = "  ";
 
-        menu-0-0 = " Suspend";
+        menu-0-0 = "  Suspend";
         menu-0-0-exec = "systemctl suspend";
-        menu-0-1 = " Reboot";
-        menu-0-1-exec = "v";
-        menu-0-2 = " Shutdown";
+        menu-0-1 = "  Reboot";
+        menu-0-1-exec = "systemctl reboot";
+        menu-0-2 = "  Shutdown";
         menu-0-2-exec = "systemctl poweroff";
       };
 

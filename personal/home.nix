@@ -25,11 +25,11 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; } )
     pkgs.feh
     pkgs.gh
     pkgs.lazygit
     pkgs.discord-ptb
+    pkgs.nixfmt
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage

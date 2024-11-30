@@ -138,6 +138,19 @@
 
   virtualisation.docker.enable = true;
 
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+  ];
+  fonts = {
+    fontconfig = {
+      defaultFonts = {
+        serif = [ "FiraCode Nerd Font" ];
+        sansSerif = [ "FiraCode Nerd Font" ];
+        monospace = [ "FiraCode Nerd Font Mono" ];
+      };
+    };
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

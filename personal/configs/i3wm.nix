@@ -1,12 +1,15 @@
 { pkgs, lib, ... }:
 
-{
+let
+  modifier = "Mod4";
+  alt = "Mod1";
+in {
   xsession.windowManager.i3 = {
     enable = true;
     package = pkgs.i3-gaps;
     
-    config = rec {
-      modifier = "Mod4";
+    config = {
+      modifier = "${modifier}";
       bars = [ ];
       gaps = {
         inner = 15;
@@ -15,8 +18,11 @@
       window.border = 0;
 
       keybindings = lib.mkOptionDefault {
-        "${modifier}+b" = "exec ${pkgs.firefox}/bin/firefox";
+        "${alt}+b" = "exec ${pkgs.firefox}/bin/firefox";
+	"${alt}+d" = "exec ${pkgs.discord}/bin/discord";
         "${modifier}+Return" = "exec ${pkgs.kitty}/bin/kitty";
+        "${modifier}+d" = "exec ${pkgs.rofi}/bin/rofi -show drun";
+        "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui -c";
       };
 
       startup = [
