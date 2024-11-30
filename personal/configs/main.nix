@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./i3wm.nix
-    ../../modules/polybar/polybar.nix
+    # ./i3wm.nix
+    # ../../modules/polybar/polybar.nix
     ../../modules/zed/zed.nix
     ../../modules/rofi/rofi.nix
     ../../modules/flameshot/flameshot.nix

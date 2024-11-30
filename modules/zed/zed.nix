@@ -13,9 +13,9 @@
     userSettings = {
       vim_mode = true;
       ui_font_size = 15;
-      ui_font_family = "JetBrains Mono Nerd Font";
+      ui_font_family = "FiraCode Nerd Font";
       buffer_font_size = 15;
-      buffer_font_family = "JetBrains Mono Nerd Font";
+      buffer_font_family = "FiraCode Nerd Font";
       autosave = "on_focus_change";
       relative_line_numbers = true;
       theme = "Sandcastle";
@@ -24,6 +24,7 @@
         active_line_width = 3;
       };
       show_whitespaces = "boundary";
+      tab_size = 2;
     };
   };
 }
