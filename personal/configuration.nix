@@ -48,11 +48,13 @@
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    displayManager.sddm.enable = true;
-    windowManager.i3.enable = true;
+    displayManager.gdm = {
+      enable = true;
+      wayland = true;
+    };
   };
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
 
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
@@ -63,7 +65,7 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
   };
 
