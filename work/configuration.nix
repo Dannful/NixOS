@@ -5,11 +5,10 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.home-manager
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.home-manager
+  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -48,17 +47,18 @@
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    desktopManager = {
-      xterm.enable = false;
-      xfce = {
-        enable = true;
-        noDesktop = true;
-        enableXfwm = false;
-      };
+    displayManager.gdm = {
+      enable = true;
+      wayland = true;
     };
-    windowManager.i3.enable = true;
   };
-  services.displayManager.defaultSession = "xfce+i3";
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  };
 
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
@@ -69,6 +69,7 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+  hardware.graphics = { enable = true; };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -103,21 +104,20 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.work = {
-    hashedPassword = "$6$8B3VVbnOEmwjl7eR$s3kosL.whd4c2pTLgmFPSw6vZHFLz8LRisQQTGYVaUtOkk0dq9O3GkCVUu/YltyhebxEKnovyH0yKbcQvwVdy/";
+    hashedPassword =
+      "$6$8B3VVbnOEmwjl7eR$s3kosL.whd4c2pTLgmFPSw6vZHFLz8LRisQQTGYVaUtOkk0dq9O3GkCVUu/YltyhebxEKnovyH0yKbcQvwVdy/";
     isNormalUser = true;
     description = "work";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
+    packages = [ ];
     shell = pkgs.zsh;
   };
+  programs.zsh.enable = true;
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users = {
-      work = import ./home.nix;
-    };
+    users = { work = import ./home.nix; };
+    backupFileExtension = "backup";
   };
 
   # Install firefox.
@@ -132,10 +132,27 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     pkgs.home-manager
     pkgs.ffmpeg
-  #  wget
+    #  wget
   ];
 
   virtualisation.docker.enable = true;
+
+  fonts.packages = with pkgs;
+    [ (nerdfonts.override { fonts = [ "FiraCode" ]; }) ];
+  fonts = {
+    fontconfig = {
+      defaultFonts = {
+        serif = [ "FiraCode Nerd Font" ];
+        sansSerif = [ "FiraCode Nerd Font" ];
+        monospace = [ "FiraCode Nerd Font Mono" ];
+      };
+    };
+  };
+
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+    NIXOS_OZONE_WL = "1";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -3,9 +3,9 @@
 let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
-  wallpaperStrings = builtins.map(monitor:
-    "${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o \"${monitor.name}\" &"
-  ) (builtins.filter(monitor: monitor.wallpaper != null) cfg.monitors);
+  wallpaperStrings = builtins.map (monitor:
+    ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
+    (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${pkgs.eww}/bin/eww open left_bar
     ${pkgs.eww}/bin/eww open bottom_bar
@@ -14,13 +14,12 @@ let
     sleep 1
     ${lib.strings.concatStringsSep "\n" wallpaperStrings}
   '';
-in
-{
+in {
   options.custom-hyprland = {
     enable = lib.mkEnableOption "Enable my custom Hyprland";
     monitors = mkOption {
       description = "A list containing all monitor configurations";
-      type = types.listOf(types.submodule {
+      type = types.listOf (types.submodule {
         options = {
           name = mkOption {
             type = types.str;
@@ -46,6 +45,7 @@ in
             type = types.nullOr types.path;
             description = "Wallpaper path for the monitor.";
             example = ./wallpaper.png;
+            default = null;
           };
         };
       });
@@ -61,7 +61,14 @@ in
       pkgs.slurp
       pkgs.wl-clipboard
       pkgs.swappy
+      pkgs.rofi-wayland
+      pkgs.playerctl
     ];
+    home.file.".config/rofi/config.rasi" = { text = ''@theme "arthur"''; };
+    home.file.".config/eww" = {
+      source = ../eww;
+      recursive = true;
+    };
     services.mako = {
       enable = true;
       anchor = "top-right";
@@ -69,44 +76,37 @@ in
     };
     wayland.windowManager.hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      package =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
-      plugins = [
-        inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus
-      ];
+      plugins =
+        [ inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus ];
 
       settings = {
         "$mod" = "SUPER";
         "$alt" = "ALT";
-        general = {
-          gaps_out = "18, 18, 60, 60";
-        };
+        general = { gaps_out = "18, 18, 60, 60"; };
         input = {
           kb_layout = "us";
           kb_variant = "alt-intl";
         };
-        exec-once = ''${startupScript}/bin/start'';
-        monitor = builtins.map(monitor:
-          "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1"
-        ) cfg.monitors;
+        exec-once = "${startupScript}/bin/start";
+        monitor = builtins.map (monitor:
+          "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
+          cfg.monitors;
         bind = [
           "$alt, B, exec, ${pkgs.firefox}/bin/firefox"
           "$alt, D, exec, ${pkgs.discord}/bin/discord"
           "$mod, Return, exec, ${pkgs.kitty}/bin/kitty"
-          "$mod, D, exec, ${pkgs.rofi-wayland}/bin/rofi -dmenu"
+          "$mod, D, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
           "$mod, Q, exec, hyprctl kill"
-	"$mod, Print, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        ]
-        ++ (
-          builtins.concatLists(builtins.genList (i:
-            let ws = i + 1;
-            in [
-              "$mod, code:1${toString i}, workspace, ${toString ws}"
-              "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-            ]
-          )
-          9)
-        );
+          ''$mod, Print, exec, grim -g "$(slurp)" - | swappy -f -''
+        ] ++ (builtins.concatLists (builtins.genList (i:
+          let ws = i + 1;
+          in [
+            "$mod, code:1${toString i}, workspace, ${toString ws}"
+            "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+          ]) 9));
         "plugin:borders-plus-plus" = {
           add_borders = 1;
 

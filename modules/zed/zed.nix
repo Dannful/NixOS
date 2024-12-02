@@ -1,15 +1,11 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
-  home.file.".config/zed/tasks.json" = {
-    source = ./tasks.json;
-  };
-  home.file.".config/zed/keymap.json" = {
-    source = ./keymap.json;
-  };
+  home.file.".config/zed/tasks.json" = { source = ./tasks.json; };
+  home.file.".config/zed/keymap.json" = { source = ./keymap.json; };
   programs.zed-editor = {
     enable = true;
-    
+
     userSettings = {
       vim_mode = true;
       ui_font_size = 15;

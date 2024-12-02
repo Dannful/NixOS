@@ -5,11 +5,10 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.home-manager
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.home-manager
+  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -55,6 +54,11 @@
   };
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  };
 
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
@@ -65,9 +69,7 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-  hardware.graphics = {
-    enable = true;
-  };
+  hardware.graphics = { enable = true; };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -102,22 +104,19 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.dannly = {
-    hashedPassword = "$6$uoaANV2.eLu/goEB$tjSshXgQLuZ533az.hiD7gsFgfrB2cxV/1LpdcEay7FfNIDJ14JXlw0fp8M33biz.VJNQZ5EC7Fs87fpQJMJq.";
+    hashedPassword =
+      "$6$uoaANV2.eLu/goEB$tjSshXgQLuZ533az.hiD7gsFgfrB2cxV/1LpdcEay7FfNIDJ14JXlw0fp8M33biz.VJNQZ5EC7Fs87fpQJMJq.";
     isNormalUser = true;
     description = "dannly";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
+    packages = [ ];
     shell = pkgs.zsh;
   };
   programs.zsh.enable = true;
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users = {
-      dannly = import ./home.nix;
-    };
+    users = { dannly = import ./home.nix; };
     backupFileExtension = "backup";
   };
 
@@ -135,14 +134,13 @@
     pkgs.ffmpeg
     pkgs.protonup
     mangohud
-  #  wget
+    #  wget
   ];
 
   virtualisation.docker.enable = true;
 
-  fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
-  ];
+  fonts.packages = with pkgs;
+    [ (nerdfonts.override { fonts = [ "FiraCode" ]; }) ];
   fonts = {
     fontconfig = {
       defaultFonts = {
@@ -161,12 +159,6 @@
     gamescopeSession.enable = true;
   };
   programs.gamemode.enable = true;
-
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-  };
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
