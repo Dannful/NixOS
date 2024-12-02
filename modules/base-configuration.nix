@@ -29,18 +29,13 @@ in {
     };
   };
   config = {
-    imports = [
-      ./base-hardware-configuration.nix
-      inputs.home-manager.nixosModules.home-manager
-    ];
-
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
     networking.hostName = "nixos";
-    networking.wireless.enable = true;
+    # networking.wireless.enable = true;
 
     # Configure network proxy if necessary
     # networking.proxy.default = "http://user:password@proxy:port/";
@@ -137,16 +132,7 @@ in {
         shell = pkgs.zsh;
       };
     }) cfg.users);
-    # users.users.dannly = {
-    #   hashedPassword =
-    #     "$6$uoaANV2.eLu/goEB$tjSshXgQLuZ533az.hiD7gsFgfrB2cxV/1LpdcEay7FfNIDJ14JXlw0fp8M33biz.VJNQZ5EC7Fs87fpQJMJq.";
-    #   isNormalUser = true;
-    #   description = "dannly";
-    #   extraGroups = [ "networkmanager" "wheel" "docker" ];
-    #   packages = [ ];
-    #   shell = pkgs.zsh;
-    # };
-    # programs.zsh.enable = true;
+    programs.zsh.enable = true;
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };

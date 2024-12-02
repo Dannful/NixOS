@@ -6,9 +6,20 @@
 
 (defwidget bottom_bar []
   (centerbox :orientation "h"
-    (label :text "")
+    (powermenu)
     (label :text time :halign "center")
     (music)))
+
+(defwidget powermenu []
+  (box :class "powermenu"
+       :orientation "h"
+       :halign "start"
+       :spacing 24
+    (button :onclick "systemctl poweroff" "⏻")
+    (button :onclick "systemctl reboot" "󰜉")
+    (button :onclick "systemctl hibernate" "⏾")
+    (button :onclick "systemctl suspend" ""))
+)
 
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "v" :space-evenly false
