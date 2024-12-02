@@ -19,8 +19,6 @@
     pkgs.lazygit
     pkgs.nixd
     pkgs.nixfmt-classic
-    pkgs.gcc
-    pkgs.gnumake
   ];
 
   home.sessionVariables = {
