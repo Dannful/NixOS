@@ -90,6 +90,9 @@ in {
           kb_layout = "us";
           kb_variant = "alt-intl";
         };
+        decoration = {
+          rounding = 3;
+        };
         exec-once = "${startupScript}/bin/start";
         monitor = builtins.map (monitor:
           "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
@@ -111,11 +114,9 @@ in {
         "plugin:borders-plus-plus" = {
           add_borders = 1;
 
-          "col.border_1" = "rgb(ffffff)";
-          "col.border_2" = "rgb(2222ff)";
+          "col.border_1" = "rgb(112145)";
 
           border_size_1 = 6;
-          border_size_2 = 3;
 
           natural_rounding = "yes";
         };
