@@ -7,7 +7,11 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
+  base-hardware-config = {
+    use-nvidia = true;
+  };
   base-config = {
+    use-nvidia = true;
     users = [{
       name = "work";
       password =

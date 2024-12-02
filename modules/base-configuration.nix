@@ -27,6 +27,16 @@ in {
         };
       });
     };
+    use-nvidia = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether or not NVIDIA should be used";
+    };
+    use-steam = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether or not Steam should be installed";
+    };
   };
   config = {
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -77,17 +87,6 @@ in {
       xwayland.enable = true;
       package = inputs.hyprland.packages."${pkgs.system}".hyprland;
     };
-
-    services.xserver.videoDrivers = [ "nvidia" ];
-    hardware.nvidia = {
-      modesetting.enable = true;
-      powerManagement.enable = false;
-      powerManagement.finegrained = false;
-      open = false;
-      nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-    };
-    hardware.graphics = { enable = true; };
 
     # Configure keymap in X11
     services.xserver.xkb = {
@@ -152,12 +151,12 @@ in {
     # List packages installed in system profile. To search, run:
     # $ nix search wget
     environment.systemPackages = with pkgs; [
-      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-      pkgs.home-manager
-      pkgs.ffmpeg
+      vim
+      home-manager
+      ffmpeg
+    ] ++ lib.optionals cfg.use-steam [
       pkgs.protonup
-      mangohud
-      #  wget
+      pkgs.mangohud
     ];
 
     virtualisation.docker.enable = true;
@@ -174,20 +173,30 @@ in {
       };
     };
 
-    programs.steam = {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-      localNetworkGameTransfers.openFirewall = true;
-      gamescopeSession.enable = true;
-    };
-    programs.gamemode.enable = true;
-
     environment.sessionVariables = {
       WLR_NO_HARDWARE_CURSORS = "1";
       NIXOS_OZONE_WL = "1";
     };
 
     system.stateVersion = "24.05"; # Did you read the comment?
+
+    programs.steam = lib.mkIf cfg.use-steam {
+      enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+      localNetworkGameTransfers.openFirewall = true;
+      gamescopeSession.enable = true;
+    };
+    programs.gamemode.enable = lib.mkIf cfg.use-steam true;
+    services.xserver.videoDrivers = lib.mkIf cfg.use-nvidia [ "nvidia" ];
+    hardware.nvidia = lib.mkIf cfg.use-nvidia {
+      modesetting.enable = true;
+      powerManagement.enable = false;
+      powerManagement.finegrained = false;
+      open = false;
+      nvidiaSettings = true;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+    };
+    hardware.graphics = lib.mkIf cfg.use-nvidia { enable = true; };
   };
 }
