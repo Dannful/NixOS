@@ -21,6 +21,7 @@
     pkgs.insomnia
     pkgs.jq
     pkgs.omnisharp-roslyn
+    pkgs.acpi
   ];
 
   home.sessionVariables = { };
@@ -49,5 +50,6 @@
       model = "0x15F5";
       show-bars = true;
     }];
+    bar = { show-battery = true; };
   };
 }

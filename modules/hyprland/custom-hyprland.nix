@@ -17,6 +17,20 @@ let
 in {
   options.custom-hyprland = {
     enable = lib.mkEnableOption "custom Hyprland";
+    bar = mkOption {
+      description = "EWW bar configuration";
+      default = { show-battery = false; };
+      type = types.submodule {
+        options = {
+          show-battery = mkOption {
+            type = types.bool;
+            default = false;
+            example = true;
+            description = "Whether or not to show battery bar.";
+          };
+        };
+      };
+    };
     monitors = mkOption {
       description = "A list containing all monitor configurations";
       type = types.listOf (types.submodule {
@@ -79,9 +93,22 @@ in {
     home.file.".config/rofi/config.rasi" = { text = ''@theme "arthur"''; };
     home.file.".config/eww/eww.scss" = { source = ../eww/eww.scss; };
     home.file.".config/eww/eww.yuck" = {
-      text = builtins.replaceStrings [ "\${MONITORS}" ] [
+      text = builtins.replaceStrings [
+        "\${MONITORS}"
+        "\${BATTERY_LEVEL}"
+        "\${BATTERY_POLL}"
+      ] [
         (builtins.toJSON (builtins.map (monitor: monitor.model)
           (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
+        (if cfg.bar.show-battery then
+          ''(label :text "  ''${battery_level}%")''
+        else
+          "")
+        (if cfg.bar.show-battery then
+          ''
+            (defpoll battery_level :interval "1s" "acpi --battery | awk -F '[^0-9]+' '/, /{print $3}'")''
+        else
+          "")
       ] (builtins.readFile ../eww/eww.yuck);
     };
     services.mako = {

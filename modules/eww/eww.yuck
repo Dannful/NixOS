@@ -14,11 +14,16 @@
   (box :class "powermenu"
        :orientation "h"
        :halign "start"
-       :spacing 24
-    (button :onclick "systemctl poweroff" "⏻")
-    (button :onclick "systemctl reboot" "󰜉")
-    (button :onclick "systemctl hibernate" "⏾")
-    (button :onclick "systemctl suspend" ""))
+       :spacing 6
+    ${BATTERY_LEVEL}
+    (box :class "powerbuttons"
+        :orientation "h"
+        :halign "start"
+        :spacing 24
+      (button :onclick "systemctl poweroff" "⏻")
+      (button :onclick "systemctl reboot" "󰜉")
+      (button :onclick "systemctl hibernate" "⏾")
+      (button :onclick "systemctl suspend" "")))
 )
 
 (defwidget sidestuff []
@@ -83,6 +88,8 @@
 
 (defpoll active_workspace :interval "300ms"
   "hyprctl activeworkspace | awk -F '[^0-9]+' '/ID/{print $3}'")
+
+${BATTERY_POLL}
 
 (defwindow left_bar
   :monitor '${MONITORS}'
