@@ -16,7 +16,7 @@ let
   '';
 in {
   options.custom-hyprland = {
-    enable = lib.mkEnableOption "Enable my custom Hyprland";
+    enable = lib.mkEnableOption "custom Hyprland";
     monitors = mkOption {
       description = "A list containing all monitor configurations";
       type = types.listOf (types.submodule {
@@ -117,7 +117,7 @@ in {
           "$mod, D, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
           "$mod, Q, exec, hyprctl kill"
           "$mod, F, fullscreen"
-          ''$mod, Print, exec, grim -g "$(slurp)" - | swappy -f -''
+          '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
         ] ++ (builtins.concatLists (builtins.genList (i:
           let ws = i + 1;
           in [

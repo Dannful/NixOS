@@ -6,7 +6,7 @@ let
 in {
   imports = [ ../zsh/zsh.nix ];
   options.custom-kitty = {
-    enable = lib.mkEnableOption "Enable custom Kitty";
+    enable = lib.mkEnableOption "custom Kitty";
     wallpaper = mkOption {
       type = types.nullOr types.path;
       description = "Path to the wallpaper image.";
