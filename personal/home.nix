@@ -28,6 +28,8 @@
     wallpaper = ./wallpapers/frieren.png;
   };
 
+  zed = { enable = true; };
+
   custom-hyprland = {
     enable = true;
     monitors = [

@@ -20,6 +20,7 @@
     pkgs.awscli2
     pkgs.insomnia
     pkgs.jq
+    pkgs.omnisharp-roslyn
   ];
 
   home.sessionVariables = { };
@@ -27,6 +28,16 @@
   programs.home-manager.enable = true;
 
   custom-kitty = { enable = true; };
+
+  custom-zed = {
+    enable = true;
+    lsp = {
+      omnisharp = {
+        path = "${pkgs.omnisharp-roslyn}/bin/OmniSharp";
+        arguments = [ "-lsp" ];
+      };
+    };
+  };
 
   custom-hyprland = {
     enable = true;
