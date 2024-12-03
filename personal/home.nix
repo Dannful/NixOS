@@ -14,7 +14,7 @@
 
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
-  home.packages = [ pkgs.gh pkgs.lazygit pkgs.nixd pkgs.nixfmt-classic ];
+  home.packages = [ pkgs.gh pkgs.lazygit ];
 
   home.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =

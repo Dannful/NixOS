@@ -154,6 +154,8 @@ in {
       vim
       home-manager
       ffmpeg
+      nixd
+      nixfmt-classic
     ] ++ lib.optionals cfg.use-steam [
       pkgs.protonup
       pkgs.mangohud
