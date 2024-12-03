@@ -18,8 +18,6 @@
     pkgs.gh
     pkgs.lazygit
     pkgs.awscli2
-    pkgs.dotnet-sdk_8
-    pkgs.dotnet-aspnetcore_8
     pkgs.insomnia
     pkgs.jq
   ];
