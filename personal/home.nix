@@ -28,7 +28,7 @@
     wallpaper = ./wallpapers/frieren.png;
   };
 
-  zed = { enable = true; };
+  custom-zed = { enable = true; };
 
   custom-hyprland = {
     enable = true;

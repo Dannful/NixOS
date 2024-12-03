@@ -9,6 +9,7 @@ in {
     lsp = mkOption {
       type = types.raw;
       description = "LSP configuration";
+      default = { };
       example = {
         omnisharp = {
           path = "${pkgs.omnisharp-roslyn}/bin/OmniSharp";
