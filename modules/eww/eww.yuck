@@ -85,7 +85,7 @@
   "hyprctl activeworkspace | awk -F '[^0-9]+' '/ID/{print $3}'")
 
 (defwindow left_bar
-  :monitor 0
+  :monitor '${MONITORS}'
   :windowtype "dock"
   :geometry (geometry :x "0%"
                       :y "0%"
@@ -96,7 +96,7 @@
   (left_bar))
 
 (defwindow bottom_bar
-  :monitor 0
+  :monitor '${MONITORS}'
   :windowtype "dock"
   :geometry (geometry :x "0%"
                       :y "0%"

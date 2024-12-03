@@ -26,6 +26,18 @@ in {
             description = "Identifier of the monitor.";
             example = "DP-1";
           };
+          model = mkOption {
+            type = types.str;
+            description = "Model of the monitor.";
+            example = "SyncMaster";
+          };
+          show-bars = mkOption {
+            type = types.bool;
+            description =
+              "Whether or not eww bars should be visible on this monitor.";
+            default = false;
+            example = true;
+          };
           resolution = mkOption {
             type = types.str;
             description = "Resolution for the monitor.";
@@ -65,9 +77,12 @@ in {
       pkgs.playerctl
     ];
     home.file.".config/rofi/config.rasi" = { text = ''@theme "arthur"''; };
-    home.file.".config/eww" = {
-      source = ../eww;
-      recursive = true;
+    home.file.".config/eww/eww.scss" = { source = ../eww/eww.scss; };
+    home.file.".config/eww/eww.yuck" = {
+      text = builtins.replaceStrings [ "\${MONITORS}" ] [
+        (builtins.toJSON (builtins.map (monitor: monitor.model)
+          (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
+      ] (builtins.readFile ../eww/eww.yuck);
     };
     services.mako = {
       enable = true;
@@ -90,9 +105,7 @@ in {
           kb_layout = "us";
           kb_variant = "alt-intl";
         };
-        decoration = {
-          rounding = 3;
-        };
+        decoration = { rounding = 3; };
         exec-once = "${startupScript}/bin/start";
         monitor = builtins.map (monitor:
           "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
