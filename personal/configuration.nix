@@ -3,13 +3,9 @@
 {
   imports = [
     ../modules/base-configuration.nix
-    ../modules/base-hardware-configuration.nix
+    ./hardware-configuration.nix
     inputs.home-manager.nixosModules.home-manager
   ];
-
-  base-hardware-config = {
-    use-nvidia = true;
-  };
 
   base-config = {
     use-nvidia = true;

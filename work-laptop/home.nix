@@ -7,8 +7,8 @@
     ../modules/hyprland/custom-hyprland.nix
     ../modules/git/git.nix
   ];
-  home.username = "Vinícius Daniel";
-  home.homeDirectory = "/home/Vinícius Daniel";
+  home.username = "vinidan";
+  home.homeDirectory = "/home/vinidan";
 
   home.stateVersion = "24.05";
 
@@ -42,11 +42,11 @@
   custom-hyprland = {
     enable = true;
     monitors = [{
-      name = "eDP";
+      name = "eDP-1";
       resolution = "1920x1080";
       refresh-rate = "60.00";
       position = "0x0";
-      model = "AG323FWG3R3";
+      model = "0x15F5";
       show-bars = true;
     }];
   };
