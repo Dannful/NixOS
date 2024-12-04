@@ -14,15 +14,8 @@
 
   nixpkgs = { config = { allowUnfree = true; }; };
 
-  home.packages = [
-    pkgs.gh
-    pkgs.lazygit
-    pkgs.awscli2
-    pkgs.insomnia
-    pkgs.jq
-    pkgs.omnisharp-roslyn
-    pkgs.acpi
-  ];
+  home.packages =
+    [ pkgs.gh pkgs.lazygit pkgs.awscli2 pkgs.insomnia pkgs.jq pkgs.acpi ];
 
   home.sessionVariables = { };
 
