@@ -140,7 +140,7 @@ in {
         bind = [
           "$alt, B, exec, ${pkgs.firefox}/bin/firefox"
           "$alt, F, exec, ${pkgs.nautilus}/bin/nautilus"
-          "$alt, D, exec, ${pkgs.vesktop}/bin/vesktop"
+          "$alt, D, exec, ${pkgs.webcord-vencord}/bin/webcord"
           "$mod, Return, exec, ${pkgs.kitty}/bin/kitty"
           "$mod, D, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
           "$mod, Q, exec, hyprctl kill"
