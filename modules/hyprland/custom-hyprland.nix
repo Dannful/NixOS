@@ -144,6 +144,7 @@ in {
           "$mod, Return, exec, ${pkgs.kitty}/bin/kitty"
           "$mod, D, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
           "$mod, Q, exec, hyprctl kill"
+          "$mod, C, killactive"
           "$mod, F, fullscreen"
           '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
         ] ++ (builtins.concatLists (builtins.genList (i:
