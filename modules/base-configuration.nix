@@ -80,6 +80,17 @@ in {
         wayland = true;
       };
     };
+    services.gvfs.enable = true;
+    nixpkgs.overlays = [
+      (self: super: {
+        gnome = super.gnome.overrideScope' (gself: gsuper: {
+          nautilus = gsuper.nautilus.overrideAttrs (nsuper: {
+            buildInputs = nsuper.buildInputs
+              ++ (with pkgs.gst_all_1; [ gst-plugins-good gst-plugins-bad ]);
+          });
+        });
+      })
+    ];
     xdg.portal.enable = true;
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
     programs.hyprland = {
@@ -150,16 +161,9 @@ in {
 
     # List packages installed in system profile. To search, run:
     # $ nix search wget
-    environment.systemPackages = with pkgs; [
-      vim
-      home-manager
-      ffmpeg
-      nixd
-      nixfmt-classic
-    ] ++ lib.optionals cfg.use-steam [
-      pkgs.protonup
-      pkgs.mangohud
-    ];
+    environment.systemPackages = with pkgs;
+      [ vim home-manager ffmpeg nixd nixfmt-classic nautilus vesktop ]
+      ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud ];
 
     virtualisation.docker.enable = true;
 

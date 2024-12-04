@@ -139,7 +139,8 @@ in {
           cfg.monitors;
         bind = [
           "$alt, B, exec, ${pkgs.firefox}/bin/firefox"
-          "$alt, D, exec, ${pkgs.discord}/bin/discord"
+          "$alt, F, exec, ${pkgs.nautilus}/bin/nautilus"
+          "$alt, D, exec, ${pkgs.vesktop}/bin/vesktop"
           "$mod, Return, exec, ${pkgs.kitty}/bin/kitty"
           "$mod, D, exec, ${pkgs.rofi-wayland}/bin/rofi -show drun"
           "$mod, Q, exec, hyprctl kill"

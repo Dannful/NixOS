@@ -24,12 +24,6 @@
 
   custom-zed = {
     enable = true;
-    lsp = {
-      omnisharp = {
-        path = "${pkgs.omnisharp-roslyn}/bin/OmniSharp";
-        arguments = [ "-lsp" ];
-      };
-    };
   };
 
   custom-hyprland = {
