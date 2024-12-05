@@ -14,6 +14,15 @@
 
   nixpkgs = { config = { allowUnfree = true; }; };
 
+  home.file.".ssh/config" = {
+    text = ''
+      Host github.com
+        Hostname ssh.github.com
+        Port 443
+        User git
+    '';
+  };
+
   home.packages =
     [ pkgs.gh pkgs.lazygit pkgs.awscli2 pkgs.insomnia pkgs.jq pkgs.acpi ];
 
