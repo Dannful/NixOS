@@ -39,8 +39,10 @@ in {
         };
         show_whitespaces = "boundary";
         tab_size = 2;
-
         lsp = cfg.lsp;
+        project_panel = {
+          auto_fold_dirs = false;
+        };
       };
     };
   };
