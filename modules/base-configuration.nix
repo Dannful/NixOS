@@ -162,8 +162,16 @@ in {
     # List packages installed in system profile. To search, run:
     # $ nix search wget
     environment.systemPackages = with pkgs;
-      [ vim home-manager ffmpeg nixd nixfmt-classic nautilus webcord-vencord ]
-      ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud ];
+      [
+        vim
+        home-manager
+        ffmpeg
+        nixd
+        nixfmt-classic
+        nautilus
+        webcord-vencord
+        youtube-music
+      ] ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud ];
 
     virtualisation.docker.enable = true;
 
