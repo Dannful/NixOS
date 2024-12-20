@@ -1,10 +1,10 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, ... }:
 
 with lib;
 
-let cfg = config.programs.eww;
+let cfg = config.programs.eww-bar;
 in {
-  options.programs.eww = {
+  options.programs.eww-bar = {
     enable = mkEnableOption "EWW bar";
 
     css = mkOption {
