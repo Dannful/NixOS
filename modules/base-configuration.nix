@@ -211,6 +211,6 @@ in {
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
-    hardware.graphics = lib.mkIf cfg.use-nvidia { enable = true; };
+    hardware.graphics = { enable = true; };
   };
 }
