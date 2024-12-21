@@ -20,7 +20,7 @@ in {
   config = mkIf cfg.enable {
     home.packages = [ pkgs.eww ];
     home.file = {
-      ".config/eww/eww.css" = { text = cfg.css; };
+      ".config/eww/eww.scss" = { text = cfg.css; };
       ".config/eww/eww.yuck" = { text = cfg.yuck; };
     };
   };
