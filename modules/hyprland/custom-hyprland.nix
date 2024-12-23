@@ -210,14 +210,14 @@ in {
               :valign "start"
               :spacing 9
             (for entry in "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-              (button :css {entry == active_workspace ? "button {color: white;}" : ""} :onclick "hyprctl dispatch workspace $\{entry}" entry))))
+              (button :css {entry == active_workspace ? "button {color: white;}" : ""} :onclick "hyprctl dispatch workspace $''${entry}" entry))))
 
         (defwidget music []
           (box :class "music"
                :orientation "h"
                :space-evenly false
                :halign "end"
-            {music != "" ? "🎵 $\{music}" : ""}))
+            {music != "" ? "🎵 $''${music}" : ""}))
 
 
         (defwidget metric [label value onchange]
