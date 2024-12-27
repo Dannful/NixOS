@@ -23,8 +23,15 @@
     '';
   };
 
-  home.packages =
-    [ pkgs.gh pkgs.lazygit pkgs.awscli2 pkgs.insomnia pkgs.jq pkgs.acpi ];
+  home.packages = [
+    pkgs.gh
+    pkgs.lazygit
+    pkgs.awscli2
+    pkgs.insomnia
+    pkgs.jq
+    pkgs.acpi
+    pkgs.brightnessctl
+  ];
 
   home.sessionVariables = { };
 
