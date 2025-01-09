@@ -19,6 +19,12 @@ in {
             example =
               "$6$l8tWRCtkcDiV17p4$zsEIc9/vY62pR2kFhUnO9R/hWdGDTQyMIKREVpNUSZl6cFeUDNz3/9dK.CeQ2vwBk45pEeNKT7T9rb4d1pLLn/";
           };
+          groups = mkOption {
+            type = types.listOf types.str;
+            description = "Extra groups for the user";
+            example = "[]";
+            default = [ ];
+          };
           home-file-path = mkOption {
             type = types.path;
             description = "Home nix file path";
@@ -137,7 +143,7 @@ in {
         hashedPassword = user.password;
         isNormalUser = true;
         description = user.name;
-        extraGroups = [ "networkManager" "wheel" "docker" ];
+        extraGroups = [ "networkManager" "wheel" "docker" ] ++ user.groups;
         packages = [ ];
         shell = pkgs.zsh;
       };
