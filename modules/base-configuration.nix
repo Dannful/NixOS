@@ -182,8 +182,11 @@ in {
 
     virtualisation.docker.enable = true;
 
-    fonts.packages = with pkgs;
-      [ (nerdfonts.override { fonts = [ "FiraCode" ]; }) ];
+    fonts.packages = with pkgs; [
+      (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      iosevka
+      hack-font
+    ];
     fonts = {
       fontconfig = {
         defaultFonts = {
@@ -224,5 +227,13 @@ in {
     hardware.bluetooth.powerOnBoot = true;
 
     services.blueman.enable = true;
+
+    system.autoUpgrade.enable = true;
+    system.autoUpgrade.dates = "weekly";
+
+    nix.gc.automatic = true;
+    nix.gc.dates = "daily";
+    nix.gc.options = "--delete-older-than 3d";
+    nix.settings.auto-optimise-store = true;
   };
 }

@@ -1,0 +1,53 @@
+* {
+  all: unset; // Unsets everything so you can style everything from scratch
+}
+
+// Global Styles
+.bottom_bar {
+  background-color: #112145;
+  color: #b0b4bc;
+  padding: 6px 9px 6px 9px;
+}
+
+.left_bar {
+  background-color: #1a1145;
+  color: #b0b4bc;
+  padding: 9px;
+  border-radius: 18px;
+}
+
+// Styles on classes (see eww.yuck for more information)
+
+.music {
+  border-radius: 9px;
+}
+
+.sidestuff slider {
+  all: unset;
+  color: #ffd5cd;
+}
+
+.metric scale trough highlight {
+  all: unset;
+  background-color: #d35d6e;
+  color: #000000;
+  border-radius: 9px;
+}
+
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 90px;
+  min-width: 3px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.label-ram {
+  font-size: large;
+}
+
+button:hover {
+  color: #d35d6e;
+}

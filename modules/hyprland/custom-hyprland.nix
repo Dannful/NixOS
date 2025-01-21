@@ -14,8 +14,33 @@ let
     sleep 1
     ${lib.strings.concatStringsSep "\n" wallpaperStrings}
   '';
+
+  buildEwwDirectory = sourceDir: outputDir:
+    let dir = builtins.readDir sourceDir;
+    in (builtins.foldl' (first: second: first // second) { } (builtins.map
+      (name:
+        if (lib.strings.hasSuffix ".jpg" name)
+        || (lib.strings.hasSuffix ".png" name) then {
+          "${outputDir}/${name}" = { source = "${sourceDir}/${name}"; };
+        } else if (builtins.getAttr name dir) != "directory" then {
+          "${outputDir}/${name}" = {
+            text = (builtins.replaceStrings [
+              "{MONITORS}"
+              "{BASH_BIN}"
+              "{EWW_BIN}"
+            ] [
+              (builtins.toJSON (builtins.map (monitor: monitor.model)
+                (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
+              "${pkgs.bash}/bin/bash"
+              "${pkgs.eww}/bin/eww"
+            ] (builtins.readFile "${sourceDir}/${name}"));
+            executable =
+              if (lib.strings.hasSuffix ".sh" name) then true else false;
+          };
+        } else
+          (buildEwwDirectory "${sourceDir}/${name}" "${outputDir}/${name}"))
+      (builtins.attrNames dir)));
 in {
-  imports = [ ../eww/eww.nix ];
   options.custom-hyprland = {
     enable = lib.mkEnableOption "custom Hyprland";
     bar = mkOption {
@@ -89,199 +114,16 @@ in {
       pkgs.swappy
       pkgs.rofi-wayland
       pkgs.playerctl
+      pkgs.eww
     ];
-    home.file.".config/rofi/config.rasi" = { text = ''@theme "arthur"''; };
+    home.file = lib.mkMerge [
+      { ".config/rofi/config.rasi" = { text = ''@theme "arthur"''; }; }
+      (buildEwwDirectory (./.. + "/eww") ".config/eww")
+    ];
     services.mako = {
       enable = true;
       anchor = "top-right";
       font = "FiraCode Nerd Font 12";
-    };
-    programs.eww-bar = {
-      enable = true;
-      css = ''
-        * {
-          all: unset; // Unsets everything so you can style everything from scratch
-        }
-
-        // Global Styles
-        .bottom_bar {
-          background-color: #112145;
-          color: #b0b4bc;
-          padding: 6px 9px 6px 9px;
-        }
-
-        .left_bar {
-          background-color: #1a1145;
-          color: #b0b4bc;
-          padding: 9px;
-          border-radius: 18px;
-        }
-
-        // Styles on classes (see eww.yuck for more information)
-
-        .sidestuff slider {
-          all: unset;
-          color: #ffd5cd;
-        }
-
-        .metric scale trough highlight {
-          all: unset;
-          background-color: #d35d6e;
-          color: #000000;
-          border-radius: 9px;
-        }
-
-        .metric scale trough {
-          all: unset;
-          background-color: #4e4e4e;
-          border-radius: 50px;
-          min-height: 90px;
-          min-width: 3px;
-          margin-bottom: 15px;
-          margin-top: 15px;
-        }
-
-        .label-ram {
-          font-size: large;
-        }
-
-        button:hover {
-          color: #d35d6e;
-        }
-      '';
-      yuck = ''
-        (defwidget left_bar []
-          (centerbox :orientation "v" :halign "center"
-            (workspaces)
-            (systray :orientation "v" :spacing 3 :space-evenly true)
-            (sidestuff)))
-
-        (defwidget bottom_bar []
-          (centerbox :orientation "h"
-            (powermenu)
-            (label :text time :halign "center")
-            (music)))
-
-        (defwidget powermenu []
-          (box :class "powermenu"
-               :orientation "h"
-               :halign "start"
-               :spacing 6
-            ${
-              if (cfg.bar.show-battery) then
-                ''(label :text "  ''${battery_level}%")''
-              else
-                ""
-            }
-            (box :class "powerbuttons"
-                :orientation "h"
-                :halign "start"
-                :spacing 24
-              (button :onclick "systemctl poweroff" "⏻")
-              (button :onclick "systemctl reboot" "󰜉")
-              (button :onclick "hyprctl dispatch exit" "")
-              (button :onclick "systemctl suspend" "")))
-        )
-
-        (defwidget sidestuff []
-          (box :class "sidestuff" :orientation "v" :space-evenly false
-            (metric :label {volume == 0 ? " " : " "}
-                    :value volume
-                    :onchange "amixer sset Master {}%")
-            (metric :label " "
-                    :value {EWW_RAM.used_mem_perc}
-                    :onchange "")
-            (metric :label " "
-                    :value {EWW_CPU.avg}
-                    :onchange "")
-            (metric :label "💾"
-                    :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-                    :onchange "")))
-
-        (defwidget tray []
-          (systray  :class "tray"
-                    :orientation "h"
-                    :spacing 3))
-
-        (defwidget workspaces []
-          (box :class "workspaces"
-              :orientation "v"
-              :space-evenly true
-              :valign "start"
-              :spacing 9
-            (for entry in "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-              (button :css {entry == active_workspace ? "button {color: white;}" : ""} :onclick "hyprctl dispatch workspace $''${entry}" entry))))
-
-        (defwidget music []
-          (box :class "music"
-               :orientation "h"
-               :space-evenly false
-               :halign "end"
-            {music != "" ? "🎵 $''${music}" : ""}))
-
-
-        (defwidget metric [label value onchange]
-          (box :orientation "v"
-               :class "metric"
-               :space-evenly false
-               :halign "center"
-            (scale :min 0
-                   :max 101
-                   :flipped true
-                   :orientation "v"
-                   :active {onchange != ""}
-                   :value value
-                   :onchange onchange)
-            (box :class "label" label)))
-
-        (deflisten music :initial ""
-          "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
-
-        (defpoll volume :interval "300ms"
-          "amixer sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'")
-
-        (defpoll time :interval "1s"
-          "date '+%H:%M:%S %b %d, %Y'")
-
-        (defpoll active_workspace :interval "300ms"
-          "hyprctl activeworkspace | awk -F '[^0-9]+' '/ID/{print $3}'")
-
-          ${
-            if (cfg.bar.show-battery) then
-              ''
-                (defpoll battery_level :interval "1s" "acpi --battery | awk -F '[^0-9]+' '/, /{print $3}'")''
-            else
-              ""
-          }
-
-        (defwindow left_bar
-          :monitor '${
-            (builtins.toJSON (builtins.map (monitor: monitor.model)
-              (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
-          }'
-          :windowtype "dock"
-          :geometry (geometry :x "0%"
-                              :y "0%"
-                              :width "3px"
-                              :height "90%"
-                              :anchor "top left")
-          :reserve (struts :side "left" :distance "4%")
-          (left_bar))
-
-        (defwindow bottom_bar
-          :monitor '${
-            (builtins.toJSON (builtins.map (monitor: monitor.model)
-              (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
-          }'
-          :windowtype "dock"
-          :geometry (geometry :x "0%"
-                              :y "0%"
-                              :width "100%"
-                              :height "3px"
-                              :anchor "bottom center")
-          :reserve (struts :side "bottom" :distance "4%")
-          (bottom_bar))
-      '';
     };
     wayland.windowManager.hyprland = {
       enable = true;

@@ -1,0 +1,53 @@
+* {
+  all: unset;
+}
+
+.control_button {
+  font-size: 3rem;
+}
+
+.music_box_popup {
+  background-color: #1a1145;
+  color: #b0b4bc;
+  padding: 9px;
+  border-radius: 18px;
+  border: 3px solid white;
+}
+
+.media_text {
+  font-family: "Hack";
+  font-weight: 600;
+}
+
+.media_art_popup_box {
+  min-width: 140px;
+  min-height: 140px;
+}
+
+.media_popup_art {
+  min-width: 120px;
+  min-height: 120px;
+  border-radius: 6px;
+  border: 3px solid white;
+}
+
+.metric scale trough highlight {
+  all: unset;
+  background-color: #d35d6e;
+  color: #000000;
+  border-radius: 9px;
+}
+
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 3px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.slider {
+  all: unset;
+  color: #ffd5cd;
+}
