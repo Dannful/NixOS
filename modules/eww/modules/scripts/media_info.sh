@@ -26,11 +26,7 @@ select_player() {
 }
 
 update_cover() {
-  if [[ -z $image ]]; then
-    image="$IMAGE_DIR/default.png"
-    cp "$image" "$IMAGE_DIR/current.png"
-    rm -f "$IMAGE_DIR/current_full.png"
-  elif [[ `echo $image | grep -c "file://"` -gt 0 ]]; then
+  if [[ `echo $image | grep -c "file://"` -gt 0 ]]; then
     cp "`echo $image | sed 's/file:\/\///g'`" "$IMAGE_DIR/current_full.png"
     ffmpeg -y -i "$IMAGE_DIR/current_full.png" -vf "scale='if(gt(iw,120),iw,120)':'if(gt(ih,120),ih,120)',crop=120:120" "$IMAGE_DIR/current.png"
   else
@@ -63,9 +59,8 @@ while true; do
     fi
 
     title=`playerctl --player="$player" metadata xesam:title 2> /dev/null`
-    [[ -z $title ]] && title="No title"
 
-    if [[ "$title" != "$LAST_SONG" ]]; then
+    if [[ ! -z "$title" ]] && [[ "$title" != "$LAST_SONG" ]]; then
       artist=`playerctl --player="$player" metadata xesam:artist 2> /dev/null`
       $EWW update media_title="$title"
       $EWW update media_artist="$artist"
