@@ -75,6 +75,7 @@ while true; do
   else
     $EWW update media_cover="$IMAGE_DIR/default.png"
     $EWW update media_title="No title"
+    $EWW update media_artist="No artist"
   fi
   sleep 0.3
 done
