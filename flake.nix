@@ -15,12 +15,7 @@
   };
 
   outputs = { nixpkgs, home-manager, hyprland, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config = { allowUnfree = true; };
-      };
+    let system = "x86_64-linux";
     in {
       nixosConfigurations = {
         personal = nixpkgs.lib.nixosSystem {

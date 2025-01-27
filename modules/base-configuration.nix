@@ -235,5 +235,7 @@ in {
     nix.gc.dates = "daily";
     nix.gc.options = "--delete-older-than 3d";
     nix.settings.auto-optimise-store = true;
+
+    system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
   };
 }
