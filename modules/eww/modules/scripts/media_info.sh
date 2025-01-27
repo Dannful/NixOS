@@ -28,12 +28,12 @@ select_player() {
 update_cover() {
   if [[ `echo $image | grep -c "file://"` -gt 0 ]]; then
     cp "`echo $image | sed 's/file:\/\///g'`" "$IMAGE_DIR/current_full.png"
-    ffmpeg -y -i "$IMAGE_DIR/current_full.png" -vf "scale='if(gt(iw,120),iw,120)':'if(gt(ih,120),ih,120)',crop=120:120" "$IMAGE_DIR/current.png"
+    ffmpeg -y -i "$IMAGE_DIR/current_full.png" -vf "scale='if(gt(iw,ih),120,-1)':'if(gt(ih,iw),120,-1)',scale='if(lt(iw,120),120,-1)':'if(lt(ih,120),120,-1)',crop=120:120" "$IMAGE_DIR/current.png"
   else
     wget "$image" -o "/tmp/current.png"
     if [[ $? -eq 0 ]]; then
       cp "/tmp/current.png" "$IMAGE_DIR/current_full.png"
-      ffmpeg -y -i "$IMAGE_DIR/current_full.png" -vf "scale='if(gt(iw,120),iw,120)':'if(gt(ih,120),ih,120)',crop=120:120" "$IMAGE_DIR/current.png"
+      ffmpeg -y -i "$IMAGE_DIR/current_full.png" -vf "scale='if(gt(iw,ih),120,-1)':'if(gt(ih,iw),120,-1)',scale='if(lt(iw,120),120,-1)':'if(lt(ih,120),120,-1)',crop=120:120" "$IMAGE_DIR/current.png"
     else
       cp "$image" "$IMAGE_DIR/current.png"
       rm -f "$IMAGE_DIR/current_full.png"
