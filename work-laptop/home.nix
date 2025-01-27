@@ -29,7 +29,6 @@
     pkgs.awscli2
     pkgs.insomnia
     pkgs.jq
-    pkgs.acpi
     pkgs.brightnessctl
   ];
 

@@ -5,7 +5,7 @@
     (sidestuff)))
 
 (defwidget bottom_bar []
-  (centerbox :orientation "h" :class "${launch1}"
+  (centerbox :orientation "h" :class "${launch1}, ${launch2}"
     (powermenu)
     (label :text time :halign "center")
     (music)))
@@ -15,6 +15,7 @@
         :orientation "h"
         :halign "start"
         :spacing 6
+    (label :text battery)
     (box :class "powerbuttons"
         :orientation "h"
         :halign "start"
@@ -23,6 +24,8 @@
       (button :onclick "systemctl reboot" "󰜉")
       (button :onclick "hyprctl dispatch exit" "")
       (button :onclick "systemctl suspend" ""))))
+
+(defvar battery "")
 
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "v" :space-evenly false
@@ -107,3 +110,4 @@
   (bottom_bar))
 
 (deflisten launch1 "./modules/scripts/media_info.sh")
+(deflisten launch2 "./modules/scripts/battery.sh")
