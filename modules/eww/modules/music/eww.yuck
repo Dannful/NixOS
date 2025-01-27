@@ -39,4 +39,4 @@
 (defvar media_progress 0)
 (defvar media_artist "No artist")
 (defvar media_cover "./images/default.png")
-(defvar media_status "")
+(defvar media_status "󰐌")
