@@ -1,10 +1,11 @@
 (defwindow music_menu
   :monitor '{MONITORS}'
-  :stacking "fg"
+  :stacking "overlay"
   :window-type "dock"
   :wm-ignore "false"
   :geometry (geometry :anchor "bottom right" :x 15 :y 30 :width "20%" :height "129px")
-  (music_menu))
+  (eventbox :onhoverlost "../scripts/popup_music.sh"
+    (music_menu)))
 
 (defwidget music_menu []
   (box :class "music_box_popup" :orientation "h" :space-evenly "false" :halign "fill" :valign "fill"
@@ -12,13 +13,16 @@
       (image :valign "center" :halign "center" :path media_cover :class "media_popup_art"))
     (box :orientation "v" :valign "center" :halign "fill" :space-evenly "false" :hexpand true
       (box :valign "center" :halign "center" :orientation "v" :spacing 9
-        (label :text media_title :halign "center" :class "media_text")
-        (label :text media_artist :halign "center" :class "media_text"))
+        (label :text media_title :halign "center" :class "media_text" :truncate true)
+        (label :text media_artist :halign "center" :class "media_text" :truncate true))
       (metric :value media_progress :onchange "")
       (box :orientation "h" :halign "center" :spacing 24
-        (button :class "control_button" :onclick "playerctl previous" "󰙣")
-        (button :class "control_button" :onclick "playerctl play-pause" media_status)
-        (button :class "control_button" :onclick "playerctl next" "󰙡")))))
+        (eventbox :onclick "playerctl previous"
+          (label :text "󰒮" :class "control_button"))
+        (eventbox :onclick "playerctl play-pause"
+          (label :text media_status :class "control_button"))
+        (eventbox :onclick "playerctl next"
+          (label :text "󰒭" :class "control_button"))))))
 
 (defwidget metric [value onchange]
   (box :orientation "h"
@@ -39,4 +43,4 @@
 (defvar media_progress 0)
 (defvar media_artist "No artist")
 (defvar media_cover "./images/default.png")
-(defvar media_status "󰐌")
+(defvar media_status "󰐊")

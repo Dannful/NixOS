@@ -8,7 +8,7 @@ LAST_ICON=0
 
 while true; do
   if [[ -z "$battery_devices" ]]; then
-    $EWW update battery=""
+    $EWW update battery="No battery :)"
   else
     battery=`cat /sys/class/power_supply/$battery_devices/capacity`
     status=`cat /sys/class/power_supply/$battery_devices/status`

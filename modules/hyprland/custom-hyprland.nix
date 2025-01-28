@@ -29,7 +29,7 @@ let
               "{BASH_BIN}"
               "{EWW_BIN}"
             ] [
-              (builtins.toJSON (builtins.map (monitor: monitor.model)
+              (builtins.toJSON (builtins.map (monitor: monitor.id)
                 (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
               "${pkgs.bash}/bin/bash"
               "${pkgs.eww}/bin/eww"
@@ -63,13 +63,13 @@ in {
         options = {
           name = mkOption {
             type = types.str;
-            description = "Identifier of the monitor.";
+            description = "Name of the monitor.";
             example = "DP-1";
           };
-          model = mkOption {
-            type = types.str;
-            description = "Model of the monitor.";
-            example = "SyncMaster";
+          id = mkOption {
+            type = types.ints.u8;
+            description = "Identifier of the monitor.";
+            example = 0;
           };
           show-bars = mkOption {
             type = types.bool;

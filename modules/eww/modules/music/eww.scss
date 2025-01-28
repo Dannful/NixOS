@@ -7,11 +7,11 @@
 }
 
 .music_box_popup {
-  background-color: #1a1145;
-  color: #b0b4bc;
+  background-image: url("images/background.png");
+  background-size: cover;
   padding: 9px;
   border-radius: 18px;
-  border: 3px solid white;
+  border: 3px solid #642a82;
 }
 
 .media_text {
@@ -28,7 +28,7 @@
   min-width: 120px;
   min-height: 120px;
   border-radius: 6px;
-  border: 3px solid white;
+  border: 2px solid white;
 }
 
 .metric scale trough highlight {

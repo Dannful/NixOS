@@ -14,7 +14,7 @@
   (box :class "powermenu"
         :orientation "h"
         :halign "start"
-        :spacing 6
+        :spacing 12
     (label :text battery)
     (box :class "powerbuttons"
         :orientation "h"
@@ -61,7 +61,7 @@
         :orientation "h"
         :space-evenly false
         :halign "end"
-    (eventbox :onclick "./modules/scripts/popup_music.sh"
+    (eventbox :onhover "./modules/scripts/popup_music.sh"
       (label :text "🎵"))))
 
 (defwidget metric [label value onchange]
