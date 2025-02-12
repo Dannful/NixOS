@@ -30,9 +30,10 @@
     pkgs.insomnia
     pkgs.jq
     pkgs.brightnessctl
+    pkgs.nomad
   ];
 
-  home.sessionVariables = { };
+  home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };
 
   programs.home-manager.enable = true;
 

@@ -14,9 +14,10 @@
 
   nixpkgs = { config = { allowUnfree = true; }; };
 
-  home.packages = [ pkgs.gh pkgs.lazygit pkgs.awscli2 pkgs.insomnia pkgs.jq ];
+  home.packages =
+    [ pkgs.gh pkgs.lazygit pkgs.awscli2 pkgs.insomnia pkgs.jq pkgs.nomad ];
 
-  home.sessionVariables = { };
+  home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };
 
   programs.home-manager.enable = true;
 
