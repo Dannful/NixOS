@@ -31,6 +31,7 @@
     pkgs.jq
     pkgs.brightnessctl
     pkgs.nomad
+    pkgs.jetbrains.datagrip
   ];
 
   home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };
