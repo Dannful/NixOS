@@ -178,7 +178,7 @@ in {
         webcord-vencord
         youtube-music
         pavucontrol
-      ] ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud ];
+      ] ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud pkgs.lutris ];
 
     virtualisation.docker.enable = true;
 
