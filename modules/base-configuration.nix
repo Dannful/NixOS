@@ -3,7 +3,12 @@
 let
   inherit (lib) mkOption types;
   cfg = config.base-config;
+  aagl-gtk-on-nix = import (builtins.fetchTarball {
+    url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
+    sha256 = "01iwn0s8hbkgf9ip0wfnhs3dcdmgg55f0qj7b32rzqgajrfc1bag";
+  });
 in {
+  imports = [ aagl-gtk-on-nix.module ];
   options.base-config = {
     users = mkOption {
       type = types.listOf (types.submodule {
@@ -178,7 +183,19 @@ in {
         webcord-vencord
         youtube-music
         pavucontrol
-      ] ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud pkgs.lutris ];
+      ] ++ lib.optionals cfg.use-steam [
+        pkgs.protonup
+        pkgs.mangohud
+        pkgs.lutris
+      ];
+
+    programs.an-anime-game-launcher.enable = cfg.use-steam;
+
+    nix.settings = {
+      substituters = [ "https://ezkea.cachix.org" ];
+      trusted-public-keys =
+        [ "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI=" ];
+    };
 
     virtualisation.docker.enable = true;
 
