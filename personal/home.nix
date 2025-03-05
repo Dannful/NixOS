@@ -14,7 +14,7 @@
 
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
-  home.packages = [ pkgs.gh pkgs.lazygit ];
+  home.packages = [ pkgs.gh pkgs.lazygit pkgs.obs-studio ];
 
   home.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =
