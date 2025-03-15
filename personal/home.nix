@@ -14,7 +14,15 @@
 
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
-  home.packages = [ pkgs.gh pkgs.lazygit pkgs.obs-studio ];
+  home.packages = [
+    pkgs.gh
+    pkgs.lazygit
+    pkgs.obs-studio
+    pkgs.ferium
+    pkgs.wineWowPackages.waylandFull
+    pkgs.mono
+    pkgs.winetricks
+  ];
 
   home.sessionVariables = {
     STEAM_EXTRA_COMPAT_TOOLS_PATHS =
