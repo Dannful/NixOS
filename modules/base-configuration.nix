@@ -189,7 +189,7 @@ in {
         pkgs.lutris
       ];
 
-    programs.an-anime-game-launcher.enable = cfg.use-steam;
+    programs.anime-game-launcher.enable = cfg.use-steam;
 
     nix.settings = {
       substituters = [ "https://ezkea.cachix.org" ];
