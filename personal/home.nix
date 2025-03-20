@@ -22,6 +22,8 @@
     pkgs.wineWowPackages.waylandFull
     pkgs.mono
     pkgs.winetricks
+    pkgs.prismlauncher
+    pkgs.corretto21
   ];
 
   home.sessionVariables = {
