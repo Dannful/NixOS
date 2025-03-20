@@ -5,7 +5,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "0f59radafvzdfn3ar1y6glx9ixc9hbvysaalsp492ixp8ihpkbxv";
+    sha256 = "0z9lg60k9f58asx6myz25ysp3finfa8yrzz6ars2lasi5zhvg4s9";
   });
 in {
   imports = [ aagl-gtk-on-nix.module ];
