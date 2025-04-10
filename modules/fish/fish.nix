@@ -17,6 +17,10 @@
         name = "fzf-fish";
         src = pkgs.fishPlugins.fzf-fish.src;
       }
+      {
+        name = "pufferfish";
+        src = pkgs.fishPlugins.puffer.src;
+      }
     ];
 
     interactiveShellInit = ''
