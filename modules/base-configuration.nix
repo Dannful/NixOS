@@ -183,6 +183,7 @@ in {
         webcord-vencord
         youtube-music
         pavucontrol
+        direnv
       ] ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
