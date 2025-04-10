@@ -1,13 +1,23 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
-  home.packages = [ pkgs.any-nix-shell pkgs.direnv ];
+  home.packages = [ pkgs.any-nix-shell pkgs.direnv pkgs.fd pkgs.fzf pkgs.bat ];
   programs.fish = {
     enable = true;
-    plugins = [{
-      name = "tide";
-      src = pkgs.fishPlugins.tide.src;
-    }];
+    plugins = [
+      {
+        name = "tide";
+        src = pkgs.fishPlugins.tide.src;
+      }
+      {
+        name = "autopair";
+        src = pkgs.fishPlugins.autopair.src;
+      }
+      {
+        name = "fzf-fish";
+        src = pkgs.fishPlugins.fzf-fish.src;
+      }
+    ];
 
     interactiveShellInit = ''
       set -g fish_greeting
