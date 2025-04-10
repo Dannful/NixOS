@@ -5,7 +5,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "0z9lg60k9f58asx6myz25ysp3finfa8yrzz6ars2lasi5zhvg4s9";
+    sha256 = "118845yyl8z7imvx8z4sarx1vlw9sws0wmhsakl8zkrm8ls900wm";
   });
 in {
   imports = [ aagl-gtk-on-nix.module ];
@@ -183,7 +183,6 @@ in {
         webcord-vencord
         youtube-music
         pavucontrol
-        direnv
       ] ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
