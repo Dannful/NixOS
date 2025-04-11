@@ -150,10 +150,9 @@ in {
         description = user.name;
         extraGroups = [ "networkManager" "wheel" "docker" ] ++ user.groups;
         packages = [ ];
-        shell = pkgs.zsh;
+        shell = pkgs.bash;
       };
     }) cfg.users);
-    programs.zsh.enable = true;
 
     home-manager = {
       extraSpecialArgs = { inherit inputs; };
