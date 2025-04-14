@@ -50,6 +50,28 @@ in {
       default = false;
       description = "Whether or not Steam should be installed";
     };
+    login-wallpaper = mkOption {
+      type = types.submodule {
+        options = {
+          imageUrl = mkOption {
+            type = types.str;
+            description = "URL of the image";
+            example = "https://some.url.website/image.jpg";
+          };
+
+          sha256 = mkOption {
+            type = types.str;
+            description = "SHA256 hash of the image";
+            example = "sha256-6NKR8DbIFPqrfuzXMmiwKOLnltuw6WQvnS9sEYMDcqw=";
+          };
+        };
+      };
+      default = {
+        imageUrl = "https://images3.alphacoders.com/138/thumb-1920-1384235.png";
+        sha256 = "sha256-SJdZasnvQZoPDjBB4sPSeUWihbrKqSf9n35oRerhPWE=";
+      };
+      description = "Wallpaper for login screen";
+    };
   };
   config = {
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -90,8 +112,9 @@ in {
     services.displayManager.sddm = {
       enable = true;
       theme = "${import ./hyprland/sddm-theme.nix {
-        inherit pkgs;
-        inherit lib;
+        pkgs = pkgs;
+        imageUrl = cfg.login-wallpaper.imageUrl;
+        imageHash = cfg.login-wallpaper.sha256;
       }}";
     };
     services.gvfs.enable = true;

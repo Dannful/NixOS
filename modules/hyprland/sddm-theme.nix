@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, imageUrl, imageHash, ... }:
 
 let
   image = pkgs.fetchurl {
-    url = "https://images2.alphacoders.com/851/thumb-1920-851005.jpg";
-    sha256 = "sha256-6NKR8DbIFPqrfuzXMmiwKOLnltuw6WQvnS9sEYMDcqw=";
+    url = imageUrl;
+    sha256 = imageHash;
   };
 
 in pkgs.stdenv.mkDerivation {
@@ -11,7 +11,7 @@ in pkgs.stdenv.mkDerivation {
   src = pkgs.fetchFromGitHub {
     owner = "MarianArlt";
     repo = "sddm-sugar-dark";
-    rev = "ceb2c455663429be03ba62d9f898c571650ef7fe";
+    rev = "latest";
     sha256 = "0153z1kylbhc9d12nxy9vpn0spxgrhgy36wy37pk6ysq7akaqlvy";
   };
   installPhase = ''
