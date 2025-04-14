@@ -39,12 +39,6 @@
   {
     "context": "Editor",
     "bindings": {
-      "ctrl-shift-m": null
-    }
-  },
-  {
-    "context": "Workspace",
-    "bindings": {
       "ctrl-shift-m": "diagnostics::Deploy"
     }
   },
