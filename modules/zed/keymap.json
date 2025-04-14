@@ -35,5 +35,23 @@
       "shift-a": "project_panel::NewDirectory",
       "l": "project_panel::OpenPermanent"
     }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-shift-m": null
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-shift-m": "diagnostics::Deploy"
+    }
+  },
+  {
+    "context": "Editor && extension==md",
+    "bindings": {
+      "ctrl-m": "markdown::OpenPreviewToTheSide"
+    }
   }
 ]
