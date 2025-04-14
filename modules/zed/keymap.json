@@ -31,8 +31,8 @@
   {
     "context": "ProjectPanel",
     "bindings": {
-      "a": "project_panel::NewFile",
-      "shift-a": "project_panel::NewDirectory",
+      "ctrl-a": "project_panel::NewFile",
+      "ctrl-shift-a": "project_panel::NewDirectory",
       "l": "project_panel::OpenPermanent"
     }
   },
