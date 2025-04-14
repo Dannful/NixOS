@@ -1,13 +1,7 @@
 { pkgs }:
 
-let
-  imgLink =
-    "https://preview.redd.it/6gonuecvufq91.jpg?auto=webp&s=e6b9cc3d64026a422187ef7308c4f71ea44b075f";
+let image = ./wallpaper.jpg;
 
-  image = pkgs.fetchurl {
-    url = imgLink;
-    sha256 = "sha256-l1AZNFnCoIV3Tpi/l/VHAi6Z3spEwk+oRXe1nRznYS0=";
-  };
 in pkgs.stdenv.mkDerivation {
   name = "sddm-theme";
   src = pkgs.fetchFromGitHub {
