@@ -17,8 +17,22 @@
   {
     "context": "FileFinder || Picker",
     "bindings": {
-      "ctrl-w": "menu::SelectNext",
-      "ctrl-s": "menu::SelectPrevious"
+      "ctrl-w": "menu::SelectPrevious",
+      "ctrl-s": "menu::SelectNext"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "space e": "project_panel::Open"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "shift-a": "project_panel::NewDirectory",
+      "l": "project_panel::Open"
     }
   }
 ]
