@@ -22,10 +22,10 @@
     }
   },
   {
-    "context": "Editor && showing_code_actions",
+    "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
-      "ctrl-w": "menu::SelectPrevious",
-      "ctrl-s": "menu::SelectNext"
+      "ctrl-w": "editor::ContextMenuPrevious",
+      "ctrl-s": "editor::ContextMenuNext"
     }
   },
   {
