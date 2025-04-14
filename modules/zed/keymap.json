@@ -15,7 +15,7 @@
     }
   },
   {
-    "context": "FileFinder || ContextEditor",
+    "context": "FileFinder || Picker",
     "bindings": {
       "ctrl-w": "menu::SelectNext",
       "ctrl-s": "menu::SelectPrevious"
