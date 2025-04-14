@@ -1,7 +1,11 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.any-nix-shell pkgs.direnv pkgs.fd pkgs.fzf pkgs.bat ];
+  home.packages = [ pkgs.any-nix-shell pkgs.fd pkgs.fzf pkgs.bat ];
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
   programs.fish = {
     enable = true;
     plugins = [
