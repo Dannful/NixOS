@@ -86,7 +86,7 @@ in {
     };
 
     # Enable the X11 windowing system.
-    services.xserver = { enable = true; };
+    services.xserver.enable = true;
     services.displayManager.sddm = {
       enable = true;
       theme = "${import ./hyprland/sddm-theme.nix {
@@ -244,9 +244,9 @@ in {
     };
     hardware.graphics = {
       enable = true;
-      package = pkgs-unstable.mesa.drivers;
+      package = pkgs-unstable.mesa;
       enable32Bit = true;
-      package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa;
     };
 
     hardware.bluetooth.enable = true;
