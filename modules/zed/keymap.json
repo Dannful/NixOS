@@ -22,9 +22,10 @@
     }
   },
   {
-    "context": "Editor",
+    "context": "Editor && showing_code_actions",
     "bindings": {
-      "space e": "project_panel::Open"
+      "ctrl-w": "menu::SelectPrevious",
+      "ctrl-s": "menu::SelectNext"
     }
   },
   {
