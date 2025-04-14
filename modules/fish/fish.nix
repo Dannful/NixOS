@@ -29,7 +29,6 @@
 
     interactiveShellInit = ''
       set -g fish_greeting
-      eval "$(direnv hook fish)"
 
       if not set -q tide_git_icon
         tide configure --auto --style=Rainbow --prompt_colors="16 colors" --show_time="24-hour format" --rainbow_prompt_separators=Angled --powerline_prompt_heads=Round --powerline_prompt_tails=Round --powerline_prompt_style="Two lines, character and frame" --prompt_connection=Dotted --powerline_right_prompt_frame=Yes --prompt_spacing=Sparse --icons="Many icons" --transient=Yes
