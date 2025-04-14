@@ -1,6 +1,10 @@
-{ pkgs }:
+{ pkgs, ... }:
 
-let image = ./wallpaper.jpg;
+let
+  image = pkgs.fetchurl {
+    url = "https://images7.alphacoders.com/344/thumb-1920-344627.jpg";
+    sha256 = "sha256-XZYmDkLNIuubbMPOUkv2Wn+L9NOnwbHJngXjmQA08xY=";
+  };
 
 in pkgs.stdenv.mkDerivation {
   name = "sddm-theme";

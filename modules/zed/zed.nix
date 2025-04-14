@@ -32,7 +32,11 @@ in {
         buffer_font_family = "FiraCode Nerd Font";
         autosave = "on_focus_change";
         relative_line_numbers = true;
-        theme = "Sandcastle";
+        theme = {
+          mode = "system";
+          light = "Ayu Light";
+          dark = "Ayu Mirage";
+        };
         indent_guides = {
           enabled = true;
           active_line_width = 3;
