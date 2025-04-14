@@ -2,8 +2,8 @@
 
 let
   image = pkgs.fetchurl {
-    url = "https://images7.alphacoders.com/344/thumb-1920-344627.jpg";
-    sha256 = "sha256-XZYmDkLNIuubbMPOUkv2Wn+L9NOnwbHJngXjmQA08xY=";
+    url = "https://images2.alphacoders.com/851/thumb-1920-851005.jpg";
+    sha256 = "sha256-6NKR8DbIFPqrfuzXMmiwKOLnltuw6WQvnS9sEYMDcqw=";
   };
 
 in pkgs.stdenv.mkDerivation {
