@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -14,7 +15,7 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, hyprland, ... }@inputs:
+  outputs = { nixpkgs, nixos, home-manager, hyprland, ... }@inputs:
     let system = "x86_64-linux";
     in {
       nixosConfigurations = {
@@ -22,6 +23,7 @@
           specialArgs = { inherit inputs system; };
 
           modules = [ ./personal/configuration.nix ];
+
         };
         work = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs system; };
@@ -31,7 +33,10 @@
         work-laptop = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs system; };
 
-          modules = [ ./work-laptop/configuration.nix ];
+          modules = [
+            ./work-laptop/configuration.nix
+            ({ ... }: { programs.command-not-found.enable = false; })
+          ];
         };
       };
     };

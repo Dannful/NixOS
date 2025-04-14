@@ -7,6 +7,8 @@ let
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
     sha256 = "118845yyl8z7imvx8z4sarx1vlw9sws0wmhsakl8zkrm8ls900wm";
   });
+  pkgs-unstable =
+    inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in {
   imports = [ aagl-gtk-on-nix.module ];
   options.base-config = {
@@ -84,17 +86,15 @@ in {
     };
 
     # Enable the X11 windowing system.
-    services.xserver = {
+    services.xserver = { enable = true; };
+    services.displayManager.sddm = {
       enable = true;
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-      };
+      theme = "${import ./hyprland/theme.nix { inherit pkgs; }}";
     };
     services.gvfs.enable = true;
     nixpkgs.overlays = [
       (self: super: {
-        gnome = super.gnome.overrideScope' (gself: gsuper: {
+        gnome = super.gnome.overrideScope (gself: gsuper: {
           nautilus = gsuper.nautilus.overrideAttrs (nsuper: {
             buildInputs = nsuper.buildInputs
               ++ (with pkgs.gst_all_1; [ gst-plugins-good gst-plugins-bad ]);
@@ -103,11 +103,12 @@ in {
       })
     ];
     xdg.portal.enable = true;
-    xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
     programs.hyprland = {
       enable = true;
-      xwayland.enable = true;
-      package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+      package =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
     # Configure keymap in X11
@@ -116,14 +117,13 @@ in {
       variant = "alt-intl";
     };
 
-    # Configure console keymap
-    console.keyMap = "dvorak";
+    console.useXkbConfig = true;
 
     # Enable CUPS to print documents.
     services.printing.enable = true;
 
     # Enable sound with pipewire.
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
@@ -169,6 +169,9 @@ in {
     # Enable Fish
     programs.fish.enable = true;
 
+    # Disable command not found for flakes
+    programs.command-not-found.enable = false;
+
     # Allow unfree packages
     nixpkgs.config.allowUnfree = true;
 
@@ -185,6 +188,9 @@ in {
         webcord-vencord
         youtube-music
         pavucontrol
+        kitty
+        qt5.qtquickcontrols2
+        qt5.qtgraphicaleffects
       ] ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
@@ -201,11 +207,7 @@ in {
 
     virtualisation.docker.enable = true;
 
-    fonts.packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FiraCode" ]; })
-      iosevka
-      hack-font
-    ];
+    fonts.packages = with pkgs; [ nerd-fonts.fira-code iosevka hack-font ];
     fonts = {
       fontconfig = {
         defaultFonts = {
@@ -216,10 +218,7 @@ in {
       };
     };
 
-    environment.sessionVariables = {
-      WLR_NO_HARDWARE_CURSORS = "1";
-      NIXOS_OZONE_WL = "1";
-    };
+    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
 
     system.stateVersion = "24.05"; # Did you read the comment?
 
@@ -240,21 +239,29 @@ in {
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
-    hardware.graphics = { enable = true; };
+    hardware.graphics = {
+      enable = true;
+      package = pkgs-unstable.mesa.drivers;
+      enable32Bit = true;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
+    };
 
     hardware.bluetooth.enable = true;
     hardware.bluetooth.powerOnBoot = true;
 
     services.blueman.enable = true;
 
-    system.autoUpgrade.enable = true;
-    system.autoUpgrade.dates = "weekly";
+    system.autoUpgrade = {
+      enable = true;
+      flake = inputs.self.outPath;
+      flags = [ "--update-input" "nixpkgs" "-L" ];
+      dates = "03:00";
+      randomizedDelaySec = "45min";
+    };
 
     nix.gc.automatic = true;
     nix.gc.dates = "daily";
     nix.gc.options = "--delete-older-than 3d";
     nix.settings.auto-optimise-store = true;
-
-    system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
   };
 }

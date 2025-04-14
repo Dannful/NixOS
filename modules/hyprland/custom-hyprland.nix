@@ -3,6 +3,7 @@
 let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
+  gruvboxPlus = import ./gruvbox.nix { inherit pkgs; };
   wallpaperStrings = builtins.map (monitor:
     ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
     (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
@@ -125,8 +126,29 @@ in {
       anchor = "top-right";
       font = "FiraCode Nerd Font 12";
     };
+    qt = {
+      enable = true;
+      platformTheme = "gtk";
+      style = {
+        name = "adwaita-dark";
+        package = pkgs.adwaita-qt;
+      };
+    };
+
+    gtk.enable = true;
+
+    gtk.cursorTheme.package = pkgs.bibata-cursors;
+    gtk.cursorTheme.name = "Bibata-Modern-Ice";
+
+    gtk.theme.package = pkgs.adw-gtk3;
+    gtk.theme.name = "adw-gtk3";
+
+    gtk.iconTheme.package = gruvboxPlus;
+    gtk.iconTheme.name = "GruvboxPlus";
+
     wayland.windowManager.hyprland = {
       enable = true;
+      xwayland.enable = true;
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
@@ -137,6 +159,11 @@ in {
         "$mod" = "SUPER";
         "$alt" = "ALT";
         general = { gaps_out = "18, 18, 60, 60"; };
+        cursor = { no_hardware_cursors = true; };
+        render = {
+          explicit_sync = 0;
+          explicit_sync_kms = 0;
+        };
         input = {
           kb_layout = "us";
           kb_variant = "alt-intl";
