@@ -3,7 +3,10 @@
 let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
-  gruvboxPlus = import ./gruvbox.nix { inherit pkgs; };
+  gruvboxPlus = import ./gruvbox-plus.nix {
+    inherit pkgs;
+    inherit lib;
+  };
   wallpaperStrings = builtins.map (monitor:
     ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
     (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
@@ -128,7 +131,7 @@ in {
     };
     qt = {
       enable = true;
-      platformTheme = "gtk";
+      platformTheme.name = "gtk";
       style = {
         name = "adwaita-dark";
         package = pkgs.adwaita-qt;

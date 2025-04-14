@@ -89,7 +89,7 @@ in {
     services.xserver = { enable = true; };
     services.displayManager.sddm = {
       enable = true;
-      theme = "${import ./hyprland/theme.nix { inherit pkgs; }}";
+      theme = "${import ./hyprland/sddm-theme.nix { inherit pkgs; }}";
     };
     services.gvfs.enable = true;
     nixpkgs.overlays = [
