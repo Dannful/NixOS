@@ -46,6 +46,7 @@ in {
         lsp = cfg.lsp;
         project_panel = { auto_fold_dirs = false; };
         terminal = { shell = { program = "fish"; }; };
+        base_keymap = "Atom";
       };
     };
   };
