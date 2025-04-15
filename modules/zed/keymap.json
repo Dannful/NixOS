@@ -29,10 +29,10 @@
     }
   },
   {
-    "context": "ProjectPanel",
+    "context": "ProjectPanel && not_editing",
     "bindings": {
-      "ctrl-a": "project_panel::NewFile",
-      "ctrl-shift-a": "project_panel::NewDirectory",
+      "a": "project_panel::NewFile",
+      "d": "project_panel::NewDirectory",
       "l": "project_panel::OpenPermanent"
     }
   },
