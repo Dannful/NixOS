@@ -5,7 +5,7 @@
     (sidestuff)))
 
 (defwidget bottom_bar []
-  (centerbox :orientation "h" :class "${launch1}, ${launch2}"
+  (centerbox :orientation "h" :class "${launch1}, ${launch2}, ${music_launch}"
     (powermenu)
     (label :text time :halign "center")
     (music)))
@@ -54,7 +54,7 @@
       :valign "start"
       :spacing 9
     (for entry in "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-      (button :css {entry == active_workspace ? "button {color: white;}" : ""} :onclick "hyprctl dispatch workspace $''{entry}" entry))))
+      (button :css {entry == active_workspace ? "button {color: white;}" : ""} :onclick "hyprctl dispatch workspace ${entry}" entry))))
 
 (defwidget music []
   (box :class "music"
@@ -63,6 +63,7 @@
         :halign "end"
     (eventbox :onhover "./modules/scripts/popup_music.sh"
       (label :text "🎵"))))
+
 
 (defwidget metric [label value onchange]
   (box :orientation "v"
@@ -109,5 +110,6 @@
   :reserve (struts :side "bottom" :distance "4%")
   (bottom_bar))
 
+(deflisten music_launch "eww daemon --config ./modules/music")
 (deflisten launch1 "./modules/scripts/media_info.sh")
 (deflisten launch2 "./modules/scripts/battery.sh")
