@@ -217,6 +217,7 @@ in {
         kitty
         qt5.qtquickcontrols2
         qt5.qtgraphicaleffects
+        zathura
       ] ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
