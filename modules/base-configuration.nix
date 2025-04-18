@@ -211,7 +211,7 @@ in {
         nixd
         nixfmt-classic
         nautilus
-        webcord-vencord
+        discord
         youtube-music
         pavucontrol
         kitty

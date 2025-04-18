@@ -4,7 +4,7 @@ let
   latestRelease = pkgs.fetchurl {
     url =
       "https://api.github.com/repos/SylEleuth/gruvbox-plus-icon-pack/releases/latest";
-    sha256 = "sha256-ABqU4Yakry5pCnFO/i552vG1lTxdMxUu/UDHGlR3Huk=";
+    hash = "sha256-kIKv9htKzF0YO3hggML4kSg6kRaiJy3w89GSvu0EcDY=";
   };
   versionTag = (lib.importJSON latestRelease).tag_name;
 in pkgs.stdenv.mkDerivation {
