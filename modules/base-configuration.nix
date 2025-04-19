@@ -215,8 +215,6 @@ in {
 
         # Theming
         custom-sddm-astronaut
-        qt5.qtquickcontrols2
-        qt5.qtgraphicaleffects
 
         # Media
         discord

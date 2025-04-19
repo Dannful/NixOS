@@ -129,25 +129,6 @@ in {
       anchor = "top-right";
       font = "FiraCode Nerd Font 12";
     };
-    qt = {
-      enable = true;
-      platformTheme.name = "gtk";
-      style = {
-        name = "adwaita-dark";
-        package = pkgs.adwaita-qt;
-      };
-    };
-
-    gtk.enable = true;
-
-    gtk.cursorTheme.package = pkgs.bibata-cursors;
-    gtk.cursorTheme.name = "Bibata-Modern-Ice";
-
-    gtk.theme.package = pkgs.adw-gtk3;
-    gtk.theme.name = "adw-gtk3";
-
-    gtk.iconTheme.package = gruvboxPlus;
-    gtk.iconTheme.name = "GruvboxPlus";
 
     wayland.windowManager.hyprland = {
       enable = true;
