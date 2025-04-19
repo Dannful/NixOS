@@ -20,7 +20,7 @@ let
           hash = "sha256-wqfnUspZY9UlCuCKSum49/HHz3A9vndNc7caspvL+7M=";
         }}";
     };
-    embeddedTheme = "pixel_sakura";
+    embeddedTheme = "astronaut";
   };
 in {
   imports = [ aagl-gtk-on-nix.module ];
