@@ -16,9 +16,5 @@
         "$6$uoaANV2.eLu/goEB$tjSshXgQLuZ533az.hiD7gsFgfrB2cxV/1LpdcEay7FfNIDJ14JXlw0fp8M33biz.VJNQZ5EC7Fs87fpQJMJq.";
       home-file-path = ./home.nix;
     }];
-    login-wallpaper = {
-      imageUrl = "https://images2.alphacoders.com/851/thumb-1920-851005.jpg";
-      sha256 = "sha256-6NKR8DbIFPqrfuzXMmiwKOLnltuw6WQvnS9sEYMDcqw=";
-    };
   };
 }

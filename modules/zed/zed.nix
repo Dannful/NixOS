@@ -1,5 +1,4 @@
 { pkgs, lib, config, ... }:
-
 let
   inherit (lib) mkOption types;
   cfg = config.custom-zed;
@@ -43,7 +42,16 @@ in {
         };
         show_whitespaces = "boundary";
         tab_size = 2;
-        lsp = cfg.lsp;
+        lsp = let
+          formatter = {
+            initialization_options = {
+              formatting = { command = [ "nixfmt" "--quiet" "--" ]; };
+            };
+          };
+        in cfg.lsp // {
+          nil = formatter;
+          nixd = formatter;
+        };
         project_panel = { auto_fold_dirs = false; };
         terminal = { shell = { program = "fish"; }; };
         base_keymap = "Atom";

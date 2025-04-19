@@ -22,5 +22,4 @@ in pkgs.stdenv.mkDerivation {
     mkdir -p $out
     ${pkgs.unzip}/bin/unzip $src -d $out/
   '';
-
 }

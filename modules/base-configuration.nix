@@ -1,5 +1,4 @@
 { lib, config, pkgs, inputs, ... }:
-
 let
   inherit (lib) mkOption types;
   cfg = config.base-config;
@@ -9,6 +8,20 @@ let
   });
   pkgs-unstable =
     inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
+  custom-sddm-astronaut = pkgs.sddm-astronaut.override {
+    themeConfig = {
+      Background = if (cfg.login-wallpaper != null) then
+        (toString cfg.login-wallpaper)
+      else
+        "${pkgs.fetchurl {
+          url =
+            "https://raw.githubusercontent.com/Keyitdev/sddm-astronaut-theme/refs/heads/master/Backgrounds/pixel_sakura.gif";
+          hash = "sha256-wqfnUspZY9UlCuCKSum49/HHz3A9vndNc7caspvL+7M=";
+        }}";
+    };
+    embeddedTheme = "pixel_sakura";
+  };
 in {
   imports = [ aagl-gtk-on-nix.module ];
   options.base-config = {
@@ -51,26 +64,9 @@ in {
       description = "Whether or not Steam should be installed";
     };
     login-wallpaper = mkOption {
-      type = types.submodule {
-        options = {
-          imageUrl = mkOption {
-            type = types.str;
-            description = "URL of the image";
-            example = "https://some.url.website/image.jpg";
-          };
-
-          sha256 = mkOption {
-            type = types.str;
-            description = "SHA256 hash of the image";
-            example = "sha256-6NKR8DbIFPqrfuzXMmiwKOLnltuw6WQvnS9sEYMDcqw=";
-          };
-        };
-      };
-      default = {
-        imageUrl = "https://images3.alphacoders.com/138/thumb-1920-1384235.png";
-        sha256 = "sha256-SJdZasnvQZoPDjBB4sPSeUWihbrKqSf9n35oRerhPWE=";
-      };
-      description = "Wallpaper for login screen";
+      type = types.nullOr types.path;
+      description = "Path to the image";
+      default = null;
     };
   };
   config = {
@@ -111,11 +107,10 @@ in {
     services.xserver.enable = true;
     services.displayManager.sddm = {
       enable = true;
-      theme = "${import ./hyprland/sddm-theme.nix {
-        pkgs = pkgs;
-        imageUrl = cfg.login-wallpaper.imageUrl;
-        imageHash = cfg.login-wallpaper.sha256;
-      }}";
+      wayland.enable = true;
+      package = pkgs.kdePackages.sddm;
+      theme = "sddm-astronaut-theme";
+      extraPackages = [ custom-sddm-astronaut ];
     };
     services.gvfs.enable = true;
     nixpkgs.overlays = [
@@ -205,19 +200,38 @@ in {
     # $ nix search wget
     environment.systemPackages = with pkgs;
       [
-        vim
+        # Home manager
         home-manager
-        ffmpeg
+
+        # Text editors
+        vim
+
+        # LSP
         nixd
+        nil
+
+        # Formatters
         nixfmt-classic
-        nautilus
-        discord
-        youtube-music
-        pavucontrol
-        kitty
+
+        # Theming
+        custom-sddm-astronaut
         qt5.qtquickcontrols2
         qt5.qtgraphicaleffects
+
+        # Media
+        discord
+        youtube-music
         zathura
+
+        # Utilities
+        ffmpeg
+        pavucontrol
+
+        # Terminal
+        kitty
+
+        # File manager
+        nautilus
       ] ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
