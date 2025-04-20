@@ -11,8 +11,8 @@ let
 
   custom-sddm-astronaut = pkgs.sddm-astronaut.override {
     themeConfig = {
-      Background = if (cfg.login-wallpaper != null) then
-        (toString cfg.login-wallpaper)
+      Background = if (cfg.login != null && cfg.login.wallpaper != null) then
+        (toString cfg.login.wallpaper)
       else
         "${pkgs.fetchurl {
           url =
@@ -63,9 +63,35 @@ in {
       default = false;
       description = "Whether or not Steam should be installed";
     };
-    login-wallpaper = mkOption {
-      type = types.nullOr types.path;
-      description = "Path to the image";
+    login = mkOption {
+      type = types.nullOr (types.submodule {
+        options = {
+          wallpaper = mkOption {
+            type = types.nullOr types.path;
+            description = "Path to the image";
+            default = null;
+          };
+          display = mkOption {
+            type = types.nullOr (types.submodule {
+              options = {
+                name = mkOption {
+                  type = types.str;
+                  description = "Name of the output";
+                  example = "DP-1";
+                };
+                mode = mkOption {
+                  type = types.str;
+                  description = "Mode of the output";
+                  example = "1920x1080@60";
+                };
+              };
+            });
+            description = "Display settings";
+            default = null;
+          };
+        };
+      });
+      description = "Settings for the login screen";
       default = null;
     };
   };
@@ -104,13 +130,42 @@ in {
     };
 
     # Enable the X11 windowing system.
-    services.xserver.enable = true;
+    services.xserver = { enable = true; };
+    xdg.portal = {
+      enable = true;
+      extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
+    };
     services.displayManager.sddm = {
       enable = true;
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
       theme = "sddm-astronaut-theme";
       extraPackages = [ custom-sddm-astronaut ];
+      settings = let
+        westonConfigFile = pkgs.writeText "weston.ini" (''
+          [keyboard]
+          keymap_layout=us
+          keymap_model=pc104
+          keymap_options=terminate:ctrl_alt_bksp
+          keymap_variant=alt-intl
+
+          [libinput]
+          enable-tap=true
+          left-handed=false
+
+
+        '' + lib.optionalString
+          (cfg.login != null && cfg.login.display != null) ''
+            [output]
+            name=${cfg.login.display.name}
+            mode=${cfg.login.display.mode}
+          '');
+      in {
+        Wayland = {
+          CompositorCommand =
+            "${pkgs.weston}/bin/weston --shell=kiosk -c ${westonConfigFile}";
+        };
+      };
     };
     services.gvfs.enable = true;
     nixpkgs.overlays = [
@@ -123,7 +178,6 @@ in {
         });
       })
     ];
-    xdg.portal.enable = true;
     programs.hyprland = {
       enable = true;
       package =

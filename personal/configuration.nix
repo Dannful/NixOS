@@ -16,5 +16,11 @@
         "$6$uoaANV2.eLu/goEB$tjSshXgQLuZ533az.hiD7gsFgfrB2cxV/1LpdcEay7FfNIDJ14JXlw0fp8M33biz.VJNQZ5EC7Fs87fpQJMJq.";
       home-file-path = ./home.nix;
     }];
+    login = {
+      display = {
+        name = "DP-1";
+        mode = "1920x1080@165";
+      };
+    };
   };
 }
