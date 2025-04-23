@@ -106,19 +106,59 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [
-      pkgs.swww
-      pkgs.alsa-utils
-      pkgs.grim
-      pkgs.slurp
-      pkgs.wl-clipboard
-      pkgs.swappy
-      pkgs.rofi-wayland
-      pkgs.playerctl
-      pkgs.eww
+    home.packages = with pkgs; [
+      swww
+      alsa-utils
+      grim
+      slurp
+      wl-clipboard
+      swappy
+      rofi-wayland
+      playerctl
+      eww
     ];
     home.file = lib.mkMerge [
       { ".config/rofi/config.rasi" = { text = ''@theme "arthur"''; }; }
+      {
+        ".config/hypr/hypridle.conf" = {
+          text = ''
+            general {
+                lock_cmd = pidof hyprlock || hyprlock       # avoid starting multiple hyprlock instances.
+                before_sleep_cmd = loginctl lock-session    # lock before suspend.
+                after_sleep_cmd = hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
+            }
+
+            listener {
+                timeout = 150                                # 2.5min.
+                on-timeout = brightnessctl -s set 10         # set monitor backlight to minimum, avoid 0 on OLED monitor.
+                on-resume = brightnessctl -r                 # monitor backlight restore.
+            }
+
+            # turn off keyboard backlight, comment out this section if you dont have a keyboard backlight.
+            listener {
+                timeout = 150                                          # 2.5min.
+                on-timeout = brightnessctl -sd rgb:kbd_backlight set 0 # turn off keyboard backlight.
+                on-resume = brightnessctl -rd rgb:kbd_backlight        # turn on keyboard backlight.
+            }
+
+            listener {
+                timeout = 300                                 # 5min
+                on-timeout = loginctl lock-session            # lock screen when timeout has passed
+            }
+
+            listener {
+                timeout = 330                                                     # 5.5min
+                on-timeout = hyprctl dispatch dpms off                            # screen off when timeout has passed
+                on-resume = hyprctl dispatch dpms on && brightnessctl -r          # screen on when activity is detected after timeout has fired.
+            }
+
+            listener {
+                timeout = 1800                                # 30min
+                on-timeout = systemctl suspend                # suspend pc
+            }
+          '';
+        };
+      }
       (buildEwwDirectory (./.. + "/eww") ".config/eww")
     ];
     services.mako = {
@@ -126,6 +166,9 @@ in {
       anchor = "top-right";
       font = "FiraCode Nerd Font 12";
     };
+
+    programs.hyprlock = { enable = true; };
+    services.hypridle = { enable = true; };
 
     wayland.windowManager.hyprland = {
       enable = true;
