@@ -55,6 +55,10 @@ in {
         project_panel = { auto_fold_dirs = false; };
         terminal = { shell = { program = "fish"; }; };
         base_keymap = "Atom";
+        diagnostics = {
+          include_warnings = true;
+          inline = { enabled = true; };
+        };
       };
     };
   };
