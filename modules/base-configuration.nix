@@ -285,11 +285,9 @@ in {
 
         # File manager
         nautilus
-      ] ++ lib.optionals cfg.use-steam [
-        pkgs.protonup
-        pkgs.mangohud
-        pkgs.lutris
-      ];
+      ]
+      ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud pkgs.lutris ]
+      ++ lib.optionals cfg.use-nvidia [ pkgs.egl-wayland ];
 
     programs.anime-game-launcher.enable = cfg.use-steam;
 

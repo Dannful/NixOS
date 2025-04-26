@@ -44,6 +44,11 @@ let
 in {
   options.custom-hyprland = {
     enable = lib.mkEnableOption "custom Hyprland";
+    nvidia = mkOption {
+      description = "Whether to use NVIDIA";
+      type = types.bool;
+      default = false;
+    };
     bar = mkOption {
       description = "EWW bar configuration";
       default = { show-battery = false; };
@@ -179,6 +184,12 @@ in {
 
       plugins =
         [ inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus ];
+
+      extraConfig = lib.optionalString cfg.nvidia ''
+        env=LIBVA_DRIVER_NAME,nvidia
+        env=__GLX_VENDOR_LIBRARY_NAME,nvidia
+        env=ELECTRON_OZONE_PLATFORM_HINT,auto
+      '';
 
       settings = {
         "$mod" = "SUPER";

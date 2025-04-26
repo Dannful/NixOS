@@ -34,6 +34,7 @@
 
   custom-hyprland = {
     enable = true;
+    nvidia = true;
     monitors = [
       {
         name = "DP-1";
