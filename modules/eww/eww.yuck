@@ -22,7 +22,7 @@
         :spacing 24
       (button :onclick "systemctl poweroff" "⏻")
       (button :onclick "systemctl reboot" "󰜉")
-      (button :onclick "hyprctl dispatch exec 'pidof hyprlock || hyprlock'" "")
+      (button :onclick "loginctl lock-session" "")
       (button :onclick "systemctl suspend" ""))))
 
 (defvar battery "")
