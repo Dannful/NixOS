@@ -32,9 +32,9 @@ in {
         autosave = "on_focus_change";
         relative_line_numbers = true;
         theme = {
-          mode = "system";
+          mode = "dark";
           light = "Ayu Light";
-          dark = "Ayu Mirage";
+          dark = "One Dark";
         };
         indent_guides = {
           enabled = true;
