@@ -30,7 +30,7 @@ let
               "{BASH_BIN}"
               "{EWW_BIN}"
             ] [
-              (builtins.toJSON (builtins.map (monitor: monitor.id)
+              (builtins.toJSON (builtins.map (monitor: monitor.serial)
                 (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
               "${pkgs.bash}/bin/bash"
               "${pkgs.eww}/bin/eww"
@@ -49,20 +49,6 @@ in {
       type = types.bool;
       default = false;
     };
-    bar = mkOption {
-      description = "EWW bar configuration";
-      default = { show-battery = false; };
-      type = types.submodule {
-        options = {
-          show-battery = mkOption {
-            type = types.bool;
-            default = false;
-            example = true;
-            description = "Whether or not to show battery bar.";
-          };
-        };
-      };
-    };
     monitors = mkOption {
       description = "A list containing all monitor configurations";
       type = types.listOf (types.submodule {
@@ -72,10 +58,10 @@ in {
             description = "Name of the monitor.";
             example = "DP-1";
           };
-          id = mkOption {
-            type = types.ints.u8;
-            description = "Identifier of the monitor.";
-            example = 0;
+          serial = mkOption {
+            type = types.str;
+            description = "Serial identification of the monitor.";
+            example = "SyncMaster";
           };
           show-bars = mkOption {
             type = types.bool;
