@@ -152,12 +152,6 @@ in {
       }
       (buildEwwDirectory (./.. + "/eww") ".config/eww")
     ];
-    services.mako = {
-      enable = true;
-      anchor = "top-right";
-      font = "FiraCode Nerd Font 12";
-    };
-
     programs.hyprlock = { enable = true; };
     services.hypridle = { enable = true; };
 

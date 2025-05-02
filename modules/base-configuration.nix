@@ -4,7 +4,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "118845yyl8z7imvx8z4sarx1vlw9sws0wmhsakl8zkrm8ls900wm";
+    sha256 = "18hdvw01003cpzxdxzrj89crlca3fgfdpgkzn1jhjk89w8f05zd5";
   });
   pkgs-unstable =
     inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -285,9 +285,15 @@ in {
 
         # File manager
         nautilus
+
+        # Notifications
+        swaynotificationcenter
       ]
       ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud pkgs.lutris ]
       ++ lib.optionals cfg.use-nvidia [ pkgs.egl-wayland ];
+
+    services.dbus.packages = [ pkgs.swaynotificationcenter ];
+    systemd.packages = [ pkgs.swaynotificationcenter ];
 
     programs.anime-game-launcher.enable = cfg.use-steam;
 
