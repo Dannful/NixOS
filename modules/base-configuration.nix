@@ -279,6 +279,7 @@ in {
         # Utilities
         ffmpeg
         pavucontrol
+        jq
 
         # Terminal
         kitty

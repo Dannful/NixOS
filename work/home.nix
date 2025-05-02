@@ -19,7 +19,6 @@
     pkgs.lazygit
     pkgs.awscli2
     pkgs.insomnia
-    pkgs.jq
     pkgs.nomad
     pkgs.jetbrains.datagrip
   ];
