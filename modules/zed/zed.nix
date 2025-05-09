@@ -51,6 +51,9 @@ in {
         in cfg.lsp // {
           nil = formatter;
           nixd = formatter;
+          rust-analyzer = {
+            initialization_options = { check.command = "clippy"; };
+          };
         };
         project_panel = { auto_fold_dirs = false; };
         terminal = { shell = { program = "fish"; }; };
