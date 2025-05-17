@@ -4,7 +4,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "18hdvw01003cpzxdxzrj89crlca3fgfdpgkzn1jhjk89w8f05zd5";
+    sha256 = "1whc71p3xj8s74641qzm46rg08h1qp4fx6578gbj4lnx7ps8wr6d";
   });
   pkgs-unstable =
     inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -280,6 +280,8 @@ in {
         ffmpeg
         pavucontrol
         jq
+        zip
+        unzip
 
         # Terminal
         kitty
