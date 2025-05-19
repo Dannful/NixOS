@@ -62,6 +62,13 @@ in {
           include_warnings = true;
           inline = { enabled = true; };
         };
+        assistant = {
+          default_model = {
+            provider = "copilot_chat";
+            model = "gpt-4o";
+          };
+          version = 2;
+        };
       };
     };
   };
