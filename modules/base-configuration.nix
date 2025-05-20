@@ -360,6 +360,9 @@ in {
       randomizedDelaySec = "45min";
     };
 
+    boot.kernelModules = [ "v4l2loopback" ];
+    boot.extraModulePackages = [ pkgs.linuxPackages.v4l2loopback ];
+
     nix.gc.automatic = true;
     nix.gc.dates = "daily";
     nix.gc.options = "--delete-older-than 3d";
