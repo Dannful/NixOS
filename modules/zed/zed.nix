@@ -63,12 +63,13 @@ in {
           inline = { enabled = true; };
         };
         assistant = {
+          version = 2;
           default_model = {
             provider = "copilot_chat";
             model = "gpt-4o";
           };
-          version = 2;
         };
+        features = { edit_prediction_provider = "copilot"; };
       };
     };
   };
