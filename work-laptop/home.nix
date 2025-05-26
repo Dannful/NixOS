@@ -27,7 +27,7 @@
     pkgs.gh
     pkgs.lazygit
     pkgs.awscli2
-    pkgs.insomnia
+    pkgs.bruno
     pkgs.brightnessctl
     pkgs.nomad
     pkgs.jetbrains.datagrip
