@@ -185,16 +185,16 @@ in {
           kb_variant = "alt-intl";
         };
         decoration = { rounding = 3; };
-        exec-once = "uwsm app -- ${startupScript}/bin/start";
+        exec-once = "hyprctl dispatch exec ${startupScript}/bin/start";
         monitor = builtins.map (monitor:
           "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
           cfg.monitors;
         bind = [
-          "$alt, B, exec, uwsm app -- ${pkgs.firefox}/bin/firefox"
-          "$alt, F, exec, uwsm app -- ${pkgs.nautilus}/bin/nautilus"
-          "$alt, D, exec, uwsm app -- ${pkgs.discord}/bin/discord"
-          "$mod, Return, exec, uwsm app -- ${pkgs.kitty}/bin/kitty"
-          "$mod, D, exec, uwsm app -- ${pkgs.rofi-wayland}/bin/rofi -show drun"
+          "$alt, B, exec, hyprctl dispatch exec ${pkgs.firefox}/bin/firefox"
+          "$alt, F, exec, hyprctl dispatch exec ${pkgs.nautilus}/bin/nautilus"
+          "$alt, D, exec, hyprctl dispatch exec ${pkgs.discord}/bin/discord"
+          "$mod, Return, exec, hyprctl dispatch exec ${pkgs.kitty}/bin/kitty"
+          "$mod, D, exec, hyprctl dispatch exec '${pkgs.rofi-wayland}/bin/rofi -show drun'"
           "$mod, Q, exec, hyprctl kill"
           "$mod, C, killactive"
           "$mod, F, fullscreen"
