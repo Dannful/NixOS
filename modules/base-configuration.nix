@@ -4,7 +4,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "1j4lppqrlg2vkvw601igrs85f1dnvrs401879mvgzdnp6a31sq8n";
+    sha256 = "0laf8jj0p096l434sq4mkgmgb2xklywp7c4cn8iy6rqqpvhp3dbg";
   });
   pkgs-unstable =
     inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
