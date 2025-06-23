@@ -176,10 +176,6 @@ in {
         "$alt" = "ALT";
         general = { gaps_out = "18, 18, 60, 60"; };
         cursor = { no_hardware_cursors = true; };
-        render = {
-          explicit_sync = 0;
-          explicit_sync_kms = 0;
-        };
         input = {
           kb_layout = "us";
           kb_variant = "alt-intl";
