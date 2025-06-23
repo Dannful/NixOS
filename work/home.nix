@@ -21,6 +21,7 @@
     pkgs.bruno
     pkgs.nomad
     pkgs.jetbrains.datagrip
+    pkgs.droidcam
   ];
 
   home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };

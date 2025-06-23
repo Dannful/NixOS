@@ -24,6 +24,7 @@
     pkgs.winetricks
     pkgs.prismlauncher
     pkgs.corretto21
+    pkgs.droidcam
   ];
 
   home.sessionVariables = {
