@@ -281,6 +281,7 @@ in {
         jq
         zip
         unzip
+        kdePackages.qtdeclarative
 
         # Terminal
         kitty
@@ -307,7 +308,12 @@ in {
 
     virtualisation.docker.enable = true;
 
-    fonts.packages = with pkgs; [ nerd-fonts.fira-code iosevka hack-font ];
+    fonts.packages = with pkgs; [
+      nerd-fonts.fira-code
+      iosevka
+      hack-font
+      material-symbols
+    ];
     fonts = {
       fontconfig = {
         defaultFonts = {

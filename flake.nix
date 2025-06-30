@@ -13,9 +13,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, nixos, home-manager, hyprland, ... }@inputs:
+  outputs = { nixpkgs, nixos, home-manager, hyprland, quickshell, ... }@inputs:
     let system = "x86_64-linux";
     in {
       nixosConfigurations = {
@@ -23,7 +27,6 @@
           specialArgs = { inherit inputs system; };
 
           modules = [ ./personal/configuration.nix ];
-
         };
         work = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs system; };

@@ -107,9 +107,16 @@ in {
       rofi-wayland
       playerctl
       eww
+      inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
     home.file = lib.mkMerge [
       { ".config/rofi/config.rasi" = { text = ''@theme "arthur"''; }; }
+      {
+        ".config/quickshell" = {
+          source = ../quickshell;
+          recursive = true;
+        };
+      }
       {
         ".config/hypr/hypridle.conf" = {
           text = ''
