@@ -20,6 +20,7 @@ Scope {
                     id: visibilities
 
                     property bool powerMenu: false
+                    property bool networkMenu: false
                 }
 
                 mask: Region {

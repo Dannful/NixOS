@@ -1,6 +1,7 @@
 import Quickshell
 import QtQuick
 import "root:/bar/components/power_menu" as PowerMenu
+import "root:/bar/components/network_menu" as NetworkMenu
 
 Item {
     id: root
@@ -12,8 +13,13 @@ Item {
         screen: root.screen
         visibility: root.visibilities.powerMenu
         x: 60
-        y: screen.height - height - 30
-        implicitWidth: 60
-        implicitHeight: 180
+        y: screen.height - implicitHeight - Fonts.sizing.large
+    }
+
+    NetworkMenu.Wrapper {
+        screen: root.screen
+        visibility: root.visibilities.networkMenu
+        x: 60
+        y: screen.height - implicitHeight - Fonts.sizing.large * 7 / 2
     }
 }

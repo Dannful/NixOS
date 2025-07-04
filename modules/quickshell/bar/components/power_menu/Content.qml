@@ -4,7 +4,7 @@ import Quickshell.Io
 import "root:/core"
 
 CustomRect {
-    color: "#fff"
+    color: Colors.surface
     anchors.fill: parent
 
     bottomLeftRadius: 10
@@ -25,18 +25,36 @@ CustomRect {
     }
 
     MaterialIcon {
-        id: icon
+        id: restartIcon
+        text: "restart_alt"
+        font.pixelSize: Fonts.sizing.large
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: powerIcon.top
+            margins: Sizing.margins.medium
+        }
+    }
+
+    MaterialIcon {
+        id: powerIcon
         text: "power_settings_new"
-        font.pixelSize: 24
+        font.pixelSize: Fonts.sizing.large
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
-            margins: 21
+            margins: Sizing.margins.medium
         }
     }
 
     MouseArea {
-        anchors.fill: icon
+        anchors.fill: restartIcon
+        onClicked: {
+            reboot.running = true;
+        }
+    }
+
+    MouseArea {
+        anchors.fill: powerIcon
         onClicked: {
             powerOff.running = true;
         }
@@ -46,5 +64,11 @@ CustomRect {
         id: powerOff
         running: false
         command: "poweroff"
+    }
+
+    Process {
+        id: reboot
+        running: false
+        command: "reboot"
     }
 }

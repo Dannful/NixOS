@@ -1,29 +1,31 @@
-import QtQuick.Controls
 import QtQuick
 import Quickshell
+
 import "root:/core"
-import "root:/bar/components"
 
 Item {
     id: root
-    required property PersistentProperties visibilities
+    required property var setVisibility
+    required property bool visibility
+    required property string iconName
+    property string iconSize: Fonts.sizing.large
 
     MouseArea {
         hoverEnabled: true
 
-        anchors.fill: icon
+        anchors.fill: parent
 
         onEntered: {
-            visibilities.powerMenu = true;
+            setVisibility(true);
         }
 
         onExited: {
-            visibilities.powerMenu = powerMenuArea.containsMouse;
+            setVisibility(hoverArea.containsMouse);
         }
     }
 
     MouseArea {
-        id: powerMenuArea
+        id: hoverArea
         hoverEnabled: true
 
         x: icon.x + icon.implicitWidth
@@ -32,14 +34,15 @@ Item {
         implicitHeight: icon.implicitHeight
 
         onExited: {
-            visibilities.powerMenu = false;
+            setVisibility(false);
         }
     }
 
     MaterialIcon {
         id: icon
-        text: "power_settings_new"
-        font.pixelSize: 24
+        text: root.iconName
+        font.pixelSize: parent.iconSize
+        color: Colors.foreground
         anchors {
             horizontalCenter: parent.horizontalCenter
         }
