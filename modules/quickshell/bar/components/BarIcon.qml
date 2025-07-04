@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 
 import "root:/core"
+import "root:/core"
 
 Item {
     id: root
@@ -13,25 +14,14 @@ Item {
     MouseArea {
         hoverEnabled: true
 
-        anchors.fill: parent
+        x: icon.x
+        y: icon.y
+        implicitWidth: (icon.implicitWidth + Sizing.barWidth) / 2
+        implicitHeight: icon.implicitHeight
 
         onEntered: {
             setVisibility(true);
         }
-
-        onExited: {
-            setVisibility(hoverArea.containsMouse);
-        }
-    }
-
-    MouseArea {
-        id: hoverArea
-        hoverEnabled: true
-
-        x: icon.x + icon.implicitWidth
-        y: icon.y
-        implicitWidth: root.parent.implicitWidth
-        implicitHeight: icon.implicitHeight
 
         onExited: {
             setVisibility(false);

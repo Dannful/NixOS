@@ -14,23 +14,34 @@ CustomRect {
     topLeftRadius: 10
     topRightRadius: 10
 
-    ColumnLayout {
-        anchors.centerIn: parent
+    MouseArea {
         anchors.fill: parent
-
-        Text {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("<b>SSID</b>: %1").arg(Network.currentNetwork?.ssid || "-")
+        hoverEnabled: true
+        onEntered: {
+            visibilities.networkMenu = true;
+        }
+        onExited: {
+            visibilities.networkMenu = false;
         }
 
-        Text {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("<b>Strength</b>: %1").arg(Network.currentNetwork?.strength || 0)
-        }
+        ColumnLayout {
+            anchors.centerIn: parent
+            anchors.fill: parent
 
-        Text {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("<b>Frequency</b>: %1 MHz").arg(Network.currentNetwork?.frequency || 0)
+            Text {
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("<b>SSID</b>: %1").arg(Network.currentNetwork?.ssid || "-")
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("<b>Strength</b>: %1").arg(Network.currentNetwork?.strength || 0)
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("<b>Frequency</b>: %1 MHz").arg(Network.currentNetwork?.frequency || 0)
+            }
         }
     }
 }

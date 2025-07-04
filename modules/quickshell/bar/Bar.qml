@@ -21,7 +21,7 @@ CustomRect {
             if (strength === undefined) {
                 return "wifi_lock";
             } else if (strength >= 75) {
-                return "network_wifi_4_bar";
+                return "signal_wifi_4_bar";
             } else if (strength >= 50) {
                 return "network_wifi_3_bar";
             } else if (strength >= 25) {
