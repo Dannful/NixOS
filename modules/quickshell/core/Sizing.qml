@@ -7,7 +7,14 @@ Singleton {
 
     readonly property Margins margins: Margins {}
     readonly property Spacing spacing: Spacing {}
-    readonly property int barWidth: 60
+    readonly property Radius radius: Radius {}
+    readonly property Meter meter: Meter {}
+    readonly property int barWidth: 51
+
+    component Meter: QtObject {
+        readonly property int width: 6
+        readonly property int height: 120
+    }
 
     component Margins: QtObject {
         readonly property int small: 8
@@ -21,5 +28,12 @@ Singleton {
         readonly property int medium: 20
         readonly property int large: 25
         readonly property int xlarge: 30
+    }
+
+    component Radius: QtObject {
+        readonly property int small: 5
+        readonly property int medium: 10
+        readonly property int large: 15
+        readonly property int xlarge: 20
     }
 }

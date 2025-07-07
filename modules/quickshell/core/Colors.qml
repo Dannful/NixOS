@@ -9,5 +9,6 @@ Singleton {
     readonly property string background: "#fff"
     readonly property string foreground: "#000"
     readonly property string surface: "#f5f5f5"
+    readonly property string darkSurface: "#e0e0e0"
     readonly property string onsurface: "#000"
 }

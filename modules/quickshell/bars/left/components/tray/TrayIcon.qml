@@ -1,11 +1,12 @@
 import QtQuick
 import Quickshell
 import Quickshell.Widgets
+import "root:/core"
 
 MouseArea {
     id: root
     required property var modelData
-    property real iconSize: 30
+    property real iconSize: Fonts.sizing.large
 
     implicitWidth: icon.implicitWidth
     implicitHeight: icon.implicitHeight

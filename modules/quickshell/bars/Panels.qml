@@ -1,25 +1,27 @@
 import Quickshell
 import QtQuick
-import "root:/bar/components/power_menu" as PowerMenu
-import "root:/bar/components/network_menu" as NetworkMenu
+import "root:/bars/left/components/power_menu" as PowerMenu
+import "root:/bars/left/components/network_menu" as NetworkMenu
+import "root:/core"
 
 Item {
     id: root
     required property ShellScreen screen
     required property PersistentProperties visibilities
+    required property Item bar
     anchors.fill: parent
 
     PowerMenu.Wrapper {
         screen: root.screen
         visibility: root.visibilities.powerMenu
-        x: 60
-        y: screen.height - implicitHeight - Fonts.sizing.large
+        x: bar.getX(bar.powerIcon)
+        y: bar.getY(this, bar.powerIcon)
     }
 
     NetworkMenu.Wrapper {
         screen: root.screen
         visibility: root.visibilities.networkMenu
-        x: 60
-        y: screen.height - implicitHeight - Fonts.sizing.large * 7 / 2
+        x: bar.getX(bar.networkIcon)
+        y: bar.getY(this, bar.networkIcon)
     }
 }

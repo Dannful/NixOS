@@ -36,8 +36,8 @@ CustomRect {
                 implicitHeight: restartIcon.implicitHeight
                 MaterialIcon {
                     id: restartIcon
-                    text: "restart_alt"
-                    font.pixelSize: Fonts.sizing.large
+                    name: "restart_alt"
+                    size: Fonts.sizing.large
                     color: restartArea.containsMouse ? Colors.primary : Colors.foreground
 
                     Behavior on color {
@@ -65,9 +65,9 @@ CustomRect {
 
                 MaterialIcon {
                     id: powerIcon
-                    text: "power_settings_new"
+                    name: "power_settings_new"
                     Layout.alignment: Qt.AlignCenter
-                    font.pixelSize: Fonts.sizing.large
+                    size: Fonts.sizing.large
                     color: powerOffArea.containsMouse ? Colors.primary : Colors.foreground
 
                     Behavior on color {

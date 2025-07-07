@@ -17,6 +17,7 @@ CustomRect {
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
+
         onEntered: {
             visibilities.networkMenu = true;
         }

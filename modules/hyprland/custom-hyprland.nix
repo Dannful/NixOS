@@ -8,8 +8,9 @@ let
     ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
     (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    ${pkgs.eww}/bin/eww open left_bar
-    ${pkgs.eww}/bin/eww open bottom_bar
+    ${
+      inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
+    }/bin/quickshell
 
     ${pkgs.swww}/bin/swww init &
     sleep 1
@@ -181,7 +182,7 @@ in {
       settings = {
         "$mod" = "SUPER";
         "$alt" = "ALT";
-        general = { gaps_out = "18, 18, 60, 60"; };
+        general = { gaps_out = "60, 18, 18, 60"; };
         cursor = { no_hardware_cursors = true; };
         input = {
           kb_layout = "us";

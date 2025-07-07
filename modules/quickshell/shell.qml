@@ -3,9 +3,10 @@
 import Quickshell
 import Quickshell.Io
 import QtQuick
-import "root:/bar"
 import "root:/core"
-import "root:/bar/components"
+import "root:/bars/left"
+import "root:/bars/top"
+import "root:/bars"
 
 Scope {
     Variants {
@@ -50,6 +51,7 @@ Scope {
                     id: panels
                     screen: root.screen
                     visibilities: visibilities
+                    bar: bar
 
                     Item {
                         implicitWidth: bar.implicitWidth
@@ -57,16 +59,24 @@ Scope {
                     }
                 }
 
-                Bar {
+                LeftBar {
                     id: bar
                     visibilities: visibilities
                     screen: root.screen
                     anchors {
-                        bottom: parent.bottom
+                        verticalCenter: parent.verticalCenter
                         left: parent.left
                     }
-                    implicitWidth: 60
-                    implicitHeight: parent.height
+                }
+
+                TopBar {
+                    id: topBar
+                    screen: root.screen
+                    anchors {
+                        top: parent.top
+                        left: bar.right
+                        horizontalCenter: parent.horizontalCenter
+                    }
                 }
             }
         }

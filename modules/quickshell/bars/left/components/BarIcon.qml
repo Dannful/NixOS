@@ -11,6 +11,9 @@ Item {
     required property string iconName
     property string iconSize: Fonts.sizing.large
 
+    implicitWidth: Sizing.barWidth
+    implicitHeight: iconMetrics.height
+
     MouseArea {
         hoverEnabled: true
 
@@ -28,10 +31,16 @@ Item {
         }
     }
 
+    TextMetrics {
+        id: iconMetrics
+        font: icon.font
+        text: icon.name
+    }
+
     MaterialIcon {
         id: icon
-        text: root.iconName
-        font.pixelSize: parent.iconSize
+        name: root.iconName
+        size: parent.iconSize
         color: Colors.foreground
         anchors {
             horizontalCenter: parent.horizontalCenter
