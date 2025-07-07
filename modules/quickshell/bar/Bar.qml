@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import "root:/core"
 import "root:/bar/components"
+import "root:/bar/components/tray" as SystemTray
 import "root:/services"
 
 CustomRect {
@@ -12,6 +13,15 @@ CustomRect {
     implicitWidth: Sizing.barWidth
     implicitHeight: screen.height
     color: Colors.background
+
+    SystemTray.Content {
+        anchors {
+            bottom: networkIcon.top
+            left: parent.left
+            right: parent.right
+            margins: Sizing.margins.xlarge
+        }
+    }
 
     BarIcon {
         id: networkIcon
