@@ -356,6 +356,7 @@ in {
     hardware.bluetooth.powerOnBoot = true;
 
     services.blueman.enable = true;
+    services.hypridle.enable = true;
 
     system.autoUpgrade = {
       enable = true;

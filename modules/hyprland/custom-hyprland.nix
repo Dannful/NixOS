@@ -8,10 +8,10 @@ let
     ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
     (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    hyprctl dispatch exec '${
+    ${
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
-    }/bin/quickshell'
-
+    }/bin/quickshell &
+    hypridle &
     ${pkgs.swww}/bin/swww init &
     sleep 1
     ${lib.strings.concatStringsSep "\n" wallpaperStrings}
@@ -131,13 +131,6 @@ in {
                 timeout = 150                                # 2.5min.
                 on-timeout = brightnessctl -s set 10         # set monitor backlight to minimum, avoid 0 on OLED monitor.
                 on-resume = brightnessctl -r                 # monitor backlight restore.
-            }
-
-            # turn off keyboard backlight, comment out this section if you dont have a keyboard backlight.
-            listener {
-                timeout = 150                                          # 2.5min.
-                on-timeout = brightnessctl -sd rgb:kbd_backlight set 0 # turn off keyboard backlight.
-                on-resume = brightnessctl -rd rgb:kbd_backlight        # turn on keyboard backlight.
             }
 
             listener {
