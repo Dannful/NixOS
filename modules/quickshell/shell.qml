@@ -24,6 +24,7 @@ Scope {
 
                     property bool powerMenu: false
                     property bool networkMenu: false
+                    property bool calendar: false
                 }
 
                 mask: Region {
@@ -51,16 +52,22 @@ Scope {
                     id: panels
                     screen: root.screen
                     visibilities: visibilities
-                    bar: bar
+                    leftBar: leftBar
+                    topBar: topBar
 
                     Item {
-                        implicitWidth: bar.implicitWidth
+                        implicitWidth: leftBar.implicitWidth
                         implicitHeight: root.implicitHeight
+                    }
+
+                    Item {
+                        implicitWidth: root.implicitWidth
+                        implicitHeight: topBar.implicitHeight
                     }
                 }
 
                 LeftBar {
-                    id: bar
+                    id: leftBar
                     visibilities: visibilities
                     screen: root.screen
                     anchors {
@@ -71,11 +78,12 @@ Scope {
 
                 TopBar {
                     id: topBar
+                    visibilities: visibilities
                     screen: root.screen
                     anchors {
                         top: parent.top
-                        left: bar.right
-                        horizontalCenter: parent.horizontalCenter
+                        left: parent.left
+                        right: parent.right
                     }
                 }
             }

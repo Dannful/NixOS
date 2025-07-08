@@ -8,9 +8,9 @@ let
     ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
     (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    ${
+    hyprctl dispatch exec '${
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
-    }/bin/quickshell
+    }/bin/quickshell'
 
     ${pkgs.swww}/bin/swww init &
     sleep 1
