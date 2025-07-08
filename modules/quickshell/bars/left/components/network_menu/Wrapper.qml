@@ -26,7 +26,7 @@ Item {
             when: root.visibility
             PropertyChanges {
                 target: root
-                implicitWidth: 120 + Sizing.margins.medium * 2
+                implicitWidth: Sizing.networkMenuWidth + Sizing.margins.medium * 2
                 implicitHeight: Fonts.sizing.large * 2 + Sizing.margins.medium * 2
                 opacity: 1
             }

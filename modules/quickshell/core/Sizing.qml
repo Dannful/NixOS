@@ -10,6 +10,7 @@ Singleton {
     readonly property Radius radius: Radius {}
     readonly property Meter meter: Meter {}
     readonly property int barWidth: 51
+    readonly property int networkMenuWidth: 120
 
     component Meter: QtObject {
         readonly property int width: 6

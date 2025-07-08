@@ -9,6 +9,7 @@ Singleton {
     readonly property BezierCurves bezierCurves: BezierCurves {}
 
     component Durations: QtObject {
+        readonly property int ultra_fast: 36
         readonly property int fast: 150
         readonly property int medium: 300
         readonly property int slow: 500
