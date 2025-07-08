@@ -11,7 +11,7 @@ Item {
     required property string iconName
     property string iconSize: Fonts.sizing.large
 
-    implicitWidth: Sizing.barWidth
+    implicitWidth: Sizing.leftBarWidth
     implicitHeight: iconMetrics.height
 
     MouseArea {
@@ -19,7 +19,7 @@ Item {
 
         x: icon.x
         y: icon.y
-        implicitWidth: (icon.implicitWidth + Sizing.barWidth) / 2
+        implicitWidth: (icon.implicitWidth + Sizing.leftBarWidth) / 2
         implicitHeight: icon.implicitHeight
 
         onEntered: {

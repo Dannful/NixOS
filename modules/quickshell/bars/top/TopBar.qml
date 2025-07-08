@@ -11,7 +11,7 @@ CustomRect {
 
     color: Colors.surface
 
-    implicitHeight: Sizing.barWidth * screen.height / screen.width
+    implicitHeight: Sizing.topBarHeight
 
     property alias timeText: timeText
 

@@ -14,7 +14,7 @@ CustomRect {
     id: root
     required property ShellScreen screen
     required property PersistentProperties visibilities
-    implicitWidth: Sizing.barWidth
+    implicitWidth: Sizing.leftBarWidth
     implicitHeight: screen.height * 0.75
     color: Colors.background
     radius: Sizing.radius.large

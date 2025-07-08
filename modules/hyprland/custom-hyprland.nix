@@ -182,7 +182,7 @@ in {
       settings = {
         "$mod" = "SUPER";
         "$alt" = "ALT";
-        general = { gaps_out = "60, 18, 18, 60"; };
+        general = { gaps_out = "38, 18, 18, 60"; };
         cursor = { no_hardware_cursors = true; };
         input = {
           kb_layout = "us";

@@ -9,7 +9,8 @@ Singleton {
     readonly property Spacing spacing: Spacing {}
     readonly property Radius radius: Radius {}
     readonly property Meter meter: Meter {}
-    readonly property int barWidth: 51
+    readonly property int leftBarWidth: 51
+    readonly property int topBarHeight: 29
     readonly property int networkMenuWidth: 120
 
     component Meter: QtObject {
