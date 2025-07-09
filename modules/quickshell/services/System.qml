@@ -8,9 +8,16 @@ Singleton {
     id: root
     property alias reboot: reboot
     property alias powerOff: powerOff
+    property alias lock: lock
     property real memoryUsage: 0
     property real cpuUsage: 0
     property string time: ""
+
+    Process {
+        id: lock
+        command: "hyprlock"
+        running: false
+    }
 
     Process {
         id: reboot

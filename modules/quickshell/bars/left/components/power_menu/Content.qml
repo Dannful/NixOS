@@ -6,6 +6,7 @@ import "root:/core"
 import "root:/services"
 
 CustomRect {
+    id: root
     color: Colors.surface
     anchors.fill: parent
 
@@ -27,6 +28,23 @@ CustomRect {
 
         ColumnLayout {
             anchors.fill: parent
+            spacing: Sizing.spacing.small
+
+            MouseArea {
+                Layout.alignment: Qt.AlignCenter
+                hoverEnabled: true
+                implicitWidth: lockIcon.implicitWidth
+                implicitHeight: lockIcon.implicitHeight
+                MaterialIcon {
+                    id: lockIcon
+                    name: "lock"
+                    size: Fonts.sizing.large
+                    color: parent.containsMouse ? Colors.primary : Colors.foreground
+                }
+                onClicked: {
+                    System.lock.running = true;
+                }
+            }
 
             MouseArea {
                 id: restartArea
@@ -39,14 +57,6 @@ CustomRect {
                     name: "restart_alt"
                     size: Fonts.sizing.large
                     color: restartArea.containsMouse ? Colors.primary : Colors.foreground
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Animations.durations.fast
-                            easing.type: Easing.BezierSpline
-                            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
-                        }
-                    }
                 }
                 onClicked: {
                     System.reboot.running = true;
@@ -69,14 +79,6 @@ CustomRect {
                     Layout.alignment: Qt.AlignCenter
                     size: Fonts.sizing.large
                     color: powerOffArea.containsMouse ? Colors.primary : Colors.foreground
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Animations.durations.fast
-                            easing.type: Easing.BezierSpline
-                            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
-                        }
-                    }
                 }
             }
         }

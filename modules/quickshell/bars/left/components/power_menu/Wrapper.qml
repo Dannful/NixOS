@@ -19,6 +19,7 @@ Item {
                 implicitWidth: 0
                 implicitHeight: 0
                 opacity: 0
+                scale: 0
             }
         },
         State {
@@ -27,8 +28,9 @@ Item {
             PropertyChanges {
                 target: root
                 implicitWidth: 60
-                implicitHeight: Fonts.sizing.large * 2 + Sizing.margins.medium * 4
+                implicitHeight: Fonts.sizing.large * 3 + Sizing.spacing.small * 4
                 opacity: 1
+                scale: 1
             }
         }
     ]
@@ -40,7 +42,7 @@ Item {
             reversible: true
             NumberAnimation {
                 target: root
-                properties: "implicitWidth,implicitHeight,opacity"
+                properties: "implicitWidth,implicitHeight,opacity,scale"
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
