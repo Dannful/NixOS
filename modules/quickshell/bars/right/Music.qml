@@ -186,6 +186,7 @@ CustomRect {
                         Layout.fillWidth: true
                         name: "skip_previous"
                         onClicked: root.currentPlayer?.previous()
+                        disabled: !root.currentPlayer?.canGoPrevious
                     }
 
                     ControlIcon {
@@ -197,6 +198,7 @@ CustomRect {
                     ControlIcon {
                         name: "skip_next"
                         onClicked: root.currentPlayer?.next()
+                        disabled: !root.currentPlayer?.canGoNext
                     }
                 }
             }
@@ -208,15 +210,20 @@ CustomRect {
     }
 
     component ControlIcon: MaterialIcon {
+        id: root
         signal clicked
-        color: controlArea.containsMouse ? Colors.secondary : Colors.primary
+        property bool disabled: false
+        color: disabled ? Colors.darkSurface : (controlArea.containsMouse ? Colors.secondary : Colors.primary)
         size: Fonts.sizing.large
 
         MouseArea {
             id: controlArea
-            hoverEnabled: true
+            hoverEnabled: !parent.disabled
             anchors.fill: parent
-            onClicked: parent.clicked()
+            onClicked: {
+                if (!root.disabled)
+                    parent.clicked();
+            }
         }
     }
 }
