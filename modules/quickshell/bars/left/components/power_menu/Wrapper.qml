@@ -8,7 +8,8 @@ Item {
     required property ShellScreen screen
     required property bool visibility
 
-    visible: width > 0 && height > 0
+    visible: implicitWidth > 0
+    implicitHeight: Fonts.sizing.large * 3 + Sizing.spacing.small * 4
 
     states: [
         State {
@@ -17,9 +18,7 @@ Item {
             PropertyChanges {
                 target: root
                 opacity: 0
-                scale: 0
                 implicitWidth: 0
-                implicitHeight: 0
             }
         },
         State {
@@ -28,9 +27,7 @@ Item {
             PropertyChanges {
                 target: root
                 opacity: 1
-                scale: 1
                 implicitWidth: 60
-                implicitHeight: Fonts.sizing.large * 3 + Sizing.spacing.small * 4
             }
         }
     ]
@@ -42,7 +39,7 @@ Item {
             reversible: true
             NumberAnimation {
                 target: root
-                properties: "implicitWidth,implicitHeight,opacity,scale"
+                properties: "implicitWidth,opacity"
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Animations.bezierCurves.easeInOutCubic

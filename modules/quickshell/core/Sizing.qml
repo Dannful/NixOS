@@ -15,7 +15,7 @@ Singleton {
 
     component Meter: QtObject {
         readonly property int width: 6
-        readonly property int height: 120
+        readonly property int height: 150
     }
 
     component Margins: QtObject {

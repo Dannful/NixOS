@@ -1,6 +1,6 @@
 import QtQuick
 import "root:/services"
-import "root:/bars/left/components"
+import "root:/bars/components"
 
 Meter {
     progress: System.cpuUsage

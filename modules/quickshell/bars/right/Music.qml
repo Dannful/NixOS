@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Mpris
 import "root:/core"
+import "root:/bars/components"
 
 CustomRect {
     id: root
@@ -16,8 +17,7 @@ CustomRect {
         verticalCenter: panel.verticalCenter
     }
 
-    readonly property list<MprisPlayer> validPlayers: Mpris.players.values.filter(player => player.lengthSupported && player.positionSupported)
-    readonly property MprisPlayer currentPlayer: validPlayers.length > 0 ? validPlayers[0] : null
+    readonly property MprisPlayer currentPlayer: Mpris.players.values.find(player => player.positionSupported) ?? null
 
     opacity: currentPlayer ? 1 : 0
 
@@ -127,6 +127,32 @@ CustomRect {
             anchors.fill: parent
             anchors.margins: Sizing.margins.medium
 
+            Meter {
+                implicitWidth: Sizing.meter.width * 0.75
+                visible: root.currentPlayer !== null && root.currentPlayer.volumeSupported
+                Layout.fillHeight: true
+                iconName: {
+                    const volume = root.currentPlayer?.volume ?? 0;
+                    if (volume === 0)
+                        return "volume_off";
+                    if (volume < 0.33)
+                        return "volume_mute";
+                    if (volume < 0.66)
+                        return "volume_down";
+                    return "volume_up";
+                }
+                iconSize: Fonts.sizing.medium
+                progress: root.currentPlayer?.volume
+                mutable: root.currentPlayer?.canControl
+                onChanged: value => {
+                    if (root.currentPlayer !== null)
+                        root.currentPlayer.volume = value;
+                }
+                onIconClicked: () => {
+                    console.log(root.currentPlayer.supportedUriSchemes);
+                }
+            }
+
             ClippingRectangle {
                 Layout.fillHeight: true
                 implicitWidth: 120
@@ -181,16 +207,17 @@ CustomRect {
                     }
                 }
 
-                RowLayout {
+                Item {
+                    Layout.fillWidth: true
                     ControlIcon {
-                        Layout.fillWidth: true
+                        anchors.left: parent.left
                         name: "skip_previous"
                         onClicked: root.currentPlayer?.previous()
                         disabled: !root.currentPlayer?.canGoPrevious
                     }
 
                     ControlIcon {
-                        Layout.fillWidth: true
+                        anchors.horizontalCenter: parent.horizontalCenter
                         name: root.currentPlayer?.isPlaying ? "pause" : "play_arrow"
                         onClicked: root.currentPlayer?.isPlaying ? root.currentPlayer?.pause() : root.currentPlayer?.play()
                     }
@@ -199,6 +226,7 @@ CustomRect {
                         name: "skip_next"
                         onClicked: root.currentPlayer?.next()
                         disabled: !root.currentPlayer?.canGoNext
+                        anchors.right: parent.right
                     }
                 }
             }

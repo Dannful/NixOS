@@ -40,20 +40,17 @@ CustomRect {
 
         Cpu.Content {
             Layout.alignment: Qt.AlignCenter
-            implicitWidth: Sizing.meter.width
-            barHeight: Sizing.meter.height
+            implicitHeight: Sizing.meter.height
         }
 
         Ram.Content {
             Layout.alignment: Qt.AlignCenter
-            implicitWidth: Sizing.meter.width
-            barHeight: Sizing.meter.height
+            implicitHeight: Sizing.meter.height
         }
 
         Volume.Content {
             Layout.alignment: Qt.AlignCenter
-            implicitWidth: Sizing.meter.width
-            barHeight: Sizing.meter.height
+            implicitHeight: Sizing.meter.height
         }
 
         SystemTray.Content {
