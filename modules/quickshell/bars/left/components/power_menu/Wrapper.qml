@@ -8,7 +8,7 @@ Item {
     required property ShellScreen screen
     required property bool visibility
 
-    visible: width > 0
+    visible: width > 0 && height > 0
 
     states: [
         State {
@@ -16,10 +16,10 @@ Item {
             when: !root.visibility
             PropertyChanges {
                 target: root
-                implicitWidth: 0
-                implicitHeight: 0
                 opacity: 0
                 scale: 0
+                implicitWidth: 0
+                implicitHeight: 0
             }
         },
         State {
@@ -27,10 +27,10 @@ Item {
             when: root.visibility
             PropertyChanges {
                 target: root
-                implicitWidth: 60
-                implicitHeight: Fonts.sizing.large * 3 + Sizing.spacing.small * 4
                 opacity: 1
                 scale: 1
+                implicitWidth: 60
+                implicitHeight: Fonts.sizing.large * 3 + Sizing.spacing.small * 4
             }
         }
     ]
