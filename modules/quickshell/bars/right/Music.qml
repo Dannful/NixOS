@@ -16,7 +16,8 @@ CustomRect {
         verticalCenter: panel.verticalCenter
     }
 
-    property MprisPlayer currentPlayer: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
+    readonly property list<MprisPlayer> validPlayers: Mpris.players.values.filter(player => player.lengthSupported && player.positionSupported)
+    readonly property MprisPlayer currentPlayer: validPlayers.length > 0 ? validPlayers[0] : null
 
     opacity: currentPlayer ? 1 : 0
 
@@ -133,7 +134,7 @@ CustomRect {
 
                 CustomImage {
                     id: trackArt
-                    source: root.currentPlayer.trackArtUrl
+                    source: root.currentPlayer?.trackArtUrl
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectCrop
                     scale: 0
@@ -164,15 +165,20 @@ CustomRect {
 
                 Slider {
                     Layout.fillWidth: true
-                    value: root.currentPlayer ? root.currentPlayer.position / root.currentPlayer.length : 0
+                    value: root.currentPlayer !== null ? root.currentPlayer.position / root.currentPlayer.length : 0
                     onMoved: {
-                        if (root.currentPlayer)
+                        if (root.currentPlayer !== null)
                             root.currentPlayer.position = value * root.currentPlayer.length;
                     }
                     leftPadding: 0
                     rightPadding: 0
                     topPadding: 0
                     bottomPadding: 0
+
+                    FrameAnimation {
+                        running: root.currentPlayer.playbackState == MprisPlaybackState.Playing
+                        onTriggered: root.currentPlayer.positionChanged()
+                    }
                 }
 
                 RowLayout {
