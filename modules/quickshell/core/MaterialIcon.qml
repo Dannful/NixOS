@@ -10,4 +10,12 @@ Text {
         family: "Material Symbols Rounded"
         pixelSize: size
     }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: Animations.durations.fast
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+        }
+    }
 }

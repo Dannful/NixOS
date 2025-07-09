@@ -6,6 +6,7 @@ import QtQuick
 import "root:/core"
 import "root:/bars/left"
 import "root:/bars/top"
+import "root:/bars/right"
 import "root:/bars"
 
 Scope {
@@ -63,6 +64,10 @@ Scope {
                     Item {
                         implicitWidth: root.implicitWidth
                         implicitHeight: topBar.implicitHeight
+                    }
+
+                    Music {
+                        panel: parent
                     }
                 }
 
