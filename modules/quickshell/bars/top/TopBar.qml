@@ -15,6 +15,14 @@ CustomRect {
 
     property alias timeText: timeText
 
+    Workspaces {
+        anchors {
+            left: parent.left
+            verticalCenter: parent.verticalCenter
+            leftMargin: Sizing.spacing.small
+        }
+    }
+
     Date {
         id: timeText
         visibilities: parent.visibilities

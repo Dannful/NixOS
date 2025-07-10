@@ -13,6 +13,14 @@ Text {
         pixelSize: size
     }
 
+    Behavior on color {
+        ColorAnimation {
+            duration: Animations.durations.fast
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+        }
+    }
+
     Behavior on text {
         SequentialAnimation {
             NumberAnimation {

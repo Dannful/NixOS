@@ -19,6 +19,7 @@ Singleton {
     }
 
     component Margins: QtObject {
+        readonly property int tiny: 4
         readonly property int small: 8
         readonly property int medium: 16
         readonly property int large: 24
@@ -26,6 +27,7 @@ Singleton {
     }
 
     component Spacing: QtObject {
+        readonly property int tiny: 9
         readonly property int small: 15
         readonly property int medium: 20
         readonly property int large: 25
