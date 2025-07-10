@@ -38,7 +38,6 @@ Singleton {
         onTriggered: {
             memory.running = true;
             cpu.running = true;
-            date.running = true;
         }
     }
 
@@ -75,17 +74,6 @@ Singleton {
                     return;
                 const idleTime = parseInt(matches[14]);
                 root.cpuUsage = (100 - idleTime) / 100;
-            }
-        }
-    }
-
-    Process {
-        id: date
-        command: ["date", "+%T %a, %b %d"]
-        running: true
-        stdout: StdioCollector {
-            onStreamFinished: {
-                root.time = text.trim();
             }
         }
     }

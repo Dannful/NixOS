@@ -1,15 +1,21 @@
 //@ pragma UseQApplication
 
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Io
 import QtQuick
+import Qt.labs.folderlistmodel
 import "root:/core"
 import "root:/bars/left"
 import "root:/bars/top"
 import "root:/bars/right"
+import "root:/bars/bottom"
 import "root:/bars"
+import "root:/services"
 
 Scope {
+    id: scope
+
     Variants {
         model: Quickshell.screens
         delegate: Component {
@@ -35,6 +41,8 @@ Scope {
                     intersection: Intersection.Xor
                     regions: regions.instances
                 }
+
+                Image {}
 
                 Variants {
                     id: regions
@@ -69,6 +77,11 @@ Scope {
                     Music {
                         panel: parent
                     }
+
+                    WallpaperSelection {
+                        screen: root.screen
+                        panel: parent
+                    }
                 }
 
                 LeftBar {
@@ -90,6 +103,31 @@ Scope {
                         left: parent.left
                         right: parent.right
                     }
+                }
+            }
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        delegate: Component {
+            PanelWindow {
+                id: backgroundPanel
+                property var modelData
+                screen: modelData
+                anchors {
+                    left: true
+                    bottom: true
+                    right: true
+                    top: true
+                }
+
+                WlrLayershell.layer: WlrLayer.Background
+
+                Image {
+                    width: backgroundPanel.screen.width
+                    height: backgroundPanel.screen.height
+                    source: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("../wallpapers/ai.png")
                 }
             }
         }

@@ -4,17 +4,11 @@ let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
 
-  wallpaperStrings = builtins.map (monitor:
-    ''${pkgs.swww}/bin/swww img ${monitor.wallpaper} -o "${monitor.name}" &'')
-    (builtins.filter (monitor: monitor.wallpaper != null) cfg.monitors);
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     }/bin/quickshell &
     hypridle &
-    ${pkgs.swww}/bin/swww init &
-    sleep 1
-    ${lib.strings.concatStringsSep "\n" wallpaperStrings}
   '';
 
   buildEwwDirectory = sourceDir: outputDir:
@@ -59,11 +53,6 @@ in {
             description = "Name of the monitor.";
             example = "DP-1";
           };
-          serial = mkOption {
-            type = types.str;
-            description = "Serial identification of the monitor.";
-            example = "SyncMaster";
-          };
           show-bars = mkOption {
             type = types.bool;
             description =
@@ -86,12 +75,6 @@ in {
             description = "The monitor's position.";
             example = "1920x0";
           };
-          wallpaper = mkOption {
-            type = types.nullOr types.path;
-            description = "Wallpaper path for the monitor.";
-            example = ./wallpaper.png;
-            default = null;
-          };
         };
       });
     };
@@ -99,7 +82,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
-      swww
       alsa-utils
       grim
       slurp

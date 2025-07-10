@@ -8,12 +8,17 @@ Item {
     implicitWidth: Fonts.sizing.medium / 2
     implicitHeight: Fonts.sizing.medium / 2
 
+    SystemClock {
+        id: clock
+        precision: SystemClock.Seconds
+    }
+
     CustomText {
         id: text
         anchors.centerIn: parent
         font.family: "FiraCode Nerd Font Mono"
         font.pixelSize: Fonts.sizing.medium
-        text: System.time
+        text: Qt.locale("pt_BR").toString(clock.date, "hh:mm:ss ddd, d MMM")
         animationTarget: ""
     }
 
