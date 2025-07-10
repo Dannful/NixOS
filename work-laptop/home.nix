@@ -53,11 +53,9 @@
     enable = true;
     monitors = [{
       name = "eDP-1";
-      serial = "0x15F5";
       resolution = "1920x1080";
       refresh-rate = "60.00";
       position = "0x0";
-      show-bars = true;
     }];
   };
 }

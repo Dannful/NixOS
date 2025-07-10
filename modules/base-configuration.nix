@@ -11,7 +11,7 @@ let
 
   custom-sddm-astronaut = pkgs.sddm-astronaut.override {
     themeConfig = {
-      Background = if (cfg.login != null && cfg.login.allpaper != null) then
+      Background = if (cfg.login != null && cfg.login.wallpaper != null) then
         (toString cfg.login.wallpaper)
       else
         "${pkgs.fetchurl {

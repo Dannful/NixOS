@@ -127,7 +127,7 @@ Scope {
                 Image {
                     width: backgroundPanel.screen.width
                     height: backgroundPanel.screen.height
-                    source: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("../wallpapers/ai.png")
+                    source: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("./wallpapers/ai.png")
                 }
             }
         }

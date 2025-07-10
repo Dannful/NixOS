@@ -38,15 +38,12 @@
     monitors = [
       {
         name = "DP-1";
-        serial = "AG323FWG3R3";
         resolution = "1920x1080";
         refresh-rate = "165.00";
         position = "0x0";
-        show-bars = true;
       }
       {
         name = "HDMI-A-1";
-        serial = "SyncMaster";
         resolution = "1920x1200";
         refresh-rate = "59.95";
         position = "1920x0";

@@ -91,7 +91,7 @@ CustomRect {
 
         FolderListModel {
             id: wallpapers
-            folder: Qt.resolvedUrl("../../../wallpapers")
+            folder: Qt.resolvedUrl("../../wallpapers")
             nameFilters: ["*.png", "*.jpg", "*.jpeg"]
             showDirs: false
         }

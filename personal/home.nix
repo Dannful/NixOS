@@ -37,7 +37,7 @@
 
   custom-kitty = {
     enable = true;
-    wallpaper = ../modules/wallpapers/frieren.png;
+    wallpaper = ../modules/quickshell/wallpapers/frieren.png;
   };
 
   custom-zed = { enable = true; };
@@ -51,7 +51,6 @@
         resolution = "1920x1080";
         refresh-rate = "165.00";
         position = "0x0";
-        show-bars = true;
       }
       {
         name = "HDMI-A-1";

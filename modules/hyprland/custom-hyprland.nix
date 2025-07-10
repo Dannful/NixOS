@@ -10,32 +10,6 @@ let
     }/bin/quickshell &
     hypridle &
   '';
-
-  buildEwwDirectory = sourceDir: outputDir:
-    let dir = builtins.readDir sourceDir;
-    in (builtins.foldl' (first: second: first // second) { } (builtins.map
-      (name:
-        if (lib.strings.hasSuffix ".jpg" name)
-        || (lib.strings.hasSuffix ".png" name) then {
-          "${outputDir}/${name}" = { source = "${sourceDir}/${name}"; };
-        } else if (builtins.getAttr name dir) != "directory" then {
-          "${outputDir}/${name}" = {
-            text = (builtins.replaceStrings [
-              "{MONITORS}"
-              "{BASH_BIN}"
-              "{EWW_BIN}"
-            ] [
-              (builtins.toJSON (builtins.map (monitor: monitor.serial)
-                (builtins.filter (monitor: monitor.show-bars) cfg.monitors)))
-              "${pkgs.bash}/bin/bash"
-              "${pkgs.eww}/bin/eww"
-            ] (builtins.readFile "${sourceDir}/${name}"));
-            executable =
-              if (lib.strings.hasSuffix ".sh" name) then true else false;
-          };
-        } else
-          (buildEwwDirectory "${sourceDir}/${name}" "${outputDir}/${name}"))
-      (builtins.attrNames dir)));
 in {
   options.custom-hyprland = {
     enable = lib.mkEnableOption "custom Hyprland";
@@ -52,13 +26,6 @@ in {
             type = types.str;
             description = "Name of the monitor.";
             example = "DP-1";
-          };
-          show-bars = mkOption {
-            type = types.bool;
-            description =
-              "Whether or not eww bars should be visible on this monitor.";
-            default = false;
-            example = true;
           };
           resolution = mkOption {
             type = types.str;
@@ -89,52 +56,46 @@ in {
       swappy
       rofi-wayland
       playerctl
-      eww
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
-    home.file = lib.mkMerge [
-      { ".config/rofi/config.rasi" = { text = ''@theme "arthur"''; }; }
-      {
-        ".config/quickshell" = {
-          source = ../quickshell;
-          recursive = true;
-        };
-      }
-      {
-        ".config/hypr/hypridle.conf" = {
-          text = ''
-            general {
-                lock_cmd = pidof hyprlock || hyprlock       # avoid starting multiple hyprlock instances.
-                before_sleep_cmd = loginctl lock-session    # lock before suspend.
-                after_sleep_cmd = hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
-            }
+    home.file = {
+      ".config/rofi/config.rasi" = { text = ''@theme "arthur"''; };
+      ".config/quickshell" = {
+        source = ../quickshell;
+        recursive = true;
+      };
+      ".config/hypr/hypridle.conf" = {
+        text = ''
+          general {
+              lock_cmd = pidof hyprlock || hyprlock       # avoid starting multiple hyprlock instances.
+              before_sleep_cmd = loginctl lock-session    # lock before suspend.
+              after_sleep_cmd = hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
+          }
 
-            listener {
-                timeout = 150                                # 2.5min.
-                on-timeout = brightnessctl -s set 10         # set monitor backlight to minimum, avoid 0 on OLED monitor.
-                on-resume = brightnessctl -r                 # monitor backlight restore.
-            }
+          listener {
+              timeout = 150                                # 2.5min.
+              on-timeout = brightnessctl -s set 10         # set monitor backlight to minimum, avoid 0 on OLED monitor.
+              on-resume = brightnessctl -r                 # monitor backlight restore.
+          }
 
-            listener {
-                timeout = 300                                 # 5min
-                on-timeout = loginctl lock-session            # lock screen when timeout has passed
-            }
+          listener {
+              timeout = 300                                 # 5min
+              on-timeout = loginctl lock-session            # lock screen when timeout has passed
+          }
 
-            listener {
-                timeout = 330                                                     # 5.5min
-                on-timeout = hyprctl dispatch dpms off                            # screen off when timeout has passed
-                on-resume = hyprctl dispatch dpms on && brightnessctl -r          # screen on when activity is detected after timeout has fired.
-            }
+          listener {
+              timeout = 330                                                     # 5.5min
+              on-timeout = hyprctl dispatch dpms off                            # screen off when timeout has passed
+              on-resume = hyprctl dispatch dpms on && brightnessctl -r          # screen on when activity is detected after timeout has fired.
+          }
 
-            listener {
-                timeout = 1800                                # 30min
-                on-timeout = systemctl suspend                # suspend pc
-            }
-          '';
-        };
-      }
-      (buildEwwDirectory (./.. + "/eww") ".config/eww")
-    ];
+          listener {
+              timeout = 1800                                # 30min
+              on-timeout = systemctl suspend                # suspend pc
+          }
+        '';
+      };
+    };
     programs.hyprlock = { enable = true; };
     services.hypridle = { enable = true; };
 
