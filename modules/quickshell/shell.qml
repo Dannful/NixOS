@@ -115,6 +115,7 @@ Scope {
                 id: backgroundPanel
                 property var modelData
                 screen: modelData
+                color: "black"
                 anchors {
                     left: true
                     bottom: true
@@ -124,7 +125,7 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Background
 
-                Image {
+                CustomImage {
                     width: backgroundPanel.screen.width
                     height: backgroundPanel.screen.height
                     source: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("./wallpapers/ai.png")
