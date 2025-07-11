@@ -39,11 +39,6 @@ CustomRect {
                 implicitHeight: 90
                 radius: 180
             }
-            PropertyChanges {
-                target: row
-                opacity: 0
-                scale: 0
-            }
         },
         State {
             name: "expanded"
@@ -60,12 +55,12 @@ CustomRect {
                 rotation: 180
             }
             PropertyChanges {
-                target: trackArt
+                target: contentLoader.item ? contentLoader.item.trackArt : null
                 scale: 1
                 rotation: 360
             }
             PropertyChanges {
-                target: row
+                target: contentLoader.item
                 opacity: 1
                 scale: 1
             }
@@ -73,9 +68,19 @@ CustomRect {
     ]
 
     transitions: Transition {
+        id: closingTransition
         from: "retracted"
         to: "expanded"
         reversible: true
+
+        NumberAnimation {
+            target: contentLoader.item
+            properties: "opacity, scale"
+            duration: Animations.durations.medium
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+        }
+
         NumberAnimation {
             target: root
             properties: "implicitWidth, implicitHeight, radius"
@@ -86,13 +91,6 @@ CustomRect {
         NumberAnimation {
             target: musicIcon
             properties: "scale"
-            duration: Animations.durations.medium
-            easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
-        }
-        NumberAnimation {
-            target: row
-            properties: "opacity, scale"
             duration: Animations.durations.medium
             easing.type: Easing.BezierSpline
             easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
@@ -119,140 +117,17 @@ CustomRect {
         anchors.fill: parent
         hoverEnabled: true
 
-        RowLayout {
-            id: row
-            visible: root.currentPlayer !== null
-            spacing: Sizing.spacing.small
-
+        Loader {
+            id: contentLoader
             anchors.fill: parent
-            anchors.margins: Sizing.margins.medium
 
-            Meter {
-                implicitWidth: Sizing.meter.width * 0.75
-                visible: root.currentPlayer !== null && root.currentPlayer.volumeSupported
-                Layout.fillHeight: true
-                iconName: {
-                    const volume = root.currentPlayer?.volume ?? 0;
-                    if (volume === 0)
-                        return "volume_off";
-                    if (volume < 0.33)
-                        return "volume_mute";
-                    if (volume < 0.66)
-                        return "volume_down";
-                    return "volume_up";
+            active: root.state === 'expanded' || closingTransition.running
+
+            sourceComponent: Component {
+                ExpandedPlayerControls {
+                    playerRoot: root
+                    currentPlayer: root.currentPlayer
                 }
-                iconSize: Fonts.sizing.medium
-                progress: root.currentPlayer?.volume
-                mutable: root.currentPlayer?.canControl
-                onChanged: value => {
-                    if (root.currentPlayer !== null)
-                        root.currentPlayer.volume = value;
-                }
-                onIconClicked: () => {
-                    console.log(root.currentPlayer.supportedUriSchemes);
-                }
-            }
-
-            ClippingRectangle {
-                Layout.fillHeight: true
-                implicitWidth: 120
-                radius: Sizing.radius.medium
-
-                CustomImage {
-                    id: trackArt
-                    source: root.currentPlayer?.trackArtUrl
-                    anchors.fill: parent
-                    sourceSize.width: parent.implicitWidth
-                    sourceSize.height: parent.implicitHeight
-                    fillMode: Image.PreserveAspectCrop
-                    scale: 0
-                }
-            }
-
-            ColumnLayout {
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignTop
-
-                CustomText {
-                    text: root.currentPlayer?.trackTitle
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.fillWidth: true
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                    size: Fonts.sizing.small
-                }
-
-                CustomText {
-                    text: root.currentPlayer?.trackArtist
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.fillWidth: true
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                    size: Fonts.sizing.small
-                }
-
-                Slider {
-                    Layout.fillWidth: true
-                    value: root.currentPlayer !== null ? root.currentPlayer.position / root.currentPlayer.length : 0
-                    onMoved: {
-                        if (root.currentPlayer !== null)
-                            root.currentPlayer.position = value * root.currentPlayer.length;
-                    }
-                    leftPadding: 0
-                    rightPadding: 0
-                    topPadding: 0
-                    bottomPadding: 0
-
-                    FrameAnimation {
-                        running: root.currentPlayer.playbackState == MprisPlaybackState.Playing
-                        onTriggered: root.currentPlayer.positionChanged()
-                    }
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                    ControlIcon {
-                        anchors.left: parent.left
-                        name: "skip_previous"
-                        onClicked: root.currentPlayer?.previous()
-                        disabled: !root.currentPlayer?.canGoPrevious
-                    }
-
-                    ControlIcon {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        name: root.currentPlayer?.isPlaying ? "pause" : "play_arrow"
-                        onClicked: root.currentPlayer?.isPlaying ? root.currentPlayer?.pause() : root.currentPlayer?.play()
-                    }
-
-                    ControlIcon {
-                        name: "skip_next"
-                        onClicked: root.currentPlayer?.next()
-                        disabled: !root.currentPlayer?.canGoNext
-                        anchors.right: parent.right
-                    }
-                }
-            }
-
-            Item {
-                Layout.preferredWidth: root.implicitWidth / 2 - Sizing.margins.medium
-            }
-        }
-    }
-
-    component ControlIcon: MaterialIcon {
-        id: root
-        signal clicked
-        property bool disabled: false
-        color: disabled ? Colors.darkSurface : (controlArea.containsMouse ? Colors.secondary : Colors.primary)
-        size: Fonts.sizing.large
-
-        MouseArea {
-            id: controlArea
-            hoverEnabled: !parent.disabled
-            anchors.fill: parent
-            onClicked: {
-                if (!root.disabled)
-                    parent.clicked();
             }
         }
     }
