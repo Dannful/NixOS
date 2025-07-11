@@ -162,6 +162,8 @@ CustomRect {
                     id: trackArt
                     source: root.currentPlayer?.trackArtUrl
                     anchors.fill: parent
+                    sourceSize.width: parent.implicitWidth
+                    sourceSize.height: parent.implicitHeight
                     fillMode: Image.PreserveAspectCrop
                     scale: 0
                 }
