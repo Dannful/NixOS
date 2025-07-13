@@ -44,6 +44,7 @@ Item {
         sourceSize.width: root.sourceSize.width
         sourceSize.height: root.sourceSize.height
         fillMode: root.fillMode
+        asynchronous: root.asynchronous
 
         source: root.currentImageIndex === 0 ? root.source : before.source
         opacity: root.currentImageIndex === 0 ? 1 : 0
@@ -65,6 +66,7 @@ Item {
         sourceSize.width: root.sourceSize.width
         sourceSize.height: root.sourceSize.height
         fillMode: root.fillMode
+        asynchronous: root.asynchronous
 
         source: root.currentImageIndex === 1 ? root.source : after.source
         opacity: root.currentImageIndex === 1 ? 1 : 0
