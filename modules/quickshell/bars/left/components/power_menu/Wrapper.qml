@@ -47,7 +47,10 @@ Item {
         }
     ]
 
-    Content {
-        id: content
+    Loader {
+        id: contentLoader
+        anchors.fill: parent
+        active: root.implicitWidth > 0
+        source: "Content.qml"
     }
 }
