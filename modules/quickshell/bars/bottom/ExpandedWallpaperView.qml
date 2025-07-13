@@ -35,18 +35,20 @@ Item {
             model: wallpapers
             delegate: ClippingRectangle {
                 id: wrapper
+                required property int index
                 required property string filePath
 
                 implicitWidth: swipeView.implicitWidth
                 implicitHeight: swipeView.implicitHeight
                 radius: parentRoot.radius
-                color: Colors.primary
 
-                Image {
+                CustomImage {
                     anchors.fill: parent
+                    source: Math.abs(swipeView.currentIndex - index) <= 1 ? wrapper.filePath : ""
                     fillMode: Image.PreserveAspectCrop
-                    smooth: true
-                    source: wrapper.filePath
+                    sourceSize.width: parent.implicitWidth
+                    sourceSize.height: parent.implicitHeight
+                    asynchronous: true
 
                     MouseArea {
                         anchors.fill: parent

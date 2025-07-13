@@ -88,7 +88,6 @@ CustomRect {
         Loader {
             id: contentLoader
             anchors.fill: parent
-
             active: hoverArea.containsMouse || root.radius < 180
 
             sourceComponent: Component {

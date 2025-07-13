@@ -57,6 +57,7 @@ RowLayout {
             sourceSize.height: parent.implicitHeight
             fillMode: Image.PreserveAspectCrop
             scale: 0
+            asynchronous: true
         }
     }
 
