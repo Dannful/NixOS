@@ -48,6 +48,7 @@ RowLayout {
         Layout.fillHeight: true
         implicitWidth: 120
         radius: Sizing.radius.medium
+        visible: currentPlayer?.trackArtUrl !== undefined && currentPlayer.trackArtUrl !== null && currentPlayer.trackArtUrl.trim().length > 0
 
         CustomImage {
             id: trackArt
