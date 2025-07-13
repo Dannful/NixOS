@@ -6,6 +6,11 @@ let
 
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${
+      if (cfg.backgrounds-file != null) then
+        "BACKGROUNDS_FILE=${cfg.backgrounds-file} "
+      else
+        ""
+    }${
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     }/bin/quickshell &
     hypridle &
@@ -17,6 +22,12 @@ in {
       description = "Whether to use NVIDIA";
       type = types.bool;
       default = false;
+    };
+    backgrounds-file = mkOption {
+      description = "Absolyte path to the backgrounds file";
+      type = types.nullOr types.str;
+      default = null;
+      example = "${pkgs.quickshell}/share/backgrounds.json";
     };
     monitors = mkOption {
       description = "A list containing all monitor configurations";

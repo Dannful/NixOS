@@ -74,6 +74,14 @@ CustomRect {
         reversible: true
 
         NumberAnimation {
+            target: root
+            properties: "implicitWidth, implicitHeight, radius"
+            duration: Animations.durations.medium
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+        }
+
+        NumberAnimation {
             target: contentLoader.item
             properties: "opacity, scale"
             duration: Animations.durations.medium
@@ -81,13 +89,6 @@ CustomRect {
             easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
         }
 
-        NumberAnimation {
-            target: root
-            properties: "implicitWidth, implicitHeight, radius"
-            duration: Animations.durations.medium
-            easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
-        }
         NumberAnimation {
             target: musicIcon
             properties: "scale"
@@ -132,7 +133,7 @@ CustomRect {
             id: contentLoader
             anchors.fill: parent
 
-            active: hoverArea.containsMouse || root.radius < 180
+            active: root.opacity > 0 && (hoverArea.hoverEnabled || root.radius < 180)
 
             sourceComponent: Component {
                 ExpandedPlayerControls {

@@ -28,6 +28,6 @@ Singleton {
 
     FileView {
         id: file
-        path: Qt.resolvedUrl("./backgrounds.json")
+        path: Qt.resolvedUrl(Quickshell.env("BACKGROUNDS_FILE") ?? Quickshell.cachePath("backgrounds.json"))
     }
 }
