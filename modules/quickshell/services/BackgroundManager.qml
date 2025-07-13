@@ -1,13 +1,19 @@
 pragma Singleton
 
 import Quickshell
+import Quickshell.Io
 
 Singleton {
-    property var backgrounds: ({})
+    property var backgrounds: {
+        try {
+            return JSON.parse(file.text());
+        } catch (error) {
+            return {};
+        }
+    }
 
     function setWallpaper(monitorModel, wallpaperPath) {
         if (typeof monitorModel !== 'string' || monitorModel.trim() === '') {
-            console.warn("setWallpaper: monitorModel inválido.");
             return;
         }
 
@@ -17,5 +23,11 @@ Singleton {
         }
         newBackgrounds[monitorModel] = wallpaperPath;
         backgrounds = newBackgrounds;
+        file.setText(JSON.stringify(backgrounds, null, 2));
+    }
+
+    FileView {
+        id: file
+        path: Qt.resolvedUrl("./backgrounds.json")
     }
 }

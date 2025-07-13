@@ -133,51 +133,6 @@ Scope {
                     sourceSize.height: backgroundPanel.screen.height
                     source: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("./wallpapers/ai.png")
                     fillMode: Image.PreserveAspectCrop
-
-                    Behavior on source {
-                        ParallelAnimation {
-                            SequentialAnimation {
-                                NumberAnimation {
-                                    target: image
-                                    property: "scale"
-                                    from: 1
-                                    to: 0
-                                    duration: Animations.durations.fast
-                                    easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
-                                }
-                                NumberAnimation {
-                                    target: image
-                                    property: "scale"
-                                    from: 0
-                                    to: 1
-                                    duration: Animations.durations.fast
-                                    easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
-                                }
-                            }
-                            SequentialAnimation {
-                                NumberAnimation {
-                                    target: image
-                                    property: "opacity"
-                                    from: 1
-                                    to: 0
-                                    duration: Animations.durations.fast
-                                    easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
-                                }
-                                NumberAnimation {
-                                    target: image
-                                    property: "opacity"
-                                    from: 0
-                                    to: 1
-                                    duration: Animations.durations.fast
-                                    easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
