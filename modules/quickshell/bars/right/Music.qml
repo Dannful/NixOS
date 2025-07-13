@@ -110,8 +110,6 @@ CustomRect {
         RotationAnimation {
             target: contentLoader.item ? contentLoader.item.trackArt : null
             duration: Animations.durations.medium
-            // Opcional: defina a direção se quiser um efeito específico
-            // direction: RotationAnimation.Clockwise
         }
     }
 

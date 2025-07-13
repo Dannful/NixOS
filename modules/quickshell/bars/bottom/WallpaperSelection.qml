@@ -28,11 +28,6 @@ CustomRect {
                 implicitWidth: 60
                 implicitHeight: 60
             }
-            PropertyChanges {
-                target: swipeView
-                scale: 0
-                opacity: 0
-            }
         },
         State {
             name: "expanded"
@@ -43,8 +38,9 @@ CustomRect {
                 implicitWidth: 330
                 implicitHeight: 480
             }
+
             PropertyChanges {
-                target: swipeView
+                target: contentLoader.item?.swipeView ?? null
                 scale: 1
                 opacity: 1
             }
@@ -59,14 +55,14 @@ CustomRect {
             NumberAnimation {
                 target: root
                 properties: "implicitWidth, implicitHeight, radius"
-                duration: Animations.durations.fast
+                duration: Animations.durations.medium
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
             }
             NumberAnimation {
-                target: swipeView
+                target: contentLoader.item?.swipeView ?? null
                 properties: "scale, opacity"
-                duration: Animations.durations.fast
+                duration: Animations.durations.medium
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
             }
@@ -89,60 +85,17 @@ CustomRect {
             size: Fonts.sizing.large
         }
 
-        FolderListModel {
-            id: wallpapers
-            folder: Qt.resolvedUrl("../../wallpapers")
-            nameFilters: ["*.png", "*.jpg", "*.jpeg"]
-            showDirs: false
-        }
+        Loader {
+            id: contentLoader
+            anchors.fill: parent
 
-        SwipeView {
-            id: swipeView
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                verticalCenter: parent.verticalCenter
-            }
-            implicitHeight: root.implicitHeight * 0.39
-            implicitWidth: root.implicitWidth * 0.9
-            visible: root.implicitWidth > 60
+            active: hoverArea.containsMouse || root.radius < 180
 
-            Repeater {
-                model: wallpapers
-                delegate: ClippingRectangle {
-                    id: wrapper
-                    required property string filePath
-
-                    implicitWidth: swipeView.implicitWidth
-                    implicitHeight: swipeView.implicitHeight
-                    radius: root.radius
-                    color: Colors.primary
-
-                    Image {
-                        anchors.fill: parent
-                        fillMode: Image.PreserveAspectCrop
-                        smooth: true
-                        source: wrapper.filePath
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                BackgroundManager.setWallpaper(root.screen.model, wrapper.filePath);
-                            }
-                        }
-                    }
+            sourceComponent: Component {
+                ExpandedWallpaperView {
+                    parentRoot: root
                 }
             }
-        }
-
-        PageIndicator {
-            id: indicator
-            visible: root.implicitWidth > 60
-
-            count: swipeView.count
-            currentIndex: swipeView.currentIndex
-
-            anchors.top: swipeView.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 }
