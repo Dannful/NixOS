@@ -42,9 +42,6 @@ RowLayout {
             if (currentPlayer !== null)
                 currentPlayer.volume = value;
         }
-        onIconClicked: () => {
-            console.log(currentPlayer.supportedUriSchemes);
-        }
     }
 
     ClippingRectangle {

@@ -100,6 +100,19 @@ CustomRect {
             duration: Animations.durations.medium
             direction: RotationAnimation.Clockwise
         }
+        NumberAnimation {
+            target: contentLoader.item ? contentLoader.item.trackArt : null
+            properties: "scale"
+            duration: Animations.durations.medium
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+        }
+        RotationAnimation {
+            target: contentLoader.item ? contentLoader.item.trackArt : null
+            duration: Animations.durations.medium
+            // Opcional: defina a direção se quiser um efeito específico
+            // direction: RotationAnimation.Clockwise
+        }
     }
 
     MaterialIcon {
@@ -121,7 +134,7 @@ CustomRect {
             id: contentLoader
             anchors.fill: parent
 
-            active: root.state === 'expanded' || closingTransition.running
+            active: hoverArea.containsMouse || root.radius < 180
 
             sourceComponent: Component {
                 ExpandedPlayerControls {
