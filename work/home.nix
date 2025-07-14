@@ -35,6 +35,7 @@
   custom-hyprland = {
     enable = true;
     nvidia = true;
+    backgrounds-file = "/etc/nixos/work/backgrounds.json";
     monitors = [
       {
         name = "DP-1";
