@@ -17,7 +17,9 @@ CustomRect {
         verticalCenter: panel.verticalCenter
     }
 
-    readonly property MprisPlayer currentPlayer: Mpris.players.values.find(player => player.positionSupported) ?? null
+    readonly property list<MprisPlayer> players: Mpris.players.values.filter(player => player.positionSupported)
+    readonly property list<MprisPlayer> playingPlayers: players.filter(player => player.isPlaying)
+    readonly property MprisPlayer currentPlayer: playingPlayers.length > 0 ? playingPlayers[playingPlayers.length - 1] : (players[Math.min(0, players.length - 1)] ?? null)
 
     opacity: currentPlayer ? 1 : 0
 
