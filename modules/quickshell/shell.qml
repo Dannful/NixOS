@@ -12,6 +12,7 @@ import "root:/bars/right"
 import "root:/bars/bottom"
 import "root:/bars"
 import "root:/services"
+import Quickshell.Services.Mpris
 
 Scope {
     id: scope
@@ -74,8 +75,14 @@ Scope {
                         implicitHeight: topBar.implicitHeight
                     }
 
-                    Music {
-                        panel: parent
+                    Loader {
+                        active: Mpris.players.values.filter(player => player.positionSupported).length > 0
+
+                        sourceComponent: Component {
+                            Music {
+                                panel: panels
+                            }
+                        }
                     }
 
                     WallpaperSelection {

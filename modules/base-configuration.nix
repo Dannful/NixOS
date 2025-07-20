@@ -102,6 +102,11 @@ in {
     boot.loader.efi.canTouchEfiVariables = true;
 
     networking.hostName = "nixos";
+    networking.firewall = {
+      enable = true;
+      allowedTCPPorts = [ 25565 ];
+      allowedUDPPorts = [ 25565 ];
+    };
     # networking.wireless.enable = true;
 
     # Configure network proxy if necessary
