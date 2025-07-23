@@ -75,14 +75,8 @@ Scope {
                         implicitHeight: topBar.implicitHeight
                     }
 
-                    Loader {
-                        active: Mpris.players.values.filter(player => player.positionSupported).length > 0
-
-                        sourceComponent: Component {
-                            Music {
-                                panel: panels
-                            }
-                        }
+                    Music {
+                        panel: panels
                     }
 
                     WallpaperSelection {
