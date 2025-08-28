@@ -102,11 +102,6 @@ in {
     boot.loader.efi.canTouchEfiVariables = true;
 
     networking.hostName = "nixos";
-    networking.firewall = {
-      enable = true;
-      allowedTCPPorts = [ 25565 ];
-      allowedUDPPorts = [ 25565 ];
-    };
     # networking.wireless.enable = true;
 
     # Configure network proxy if necessary
@@ -157,7 +152,6 @@ in {
           [libinput]
           enable-tap=true
           left-handed=false
-
 
         '' + lib.optionalString
           (cfg.login != null && cfg.login.display != null) ''
@@ -222,6 +216,7 @@ in {
     # services.xserver.libinput.enable = true;
 
     # Define a user account. Don't forget to set a password with ‘passwd’.
+    programs.zsh.enable = true;
     users.users = builtins.listToAttrs (builtins.map (user: {
       name = user.name;
       value = {
@@ -230,7 +225,7 @@ in {
         description = user.name;
         extraGroups = [ "networkManager" "wheel" "docker" ] ++ user.groups;
         packages = [ ];
-        shell = pkgs.bash;
+        shell = pkgs.zsh;
       };
     }) cfg.users);
 
@@ -245,12 +240,6 @@ in {
 
     # Install firefox.
     programs.firefox.enable = true;
-
-    # Enable Fish
-    programs.fish.enable = true;
-
-    # Disable command not found for flakes
-    programs.command-not-found.enable = false;
 
     # Allow unfree packages
     nixpkgs.config.allowUnfree = true;

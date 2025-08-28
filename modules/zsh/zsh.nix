@@ -2,6 +2,10 @@
 
 {
   home.packages = [ pkgs.any-nix-shell ];
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -9,7 +13,7 @@
     syntaxHighlighting.enable = true;
     shellGlobalAliases = { kittyssh = "kitten ssh"; };
 
-    initExtra = ''eval "$(direnv hook zsh)"'';
+    initContent = ''eval "$(direnv hook zsh)"'';
 
     history = {
       size = 10000;

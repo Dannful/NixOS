@@ -4,7 +4,7 @@ let
   inherit (lib) mkOption types;
   cfg = config.custom-kitty;
 in {
-  imports = [ ../fish/fish.nix ];
+  imports = [ ../zsh/zsh.nix ];
   options.custom-kitty = {
     enable = lib.mkEnableOption "custom Kitty";
     wallpaper = mkOption {
@@ -34,7 +34,7 @@ in {
         window_border_width 0
         hide_window_decorations yes
         active_border_color none
-        shell ${pkgs.fish}/bin/fish
+        shell ${pkgs.zsh}/bin/zsh
       '';
     };
   };
