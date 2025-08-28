@@ -56,7 +56,7 @@ in {
           };
         };
         project_panel = { auto_fold_dirs = false; };
-        terminal = { shell = { program = "fish"; }; };
+        terminal = { shell = { program = "zsh"; }; };
         base_keymap = "Atom";
         diagnostics = {
           include_warnings = true;
