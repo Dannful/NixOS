@@ -54,6 +54,9 @@ in {
           rust-analyzer = {
             initialization_options = { check.command = "clippy"; };
           };
+          eslint = {
+            settings = { nodePath = "${pkgs.nodePackages.nodejs}/bin/node"; };
+          };
         };
         languages = {
           Javascript = {
