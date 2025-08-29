@@ -62,8 +62,7 @@ in {
           include_warnings = true;
           inline = { enabled = true; };
         };
-        assistant = {
-          version = 2;
+        agent = {
           default_model = {
             provider = "copilot_chat";
             model = "gpt-4o";
