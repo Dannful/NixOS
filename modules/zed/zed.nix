@@ -55,6 +55,16 @@ in {
             initialization_options = { check.command = "clippy"; };
           };
         };
+        languages = {
+          Javascript = {
+            formatter = {
+              external = {
+                command = "${pkgs.prettierd}";
+                arguments = [ "--stdin-filepath" "{buffer_path}" ];
+              };
+            };
+          };
+        };
         project_panel = { auto_fold_dirs = false; };
         terminal = { shell = { program = "zsh"; }; };
         base_keymap = "Atom";
