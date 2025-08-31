@@ -11,7 +11,7 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    shellGlobalAliases = { kittyssh = "kitten ssh"; };
+    shellGlobalAliases = { ssh = "kitty +kitten ssh"; };
 
     initContent = ''eval "$(direnv hook zsh)"'';
 
