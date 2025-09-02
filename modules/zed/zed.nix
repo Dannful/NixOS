@@ -78,7 +78,7 @@ in {
         agent = {
           default_model = {
             provider = "copilot_chat";
-            model = "gpt-4o";
+            model = "gpt-4.1";
           };
         };
         features = { edit_prediction_provider = "copilot"; };
