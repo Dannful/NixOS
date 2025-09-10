@@ -22,6 +22,7 @@ in {
     home.file.".config/zed/keymap.json" = { source = ./keymap.json; };
     programs.zed-editor = {
       enable = true;
+      package = pkgs.zed-editor-fhs;
 
       userSettings = {
         vim_mode = true;
@@ -78,7 +79,7 @@ in {
         agent = {
           default_model = {
             provider = "copilot_chat";
-            model = "gpt-4.1";
+            model = "claude-3.7-sonnet";
           };
         };
         features = { edit_prediction_provider = "copilot"; };
