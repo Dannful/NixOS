@@ -22,7 +22,6 @@ in {
     home.file.".config/zed/keymap.json" = { source = ./keymap.json; };
     programs.zed-editor = {
       enable = true;
-      package = pkgs.zed-editor-fhs;
 
       userSettings = {
         vim_mode = true;
