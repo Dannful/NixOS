@@ -133,6 +133,17 @@ in {
       enable = true;
       extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
     };
+
+    xdg.mime.defaultApplications = {
+      "application/pdf" = "org.pwmt.zathura.desktop";
+      "image/jpeg" = "feh.desktop";
+      "image/png" = "feh.desktop";
+      "image/gif" = "feh.desktop";
+      "image/bmp" = "feh.desktop";
+      "image/svg+xml" = "feh.desktop";
+      "image/webp" = "feh.desktop";
+    };
+
     services.displayManager.sddm = {
       enable = true;
       wayland.enable = true;
@@ -277,6 +288,7 @@ in {
         zip
         unzip
         kdePackages.qtdeclarative
+        feh
 
         # Terminal
         kitty
