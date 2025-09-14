@@ -6,8 +6,6 @@ let
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
     sha256 = "0yxafv3wv1izl1j3ip12pn3gmabwajk6jbawmh719q96zw7jawy8";
   });
-  pkgs-unstable =
-    inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 
   custom-sddm-astronaut = pkgs.sddm-astronaut.override {
     themeConfig = {
@@ -342,12 +340,7 @@ in {
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
-    hardware.graphics = {
-      enable = true;
-      package = pkgs-unstable.mesa;
-      enable32Bit = true;
-      package32 = pkgs-unstable.pkgsi686Linux.mesa;
-    };
+    hardware.graphics = { enable = true; };
 
     hardware.bluetooth.enable = true;
     hardware.bluetooth.powerOnBoot = true;
