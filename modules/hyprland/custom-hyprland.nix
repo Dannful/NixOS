@@ -54,7 +54,7 @@ in {
       slurp
       wl-clipboard
       swappy
-      rofi-wayland
+      rofi
       playerctl
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
@@ -134,7 +134,7 @@ in {
           "$alt, F, exec, hyprctl dispatch exec ${pkgs.nautilus}/bin/nautilus"
           "$alt, D, exec, hyprctl dispatch exec ${pkgs.discord}/bin/discord"
           "$mod, Return, exec, hyprctl dispatch exec ${pkgs.kitty}/bin/kitty"
-          "$mod, D, exec, hyprctl dispatch exec '${pkgs.rofi-wayland}/bin/rofi -show drun'"
+          "$mod, D, exec, hyprctl dispatch exec '${pkgs.rofi}/bin/rofi -show drun'"
           "$mod, Q, exec, hyprctl kill"
           "$mod, C, killactive"
           "$mod, F, fullscreen"

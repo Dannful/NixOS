@@ -6,7 +6,6 @@
     ../modules/kitty/custom-kitty.nix
     ../modules/zed/zed.nix
     ../modules/git/git.nix
-
   ];
   home.username = "dannly";
   home.homeDirectory = "/home/dannly";

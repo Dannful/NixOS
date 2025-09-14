@@ -75,6 +75,9 @@ in {
           include_warnings = true;
           inline = { enabled = true; };
         };
+        agent_servers = {
+          gemini = { command = "${pkgs.gemini-cli}/bin/gemini"; };
+        };
         agent = {
           default_model = {
             provider = "copilot_chat";

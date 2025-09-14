@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   programs.rofi = {
-    enable = true;   
+    enable = true;
     theme = "arthur";
   };
 }

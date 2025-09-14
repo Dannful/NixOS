@@ -4,7 +4,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "1pi18grynxv45kigrlmphkmq527hw85b7cgbz8mqvpw79ndj9yj5";
+    sha256 = "0yxafv3wv1izl1j3ip12pn3gmabwajk6jbawmh719q96zw7jawy8";
   });
   pkgs-unstable =
     inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -263,6 +263,9 @@ in {
 
         # Theming
         custom-sddm-astronaut
+
+        # AI
+        gemini-cli
 
         # Media
         discord
