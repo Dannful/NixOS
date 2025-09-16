@@ -7,6 +7,7 @@
     ../modules/zed/zed.nix
     ../modules/git/git.nix
   ];
+
   home.username = "dannly";
   home.homeDirectory = "/home/dannly";
 
@@ -14,17 +15,18 @@
 
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
-  home.packages = [
-    pkgs.gh
-    pkgs.lazygit
-    pkgs.obs-studio
-    pkgs.ferium
-    pkgs.wineWowPackages.waylandFull
-    pkgs.mono
-    pkgs.winetricks
-    pkgs.prismlauncher
-    pkgs.corretto21
-    pkgs.droidcam
+  home.packages = with pkgs; [
+    gh
+    lazygit
+    obs-studio
+    ferium
+    wineWowPackages.waylandFull
+    mono
+    winetricks
+    prismlauncher
+    corretto21
+    droidcam
+    ollama-cuda
   ];
 
   home.sessionVariables = {

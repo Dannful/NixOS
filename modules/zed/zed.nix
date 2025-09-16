@@ -80,11 +80,11 @@ in {
         };
         agent = {
           default_model = {
-            provider = "copilot_chat";
-            model = "claude-3.7-sonnet";
+            provider = "ollama";
+            model = "qwen2.5-coder";
           };
         };
-        features = { edit_prediction_provider = "copilot"; };
+        features = { edit_prediction_provider = "none"; };
       };
     };
   };

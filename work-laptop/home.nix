@@ -23,14 +23,15 @@
     '';
   };
 
-  home.packages = [
-    pkgs.gh
-    pkgs.lazygit
-    pkgs.awscli2
-    pkgs.bruno
-    pkgs.brightnessctl
-    pkgs.nomad
-    pkgs.jetbrains.datagrip
+  home.packages = with pkgs; [
+    gh
+    lazygit
+    awscli2
+    bruno
+    brightnessctl
+    nomad
+    jetbrains.datagrip
+    gemini-cli
   ];
 
   home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };

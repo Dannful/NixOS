@@ -14,14 +14,15 @@
 
   nixpkgs = { config = { allowUnfree = true; }; };
 
-  home.packages = [
-    pkgs.gh
-    pkgs.lazygit
-    pkgs.awscli2
-    pkgs.bruno
-    pkgs.nomad
-    pkgs.jetbrains.datagrip
-    pkgs.droidcam
+  home.packages = with pkgs; [
+    gh
+    lazygit
+    awscli2
+    bruno
+    nomad
+    jetbrains.datagrip
+    droidcam
+    ollama-cuda
   ];
 
   home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };

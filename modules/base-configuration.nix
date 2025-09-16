@@ -273,9 +273,6 @@ in {
         # Theming
         custom-sddm-astronaut
 
-        # AI
-        gemini-cli
-
         # Media
         discord
         youtube-music
