@@ -286,6 +286,7 @@ in {
         unzip
         kdePackages.qtdeclarative
         feh
+        gnome-system-monitor
 
         # Terminal
         kitty
