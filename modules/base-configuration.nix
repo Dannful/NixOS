@@ -4,7 +4,7 @@ let
   cfg = config.base-config;
   aagl-gtk-on-nix = import (builtins.fetchTarball {
     url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "0yxafv3wv1izl1j3ip12pn3gmabwajk6jbawmh719q96zw7jawy8";
+    sha256 = "1il086whzi088hgl8j7vzq4rr17lykl7a30iqxzij098jhwymq29";
   });
 
   custom-sddm-astronaut = pkgs.sddm-astronaut.override {
