@@ -28,6 +28,7 @@
     corretto21
     droidcam
     ollama-cuda
+    gemini-cli
   ];
 
   home.sessionVariables = {
