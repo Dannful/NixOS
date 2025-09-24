@@ -6,6 +6,7 @@
     ../modules/zed/zed.nix
     ../modules/hyprland/custom-hyprland.nix
     ../modules/git/git.nix
+    ../modules/emacs/emacs.nix
   ];
   home.username = "vinidan";
   home.homeDirectory = "/home/vinidan";
