@@ -24,7 +24,7 @@
     jetbrains.datagrip
     droidcam
     ollama-cuda
-    gemini
+    gemini-cli
   ];
 
   home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };
