@@ -9,6 +9,7 @@
       epkgs.vterm
       epkgs.doom-themes
       epkgs.ess
+      epkgs.pdf-tools
     ];
     extraConfig = ''
       (require 'evil)
@@ -19,6 +20,7 @@
        'org-babel-load-languages
        '((R . t)))
       (setq org-confirm-babel-evaluate nil)
+      (pdf-loader-install)
     '';
   };
 }
