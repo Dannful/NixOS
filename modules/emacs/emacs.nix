@@ -23,6 +23,8 @@
       (pdf-loader-install)
       (setq org-latex-listings 'minted)
       (setq org-latex-pdf-process '("latexmk -shell-escape -pdf %f"))
+      (add-to-list 'org-latex-packages-alist '("" "tabularx"))
+      (define-key org-mode-map (kbd "C-c C-v d") 'org-babel-remove-result)
     '';
   };
 }
