@@ -21,6 +21,8 @@
        '((R . t)))
       (setq org-confirm-babel-evaluate nil)
       (pdf-loader-install)
+      (setq org-latex-listings 'minted)
+      (setq org-latex-pdf-process '("latexmk -shell-escape -pdf %f"))
     '';
   };
 }
