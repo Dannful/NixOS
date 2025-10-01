@@ -18,7 +18,9 @@
       (load-theme 'doom-one t)
       (org-babel-do-load-languages
        'org-babel-load-languages
-       '((R . t)))
+       '((R . t)
+         (shell . t)
+         (sql . t)))
       (setq org-confirm-babel-evaluate nil)
       (pdf-loader-install)
       (setq org-latex-listings 'minted)
