@@ -27,7 +27,6 @@
     prismlauncher
     corretto21
     droidcam
-    ollama-cuda
     gemini-cli
   ];
 

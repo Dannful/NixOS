@@ -23,7 +23,6 @@
     nomad
     jetbrains.datagrip
     droidcam
-    ollama-cuda
     gemini-cli
   ];
 

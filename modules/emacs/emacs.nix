@@ -19,8 +19,7 @@
       (org-babel-do-load-languages
        'org-babel-load-languages
        '((R . t)
-         (shell . t)
-         (sql . t)))
+         (shell . t)))
       (setq org-confirm-babel-evaluate nil)
       (pdf-loader-install)
       (setq org-latex-listings 'minted)
