@@ -17,9 +17,14 @@
       url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    aagl = {
+      url = "github:ezKEa/aagl-gtk-on-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, nixos, home-manager, hyprland, quickshell, ... }@inputs:
+  outputs =
+    { nixpkgs, nixos, home-manager, hyprland, quickshell, aagl, ... }@inputs:
     let system = "x86_64-linux";
     in {
       nixosConfigurations = {

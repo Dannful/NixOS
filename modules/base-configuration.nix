@@ -2,10 +2,6 @@
 let
   inherit (lib) mkOption types;
   cfg = config.base-config;
-  aagl-gtk-on-nix = import (builtins.fetchTarball {
-    url = "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz";
-    sha256 = "1xyizkr8warsmlrgvh79kp4slh3jyzh54wppzsbx06j3dgvq9773";
-  });
 
   custom-sddm-astronaut = pkgs.sddm-astronaut.override {
     themeConfig = {
@@ -20,8 +16,9 @@ let
     };
     embeddedTheme = "astronaut";
   };
+  aagl = inputs.aagl;
 in {
-  imports = [ aagl-gtk-on-nix.module ];
+  imports = [ aagl.nixosModules.default ];
   options.base-config = {
     users = mkOption {
       type = types.listOf (types.submodule {
@@ -94,7 +91,8 @@ in {
     };
   };
   config = {
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    nix.settings = aagl.nixConfig;
+    programs.anime-game-launcher.enable = cfg.use-steam;
 
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
@@ -303,14 +301,6 @@ in {
     services.dbus.packages = [ pkgs.swaynotificationcenter ];
     systemd.packages = [ pkgs.swaynotificationcenter ];
 
-    programs.anime-game-launcher.enable = cfg.use-steam;
-
-    nix.settings = {
-      substituters = [ "https://ezkea.cachix.org" ];
-      trusted-public-keys =
-        [ "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI=" ];
-    };
-
     virtualisation.docker.enable = true;
 
     fonts.packages = with pkgs; [
@@ -372,6 +362,5 @@ in {
     nix.gc.automatic = true;
     nix.gc.dates = "daily";
     nix.gc.options = "--delete-older-than 3d";
-    nix.settings.auto-optimise-store = true;
   };
 }
