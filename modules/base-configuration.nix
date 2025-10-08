@@ -16,9 +16,7 @@ let
     };
     embeddedTheme = "astronaut";
   };
-  aagl = inputs.aagl;
 in {
-  imports = [ aagl.nixosModules.default ];
   options.base-config = {
     users = mkOption {
       type = types.listOf (types.submodule {
@@ -91,14 +89,7 @@ in {
     };
   };
   config = {
-    nix.settings = {
-      substituters = [ "https://ezkea.cachix.org" ];
-      trusted-public-keys =
-        [ "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI=" ];
-      experimental-features = [ "nix-command" "flakes" ];
-    };
-    programs.anime-game-launcher.enable = cfg.use-steam;
-
+    nix.settings = { experimental-features = [ "nix-command" "flakes" ]; };
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
@@ -299,9 +290,13 @@ in {
 
         # Notifications
         swaynotificationcenter
-      ]
-      ++ lib.optionals cfg.use-steam [ pkgs.protonup pkgs.mangohud pkgs.lutris ]
-      ++ lib.optionals cfg.use-nvidia [ pkgs.egl-wayland ];
+      ] ++ lib.optionals cfg.use-steam [
+        pkgs.protonup
+        pkgs.mangohud
+        pkgs.lutris
+        pkgs.wineWow64Packages.waylandFull
+        pkgs.winetricks
+      ] ++ lib.optionals cfg.use-nvidia [ pkgs.egl-wayland ];
 
     services.dbus.packages = [ pkgs.swaynotificationcenter ];
     systemd.packages = [ pkgs.swaynotificationcenter ];
@@ -345,7 +340,10 @@ in {
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
-    hardware.graphics = { enable = true; };
+    hardware.graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
 
     hardware.bluetooth.enable = true;
     hardware.bluetooth.powerOnBoot = true;

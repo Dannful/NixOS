@@ -53,6 +53,7 @@ in {
       grim
       slurp
       wl-clipboard
+      cliphist
       swappy
       rofi
       playerctl
@@ -125,10 +126,27 @@ in {
           kb_variant = "alt-intl";
         };
         decoration = { rounding = 3; };
-        exec-once = "hyprctl dispatch exec ${startupScript}/bin/start";
+        exec-once = [
+          "hyprctl dispatch exec ${startupScript}/bin/start"
+          "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
+        ];
         monitor = builtins.map (monitor:
           "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
           cfg.monitors;
+        binds = { drag_threshold = 10; };
+        bindm =
+          [ "$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow" ];
+        bindc = "$mod, mouse:272, togglefloating";
+        bindel = [
+          ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ];
+        bindl = [
+          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ", XF86AudioPlay, exec, playerctl play-pause"
+          ", XF86AudioPrev, exec, playerctl previous"
+          ", XF86AudioNext, exec, playerctl next"
+        ];
         bind = [
           "$alt, B, exec, hyprctl dispatch exec ${pkgs.firefox}/bin/firefox"
           "$alt, F, exec, hyprctl dispatch exec ${pkgs.nautilus}/bin/nautilus"
@@ -139,6 +157,7 @@ in {
           "$mod, C, killactive"
           "$mod, F, fullscreen"
           '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
+          "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
         ] ++ (builtins.concatLists (builtins.genList (i:
           let ws = i + 1;
           in [

@@ -21,9 +21,7 @@
     lazygit
     obs-studio
     ferium
-    wineWowPackages.waylandFull
     mono
-    winetricks
     prismlauncher
     corretto21
     droidcam
