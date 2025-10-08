@@ -91,7 +91,12 @@ in {
     };
   };
   config = {
-    nix.settings = aagl.nixConfig;
+    nix.settings = {
+      substituters = [ "https://ezkea.cachix.org" ];
+      trusted-public-keys =
+        [ "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI=" ];
+      experimental-features = [ "nix-command" "flakes" ];
+    };
     programs.anime-game-launcher.enable = cfg.use-steam;
 
     boot.loader.systemd-boot.enable = true;
