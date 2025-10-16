@@ -42,5 +42,11 @@
           ];
         };
       };
+      templates = {
+        csharp = {
+          path = ./templates/csharp;
+          description = "A C# development environment";
+        };
+      };
     };
 }
