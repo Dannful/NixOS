@@ -17,9 +17,14 @@
       url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nvf = {
+      url = "github:notashelf/nvf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, nixos, home-manager, hyprland, quickshell, ... }@inputs:
+  outputs =
+    { nixpkgs, nixos, home-manager, hyprland, quickshell, nvf, ... }@inputs:
     let system = "x86_64-linux";
     in {
       nixosConfigurations = {
@@ -36,10 +41,7 @@
         work-laptop = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs system; };
 
-          modules = [
-            ./work-laptop/configuration.nix
-            ({ ... }: { programs.command-not-found.enable = false; })
-          ];
+          modules = [ ./work-laptop/configuration.nix ];
         };
       };
       templates = {

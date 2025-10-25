@@ -293,7 +293,6 @@ in {
       ] ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
-        pkgs.lutris
         pkgs.wineWow64Packages.waylandFull
         pkgs.winetricks
       ] ++ lib.optionals cfg.use-nvidia [ pkgs.egl-wayland ];

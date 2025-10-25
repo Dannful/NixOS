@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports = [
@@ -7,6 +7,7 @@
     ../modules/zed/zed.nix
     ../modules/git/git.nix
     ../modules/emacs/emacs.nix
+    ../modules/nvim/nvim.nix
   ];
 
   home.username = "dannly";
