@@ -8,6 +8,20 @@
     enable = true;
     settings = {
       vim = {
+        keymaps = [
+          {
+            key = "<leader>e";
+            mode = ["n"];
+            silent = true;
+            action = ''
+              function()
+                vim.cmd("vsplit | wincmd r")
+                require("oil").open()
+              end
+            '';
+            lua = true;
+          }
+        ];
         theme = {
           enable = true;
           name = "catppuccin";
@@ -73,7 +87,11 @@
           enable = true;
           lazygit.enable = true;
         };
-        utility.motion.flash-nvim.enable = true;
+
+        utility = {
+          motion.flash-nvim.enable = true;
+          oil-nvim.enable = true;
+        };
         ui.illuminate.enable = true;
         comments.comment-nvim.enable = true;
         highlight = {
