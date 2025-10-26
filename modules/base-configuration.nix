@@ -1,16 +1,20 @@
-{ lib, config, pkgs, inputs, ... }:
-let
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
   inherit (lib) mkOption types;
   cfg = config.base-config;
 
   custom-sddm-astronaut = pkgs.sddm-astronaut.override {
     themeConfig = {
-      Background = if (cfg.login != null && cfg.login.wallpaper != null) then
-        (toString cfg.login.wallpaper)
-      else
-        "${pkgs.fetchurl {
-          url =
-            "https://raw.githubusercontent.com/Keyitdev/sddm-astronaut-theme/refs/heads/master/Backgrounds/pixel_sakura.gif";
+      Background =
+        if (cfg.login != null && cfg.login.wallpaper != null)
+        then (toString cfg.login.wallpaper)
+        else "${pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/Keyitdev/sddm-astronaut-theme/refs/heads/master/Backgrounds/pixel_sakura.gif";
           hash = "sha256-wqfnUspZY9UlCuCKSum49/HHz3A9vndNc7caspvL+7M=";
         }}";
     };
@@ -29,14 +33,13 @@ in {
           password = mkOption {
             type = types.str;
             description = "User password in SHA512 hash";
-            example =
-              "$6$l8tWRCtkcDiV17p4$zsEIc9/vY62pR2kFhUnO9R/hWdGDTQyMIKREVpNUSZl6cFeUDNz3/9dK.CeQ2vwBk45pEeNKT7T9rb4d1pLLn/";
+            example = "$6$l8tWRCtkcDiV17p4$zsEIc9/vY62pR2kFhUnO9R/hWdGDTQyMIKREVpNUSZl6cFeUDNz3/9dK.CeQ2vwBk45pEeNKT7T9rb4d1pLLn/";
           };
           groups = mkOption {
             type = types.listOf types.str;
             description = "Extra groups for the user";
             example = "[]";
-            default = [ ];
+            default = [];
           };
           home-file-path = mkOption {
             type = types.path;
@@ -89,7 +92,7 @@ in {
     };
   };
   config = {
-    nix.settings = { experimental-features = [ "nix-command" "flakes" ]; };
+    nix.settings = {experimental-features = ["nix-command" "flakes"];};
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
@@ -122,10 +125,10 @@ in {
     };
 
     # Enable the X11 windowing system.
-    services.xserver = { enable = true; };
+    services.xserver = {enable = true;};
     xdg.portal = {
       enable = true;
-      extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
+      extraPortals = [pkgs.kdePackages.xdg-desktop-portal-kde];
     };
 
     xdg.mime.defaultApplications = {
@@ -143,20 +146,21 @@ in {
       wayland.enable = true;
       package = pkgs.kdePackages.sddm;
       theme = "sddm-astronaut-theme";
-      extraPackages = [ custom-sddm-astronaut ];
+      extraPackages = [custom-sddm-astronaut];
       settings = let
         westonConfigFile = pkgs.writeText "weston.ini" (''
-          [keyboard]
-          keymap_layout=us
-          keymap_model=pc104
-          keymap_options=terminate:ctrl_alt_bksp
-          keymap_variant=alt-intl
+            [keyboard]
+            keymap_layout=us
+            keymap_model=pc104
+            keymap_options=terminate:ctrl_alt_bksp
+            keymap_variant=alt-intl
 
-          [libinput]
-          enable-tap=true
-          left-handed=false
+            [libinput]
+            enable-tap=true
+            left-handed=false
 
-        '' + lib.optionalString
+          ''
+          + lib.optionalString
           (cfg.login != null && cfg.login.display != null) ''
             [output]
             name=${cfg.login.display.name}
@@ -164,8 +168,7 @@ in {
           '');
       in {
         Wayland = {
-          CompositorCommand =
-            "${pkgs.weston}/bin/weston --shell=kiosk -c ${westonConfigFile}";
+          CompositorCommand = "${pkgs.weston}/bin/weston --shell=kiosk -c ${westonConfigFile}";
         };
       };
     };
@@ -174,8 +177,9 @@ in {
       (self: super: {
         gnome = super.gnome.overrideScope (gself: gsuper: {
           nautilus = gsuper.nautilus.overrideAttrs (nsuper: {
-            buildInputs = nsuper.buildInputs
-              ++ (with pkgs.gst_all_1; [ gst-plugins-good gst-plugins-bad ]);
+            buildInputs =
+              nsuper.buildInputs
+              ++ (with pkgs.gst_all_1; [gst-plugins-good gst-plugins-bad]);
           });
         });
       })
@@ -221,23 +225,25 @@ in {
     # Define a user account. Don't forget to set a password with ‘passwd’.
     programs.zsh.enable = true;
     users.users = builtins.listToAttrs (builtins.map (user: {
-      name = user.name;
-      value = {
-        hashedPassword = user.password;
-        isNormalUser = true;
-        description = user.name;
-        extraGroups = [ "networkManager" "wheel" "docker" ] ++ user.groups;
-        packages = [ ];
-        shell = pkgs.zsh;
-      };
-    }) cfg.users);
+        name = user.name;
+        value = {
+          hashedPassword = user.password;
+          isNormalUser = true;
+          description = user.name;
+          extraGroups = ["networkManager" "wheel" "docker"] ++ user.groups;
+          packages = [];
+          shell = pkgs.zsh;
+        };
+      })
+      cfg.users);
 
     home-manager = {
-      extraSpecialArgs = { inherit inputs; };
+      extraSpecialArgs = {inherit inputs;};
       users = builtins.listToAttrs (builtins.map (user: {
-        name = user.name;
-        value = import user.home-file-path;
-      }) cfg.users);
+          name = user.name;
+          value = import user.home-file-path;
+        })
+        cfg.users);
       backupFileExtension = "backup";
     };
 
@@ -290,15 +296,17 @@ in {
 
         # Notifications
         swaynotificationcenter
-      ] ++ lib.optionals cfg.use-steam [
+      ]
+      ++ lib.optionals cfg.use-steam [
         pkgs.protonup
         pkgs.mangohud
         pkgs.wineWow64Packages.waylandFull
         pkgs.winetricks
-      ] ++ lib.optionals cfg.use-nvidia [ pkgs.egl-wayland ];
+      ]
+      ++ lib.optionals cfg.use-nvidia [pkgs.egl-wayland];
 
-    services.dbus.packages = [ pkgs.swaynotificationcenter ];
-    systemd.packages = [ pkgs.swaynotificationcenter ];
+    services.dbus.packages = [pkgs.swaynotificationcenter];
+    systemd.packages = [pkgs.swaynotificationcenter];
 
     virtualisation.docker.enable = true;
 
@@ -311,14 +319,14 @@ in {
     fonts = {
       fontconfig = {
         defaultFonts = {
-          serif = [ "FiraCode Nerd Font" ];
-          sansSerif = [ "FiraCode Nerd Font" ];
-          monospace = [ "FiraCode Nerd Font Mono" ];
+          serif = ["FiraCode Nerd Font"];
+          sansSerif = ["FiraCode Nerd Font"];
+          monospace = ["FiraCode Nerd Font Mono"];
         };
       };
     };
 
-    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
+    environment.sessionVariables = {NIXOS_OZONE_WL = "1";};
 
     system.stateVersion = "24.05"; # Did you read the comment?
 
@@ -330,7 +338,7 @@ in {
       gamescopeSession.enable = true;
     };
     programs.gamemode.enable = lib.mkIf cfg.use-steam true;
-    services.xserver.videoDrivers = lib.mkIf cfg.use-nvidia [ "nvidia" ];
+    services.xserver.videoDrivers = lib.mkIf cfg.use-nvidia ["nvidia"];
     hardware.nvidia = lib.mkIf cfg.use-nvidia {
       modesetting.enable = true;
       powerManagement.enable = false;
@@ -353,13 +361,13 @@ in {
     system.autoUpgrade = {
       enable = true;
       flake = inputs.self.outPath;
-      flags = [ "--update-input" "nixpkgs" "-L" ];
+      flags = ["--update-input" "nixpkgs" "-L"];
       dates = "03:00";
       randomizedDelaySec = "45min";
     };
 
-    boot.kernelModules = [ "v4l2loopback" ];
-    boot.extraModulePackages = [ pkgs.linuxPackages.v4l2loopback ];
+    boot.kernelModules = ["v4l2loopback"];
+    boot.extraModulePackages = [pkgs.linuxPackages.v4l2loopback];
 
     nix.gc.automatic = true;
     nix.gc.dates = "daily";

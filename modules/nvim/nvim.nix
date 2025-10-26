@@ -21,7 +21,6 @@
           enable = true;
           theme = "ayu_dark";
         };
-        telescope.enable = true;
         autocomplete.nvim-cmp = {
           enable = true;
           mappings = {
@@ -47,11 +46,18 @@
             codeAction = "g.";
             goToDeclaration = "gD";
             goToDefinition = "gd";
-            goToType = "gt";
-            listDocumentSymbols = "gS";
-            listImplementations = "gI";
-            listReferences = "gr";
             renameSymbol = "gn";
+          };
+        };
+
+        telescope = {
+          enable = true;
+          mappings = {
+            lspDocumentSymbols = "gs";
+            lspImplementations = "gI";
+            lspReferences = "gr";
+            lspTypeDefinitions = "gt";
+            lspWorkspaceSymbols = "gS";
           };
         };
 
