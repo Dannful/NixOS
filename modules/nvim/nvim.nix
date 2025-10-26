@@ -8,6 +8,8 @@
     enable = true;
     settings = {
       vim = {
+        viAlias = true;
+        vimAlias = true;
         keymaps = [
           {
             key = "<leader>e";
@@ -19,6 +21,13 @@
                 require("oil").open()
               end
             '';
+            lua = true;
+          }
+          {
+            key = "g.";
+            mode = ["n"];
+            silent = true;
+            action = "require(\"actions-preview\").code_actions";
             lua = true;
           }
         ];
@@ -49,6 +58,11 @@
             setupModule = "neoscroll";
             event = ["BufEnter"];
           };
+          "actions-preview.nvim" = {
+            package = pkgs.vimPlugins.actions-preview-nvim;
+            setupModule = "actions-preview";
+            event = ["LspAttach"];
+          };
         };
 
         lsp = {
@@ -57,7 +71,6 @@
           inlayHints.enable = true;
           lightbulb.enable = true;
           mappings = {
-            codeAction = "g.";
             goToDeclaration = "gD";
             goToDefinition = "gd";
             renameSymbol = "gn";
@@ -86,6 +99,9 @@
         terminal.toggleterm = {
           enable = true;
           lazygit.enable = true;
+        };
+        git.gitsigns = {
+          enable = true;
         };
 
         utility = {
