@@ -15,13 +15,7 @@
             key = "<leader>e";
             mode = ["n"];
             silent = true;
-            action = ''
-              function()
-                vim.cmd("vsplit | wincmd r")
-                require("oil").open()
-              end
-            '';
-            lua = true;
+            action = "<cmd>Oil --float<CR>";
           }
           {
             key = "g.";
@@ -40,6 +34,7 @@
           tabstop = 2;
           shiftwidth = 2;
         };
+        autopairs.nvim-autopairs.enable = true;
         statusline.lualine = {
           enable = true;
           theme = "ayu_dark";
@@ -86,6 +81,12 @@
             lspTypeDefinitions = "gt";
             lspWorkspaceSymbols = "gS";
           };
+          extensions = [
+            {
+              name = "ui-select";
+              packages = [pkgs.vimPlugins.telescope-ui-select-nvim];
+            }
+          ];
         };
 
         languages = {
@@ -95,21 +96,23 @@
 
           nix.enable = true;
           clang.enable = true;
-	  bash.enable = true;
+          bash.enable = true;
+          ts.enable = true;
         };
         terminal.toggleterm = {
           enable = true;
           lazygit.enable = true;
         };
-        git.gitsigns = {
-          enable = true;
-        };
+        git.gitsigns.enable = true;
 
         utility = {
           motion.flash-nvim.enable = true;
           oil-nvim.enable = true;
         };
-        ui.illuminate.enable = true;
+        ui = {
+          illuminate.enable = true;
+          noice.enable = true;
+        };
         comments.comment-nvim.enable = true;
         highlight = {
           "RainbowRed".fg = "#E06C75";
