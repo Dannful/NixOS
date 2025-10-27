@@ -7,6 +7,7 @@
     ../modules/hyprland/custom-hyprland.nix
     ../modules/git/git.nix
     ../modules/emacs/emacs.nix
+    ../modules/nvim/nvim.nix
   ];
   home.username = "work";
   home.homeDirectory = "/home/work";

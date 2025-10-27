@@ -95,6 +95,7 @@
 
           nix.enable = true;
           clang.enable = true;
+	  bash.enable = true;
         };
         terminal.toggleterm = {
           enable = true;
