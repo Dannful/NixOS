@@ -1,6 +1,8 @@
-{ pkgs, inputs, ... }:
-
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     ../modules/hyprland/custom-hyprland.nix
     ../modules/kitty/custom-kitty.nix
@@ -13,7 +15,7 @@
   home.username = "dannly";
   home.homeDirectory = "/home/dannly";
 
-  nixpkgs = { config = { allowUnfree = true; }; };
+  nixpkgs = {config = {allowUnfree = true;};};
 
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
@@ -30,18 +32,14 @@
   ];
 
   home.sessionVariables = {
-    STEAM_EXTRA_COMPAT_TOOLS_PATHS =
-      "\${HOME}/.steam/root/compatibilitytools.d";
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
   };
 
-  programs.home-manager = { enable = true; };
+  programs.home-manager = {enable = true;};
 
-  custom-kitty = {
-    enable = true;
-    wallpaper = ../modules/quickshell/wallpapers/frieren.png;
-  };
+  custom-kitty.enable = true;
 
-  custom-zed = { enable = true; };
+  custom-zed = {enable = true;};
 
   custom-hyprland = {
     enable = true;
