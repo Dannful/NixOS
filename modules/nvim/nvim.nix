@@ -97,13 +97,21 @@
           nix.enable = true;
           clang.enable = true;
           bash.enable = true;
-          ts.enable = true;
+          ts = {
+            enable = true;
+            format.type = "prettierd";
+          };
         };
         terminal.toggleterm = {
           enable = true;
           lazygit.enable = true;
         };
-        git.gitsigns.enable = true;
+        git.gitsigns = {
+          enable = true;
+          setupOpts = {
+            current_line_blame = true;
+          };
+        };
 
         utility = {
           motion.flash-nvim.enable = true;
