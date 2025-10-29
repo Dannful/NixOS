@@ -101,6 +101,7 @@
             enable = true;
             format.type = "prettierd";
           };
+          html.enable = true;
         };
         terminal.toggleterm = {
           enable = true;
