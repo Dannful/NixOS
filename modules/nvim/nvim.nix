@@ -93,13 +93,13 @@
           enableTreesitter = true;
           enableDAP = true;
           enableFormat = true;
+          enableExtraDiagnostics = true;
 
           nix.enable = true;
           clang.enable = true;
           bash.enable = true;
           ts = {
             enable = true;
-            extraDiagnostics.enable = true;
             format.type = "biome";
           };
           html.enable = true;
