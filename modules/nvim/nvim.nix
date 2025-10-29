@@ -99,7 +99,8 @@
           bash.enable = true;
           ts = {
             enable = true;
-            format.type = "prettierd";
+            extraDiagnostics.enable = true;
+            format.type = "biome";
           };
           html.enable = true;
         };
