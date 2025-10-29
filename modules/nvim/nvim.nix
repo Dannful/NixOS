@@ -103,6 +103,7 @@
             format.type = "biome";
           };
           html.enable = true;
+          terraform.enable = true;
         };
         terminal.toggleterm = {
           enable = true;
