@@ -20,9 +20,8 @@
           {
             key = "g.";
             mode = ["n"];
+            action = "<cmd>lua require(\"fastaction\").code_action()<CR>";
             silent = true;
-            action = "require(\"actions-preview\").code_actions";
-            lua = true;
           }
         ];
         theme = {
@@ -34,12 +33,13 @@
           tabstop = 2;
           shiftwidth = 2;
         };
+
         autopairs.nvim-autopairs.enable = true;
         statusline.lualine = {
           enable = true;
-          theme = "ayu_dark";
+          theme = "catppuccin";
         };
-        autocomplete.nvim-cmp = {
+        autocomplete.blink-cmp = {
           enable = true;
           mappings = {
             previous = "<C-k>";
@@ -47,29 +47,26 @@
           };
         };
 
-        lazy.plugins = {
-          "neoscroll.nvim" = {
-            package = pkgs.vimPlugins.neoscroll-nvim;
-            setupModule = "neoscroll";
-            event = ["BufEnter"];
-          };
-          "actions-preview.nvim" = {
-            package = pkgs.vimPlugins.actions-preview-nvim;
-            setupModule = "actions-preview";
-            event = ["LspAttach"];
-          };
-        };
+        treesitter.context.enable = true;
 
         lsp = {
           enable = true;
           formatOnSave = true;
           inlayHints.enable = true;
           lightbulb.enable = true;
+          trouble.enable = true;
+          otter-nvim.enable = true;
+          nvim-docs-view.enable = true;
           mappings = {
             goToDeclaration = "gD";
             goToDefinition = "gd";
             renameSymbol = "gn";
           };
+        };
+
+        binds = {
+          whichKey.enable = true;
+          cheatsheet.enable = true;
         };
 
         telescope = {
@@ -89,6 +86,8 @@
           ];
         };
 
+        minimap.codewindow.enable = true;
+
         languages = {
           enableTreesitter = true;
           enableDAP = true;
@@ -104,6 +103,7 @@
           };
           html.enable = true;
           terraform.enable = true;
+          r.enable = true;
         };
         terminal.toggleterm = {
           enable = true;
@@ -117,12 +117,26 @@
         };
 
         utility = {
-          motion.flash-nvim.enable = true;
+          motion = {
+            flash-nvim.enable = true;
+            precognition.enable = true;
+          };
           oil-nvim.enable = true;
+          nvim-biscuits.enable = true;
         };
         ui = {
           illuminate.enable = true;
           noice.enable = true;
+          borders.enable = true;
+          colorizer.enable = true;
+          fastaction.enable = true;
+          breadcrumbs = {
+            enable = true;
+            navbuddy.enable = true;
+          };
+        };
+        notify = {
+          nvim-notify.enable = true;
         };
         comments.comment-nvim.enable = true;
         highlight = {
@@ -134,45 +148,58 @@
           "RainbowViolet".fg = "#C678DD";
           "RainbowCyan".fg = "#56B6C2";
         };
-        visuals.indent-blankline = {
-          enable = true;
-          setupOpts.indent.highlight = [
-            "RainbowRed"
-            "RainbowYellow"
-            "RainbowBlue"
-            "RainbowOrange"
-            "RainbowGreen"
-            "RainbowViolet"
-            "RainbowCyan"
-          ];
+        lazy.plugins = {
+          "neoscroll.nvim" = {
+            package = pkgs.vimPlugins.neoscroll-nvim;
+            setupModule = "neoscroll";
+            event = ["BufEnter"];
+          };
         };
-        notes.neorg = {
-          enable = true;
-          setupOpts.load = {
-            "core.defaults" = {};
-            "core.completion" = {
-              config = {
-                engine = "nvim-cmp";
-                name = "[Norg]";
+        visuals = {
+          fidget-nvim.enable = true;
+          indent-blankline = {
+            enable = true;
+            setupOpts.indent.highlight = [
+              "RainbowRed"
+              "RainbowYellow"
+              "RainbowBlue"
+              "RainbowOrange"
+              "RainbowGreen"
+              "RainbowViolet"
+              "RainbowCyan"
+            ];
+          };
+        };
+        notes = {
+          todo-comments.enable = true;
+          neorg = {
+            enable = true;
+            setupOpts.load = {
+              "core.defaults" = {};
+              "core.completion" = {
+                config = {
+                  engine = "nvim-cmp";
+                  name = "[Norg]";
+                };
               };
-            };
-            "core.integrations.nvim-cmp" = {};
-            "core.concealer" = {config = {icon_preset = "diamond";};};
-            "core.esupports.metagen" = {
-              config = {
-                type = "auto";
-                update_date = true;
+              "core.integrations.nvim-cmp" = {};
+              "core.concealer" = {config = {icon_preset = "diamond";};};
+              "core.esupports.metagen" = {
+                config = {
+                  type = "auto";
+                  update_date = true;
+                };
               };
+              "core.qol.toc" = {};
+              "core.qol.todo_items" = {};
+              "core.looking-glass" = {};
+              "core.presenter" = {config = {zen_mode = "zen-mode";};};
+              "core.export" = {};
+              "core.export.markdown" = {config = {extensions = "all";};};
+              "core.summary" = {};
+              "core.tangle" = {config = {report_on_empty = false;};};
+              "core.ui.calendar" = {};
             };
-            "core.qol.toc" = {};
-            "core.qol.todo_items" = {};
-            "core.looking-glass" = {};
-            "core.presenter" = {config = {zen_mode = "zen-mode";};};
-            "core.export" = {};
-            "core.export.markdown" = {config = {extensions = "all";};};
-            "core.summary" = {};
-            "core.tangle" = {config = {report_on_empty = false;};};
-            "core.ui.calendar" = {};
           };
         };
       };
