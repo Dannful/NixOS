@@ -19,7 +19,7 @@
           }
           {
             key = "g.";
-            mode = ["n"];
+            mode = ["n" "v"];
             action = "<cmd>lua require(\"fastaction\").code_action()<CR>";
             silent = true;
           }
