@@ -104,6 +104,10 @@
           html.enable = true;
           terraform.enable = true;
           r.enable = true;
+          css = {
+            enable = true;
+            format.type = "biome";
+          };
         };
         terminal.toggleterm = {
           enable = true;
