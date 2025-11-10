@@ -47,7 +47,10 @@
           };
         };
 
-        treesitter.context.enable = true;
+        treesitter = {
+          context.enable = true;
+          fold = true;
+        };
 
         lsp = {
           enable = true;
