@@ -109,6 +109,13 @@
             format.type = "biome";
           };
         };
+        formatter.conform-nvim = {
+          setupOpts.formatters_by_ft = {
+            javascript = [
+              "biome"
+            ];
+          };
+        };
         terminal.toggleterm = {
           enable = true;
           lazygit.enable = true;
