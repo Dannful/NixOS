@@ -111,6 +111,7 @@
             enable = true;
             format.type = "biome";
           };
+          yaml.enable = true;
         };
         formatter.conform-nvim = {
           setupOpts.formatters_by_ft = {
