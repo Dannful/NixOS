@@ -106,7 +106,16 @@
           };
           html.enable = true;
           terraform.enable = true;
-          r.enable = true;
+          r = let
+            r-with-languageserver = pkgs.rWrapper.override {
+              packages = [pkgs.rPackages.languageserver pkgs.rPackages.tidyverse pkgs.rPackages.janitor pkgs.rPackages.here pkgs.rPackages.DoE_base];
+            };
+          in {
+            enable = true;
+            lsp.package = pkgs.writeShellScriptBin "r_lsp" ''
+              ${r-with-languageserver}/bin/R --slave -e "languageserver::run()"
+            '';
+          };
           css = {
             enable = true;
             format.type = "biome";
