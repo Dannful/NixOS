@@ -2,8 +2,23 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  customRPackages = [
+    pkgs.rPackages.tidyverse
+    pkgs.rPackages.janitor
+    pkgs.rPackages.here
+    pkgs.rPackages.DoE_base
+  ];
+in {
   imports = [inputs.nvf.homeManagerModules.default];
+
+  home.packages = [
+    (pkgs.rWrapper.override
+      {
+        packages = customRPackages;
+      })
+  ];
+
   programs.nvf = {
     enable = true;
     settings = {
@@ -108,7 +123,7 @@
           terraform.enable = true;
           r = let
             r-with-languageserver = pkgs.rWrapper.override {
-              packages = [pkgs.rPackages.languageserver pkgs.rPackages.tidyverse pkgs.rPackages.janitor pkgs.rPackages.here pkgs.rPackages.DoE_base];
+              packages = [pkgs.rPackages.languageserver] ++ customRPackages;
             };
           in {
             enable = true;
