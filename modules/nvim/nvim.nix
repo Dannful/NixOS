@@ -136,6 +136,10 @@ in {
             format.type = "biome";
           };
           yaml.enable = true;
+          markdown = {
+            enable = true;
+            extensions.markview-nvim.enable = true;
+          };
         };
         formatter.conform-nvim = {
           setupOpts.formatters_by_ft = {
