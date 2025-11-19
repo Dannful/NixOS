@@ -17,6 +17,7 @@ in {
       {
         packages = customRPackages;
       })
+    pkgs.visidata
   ];
 
   programs.nvf = {
@@ -25,6 +26,48 @@ in {
       vim = {
         viAlias = true;
         vimAlias = true;
+
+        luaConfigRC.r_iron_keymaps = ''
+          vim.api.nvim_create_autocmd("FileType", {
+            pattern = "r",
+            desc = "Set up R-specific REPL keybindings",
+            callback = function()
+              local iron = require("iron.core")
+              local map = vim.keymap.set
+
+              -- 1. Toggle / Restart REPL
+              map("n", "<leader>rr", "<cmd>IronRepl<cr>", { desc = "Toggle R REPL", buffer = true })
+              map("n", "<leader>rR", "<cmd>IronRestart<cr>", { desc = "Restart R REPL", buffer = true })
+
+              -- 2. Code Execution
+              map("n", "<leader>rl", function()
+                iron.send_line()
+                vim.cmd("normal! j")
+              end, { desc = "Send Line to R", buffer = true })
+
+              map("n", "<leader>rf", iron.send_file, { desc = "Send File to R", buffer = true })
+              map("v", "<leader>rs", iron.visual_send, { desc = "Send Selection to R", buffer = true })
+              map("n", "<leader>rs", function() iron.run_motion("send_motion") end, { desc = "Send Motion to R", buffer = true })
+            end
+          })
+          vim.api.nvim_create_user_command("RView", function(opts)
+            local df_name = opts.args
+            if df_name == "" then print("Usage: :RView <dataframe>"); return end
+
+            -- 1. Construct R code to save to temp csv
+            local cmd = string.format('write.csv(%s, file = "/tmp/nvim_r_view.csv", row.names = FALSE)', df_name)
+
+            -- 2. Send to Iron
+            require("iron.core").send(nil, cmd)
+
+            -- 3. Open Visidata in a split
+            vim.defer_fn(function()
+              vim.cmd("vsplit | terminal ${pkgs.visidata}/bin/vd /tmp/nvim_r_view.csv")
+            end, 500)
+          end, { nargs = 1 })
+        '';
+        luaConfigRC.r_view = ''
+        '';
         keymaps = [
           {
             key = "<leader>e";
@@ -191,13 +234,35 @@ in {
           "RainbowViolet".fg = "#C678DD";
           "RainbowCyan".fg = "#56B6C2";
         };
+
         lazy.plugins = {
           "neoscroll.nvim" = {
             package = pkgs.vimPlugins.neoscroll-nvim;
             setupModule = "neoscroll";
             event = ["BufEnter"];
           };
+
+          "iron.nvim" = {
+            package = pkgs.vimPlugins.iron-nvim;
+            setupModule = "iron.core";
+            setupOpts = {
+              config = {
+                scratch_repl = true; # Wipe REPL history on close
+                repl_definition = {
+                  r = {
+                    command = ["R"]; # Command to launch R
+                  };
+                };
+                repl_open_cmd = "vertical botright 40 split";
+              };
+              keymaps = {}; # Handled manually in luaConfigRC
+              highlight = {
+                italic = true;
+              };
+            };
+          };
         };
+
         visuals = {
           fidget-nvim.enable = true;
           indent-blankline = {
