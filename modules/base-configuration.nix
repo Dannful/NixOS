@@ -92,20 +92,6 @@ in {
     };
   };
   config = {
-    nix.settings = {experimental-features = ["nix-command" "flakes"];};
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
-
-    networking.hostName = "nixos";
-    # networking.wireless.enable = true;
-
-    # Configure network proxy if necessary
-    # networking.proxy.default = "http://user:password@proxy:port/";
-    # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-    # Enable networking
-    networking.networkmanager.enable = true;
-
     # Set your time zone.
     time.timeZone = "America/Sao_Paulo";
 
@@ -123,9 +109,73 @@ in {
       LC_TELEPHONE = "pt_BR.UTF-8";
       LC_TIME = "pt_BR.UTF-8";
     };
+    services = {
+      # Enable the X11 windowing system.
+      xserver = {enable = true;};
 
-    # Enable the X11 windowing system.
-    services.xserver = {enable = true;};
+      displayManager.sddm = {
+        enable = true;
+        wayland.enable = true;
+        package = pkgs.kdePackages.sddm;
+        theme = "sddm-astronaut-theme";
+        extraPackages = [custom-sddm-astronaut];
+        settings = let
+          westonConfigFile = pkgs.writeText "weston.ini" (''
+              [keyboard]
+              keymap_layout=us
+              keymap_model=pc104
+              keymap_options=terminate:ctrl_alt_bksp
+              keymap_variant=alt-intl
+
+              [libinput]
+              enable-tap=true
+              left-handed=false
+
+            ''
+            + lib.optionalString
+            (cfg.login != null && cfg.login.display != null) ''
+              [output]
+              name=${cfg.login.display.name}
+              mode=${cfg.login.display.mode}
+            '');
+        in {
+          Wayland = {
+            CompositorCommand = "${pkgs.weston}/bin/weston --shell=kiosk -c ${westonConfigFile}";
+          };
+        };
+      };
+      gvfs.enable = true;
+
+      # Configure keymap in X11
+      xserver.xkb = {
+        layout = "us";
+        variant = "alt-intl";
+      };
+
+      # Enable CUPS to print documents.
+      printing.enable = true;
+
+      # Enable sound with pipewire.
+      pulseaudio.enable = false;
+      pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        # If you want to use JACK applications, uncomment this
+        #jack.enable = true;
+
+        # use the example session manager (no others are packaged yet so this is enabled by default,
+        # no need to redefine it in your config for now)
+        #media-session.enable = true;
+      };
+
+      dbus.packages = [pkgs.swaynotificationcenter];
+      xserver.videoDrivers = lib.mkIf cfg.use-nvidia ["nvidia"];
+
+      blueman.enable = true;
+      hypridle.enable = true;
+    };
     xdg.portal = {
       enable = true;
       extraPortals = [pkgs.kdePackages.xdg-desktop-portal-kde];
@@ -140,39 +190,6 @@ in {
       "image/svg+xml" = "feh.desktop";
       "image/webp" = "feh.desktop";
     };
-
-    services.displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-      package = pkgs.kdePackages.sddm;
-      theme = "sddm-astronaut-theme";
-      extraPackages = [custom-sddm-astronaut];
-      settings = let
-        westonConfigFile = pkgs.writeText "weston.ini" (''
-            [keyboard]
-            keymap_layout=us
-            keymap_model=pc104
-            keymap_options=terminate:ctrl_alt_bksp
-            keymap_variant=alt-intl
-
-            [libinput]
-            enable-tap=true
-            left-handed=false
-
-          ''
-          + lib.optionalString
-          (cfg.login != null && cfg.login.display != null) ''
-            [output]
-            name=${cfg.login.display.name}
-            mode=${cfg.login.display.mode}
-          '');
-      in {
-        Wayland = {
-          CompositorCommand = "${pkgs.weston}/bin/weston --shell=kiosk -c ${westonConfigFile}";
-        };
-      };
-    };
-    services.gvfs.enable = true;
     nixpkgs.overlays = [
       (self: super: {
         gnome = super.gnome.overrideScope (gself: gsuper: {
@@ -184,48 +201,37 @@ in {
         });
       })
     ];
-    programs.hyprland = {
-      enable = true;
-      package =
-        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage =
-        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-    };
-
-    # Configure keymap in X11
-    services.xserver.xkb = {
-      layout = "us";
-      variant = "alt-intl";
-    };
 
     console.useXkbConfig = true;
-
-    # Enable CUPS to print documents.
-    services.printing.enable = true;
-
-    # Enable sound with pipewire.
-    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      # If you want to use JACK applications, uncomment this
-      #jack.enable = true;
+    programs = {
+      hyprland = {
+        enable = true;
+        package =
+          inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+        portalPackage =
+          inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      };
 
-      # use the example session manager (no others are packaged yet so this is enabled by default,
-      # no need to redefine it in your config for now)
-      #media-session.enable = true;
+      # Enable touchpad support (enabled default in most desktopManager).
+      # services.xserver.libinput.enable = true;
+
+      zsh.enable = true;
+
+      # Install firefox.
+      firefox.enable = true;
+
+      steam = lib.mkIf cfg.use-steam {
+        enable = true;
+        remotePlay.openFirewall = true;
+        dedicatedServer.openFirewall = true;
+        localNetworkGameTransfers.openFirewall = true;
+        gamescopeSession.enable = true;
+      };
+      gamemode.enable = lib.mkIf cfg.use-steam true;
     };
-
-    # Enable touchpad support (enabled default in most desktopManager).
-    # services.xserver.libinput.enable = true;
-
-    # Define a user account. Don't forget to set a password with ‘passwd’.
-    programs.zsh.enable = true;
     users.users = builtins.listToAttrs (builtins.map (user: {
-        name = user.name;
+        inherit (user) name;
         value = {
           hashedPassword = user.password;
           isNormalUser = true;
@@ -240,15 +246,12 @@ in {
     home-manager = {
       extraSpecialArgs = {inherit inputs;};
       users = builtins.listToAttrs (builtins.map (user: {
-          name = user.name;
+          inherit (user) name;
           value = import user.home-file-path;
         })
         cfg.users);
       backupFileExtension = "backup";
     };
-
-    # Install firefox.
-    programs.firefox.enable = true;
 
     # Allow unfree packages
     nixpkgs.config.allowUnfree = true;
@@ -304,8 +307,6 @@ in {
         pkgs.winetricks
       ]
       ++ lib.optionals cfg.use-nvidia [pkgs.egl-wayland];
-
-    services.dbus.packages = [pkgs.swaynotificationcenter];
     systemd.packages = [pkgs.swaynotificationcenter];
 
     virtualisation.docker.enable = true;
@@ -328,35 +329,24 @@ in {
 
     environment.sessionVariables = {NIXOS_OZONE_WL = "1";};
 
-    system.stateVersion = "24.05"; # Did you read the comment?
+    system.stateVersion = "24.05";
+    hardware = {
+      nvidia = lib.mkIf cfg.use-nvidia {
+        modesetting.enable = true;
+        powerManagement.enable = false;
+        powerManagement.finegrained = false;
+        open = false;
+        nvidiaSettings = true;
+        package = config.boot.kernelPackages.nvidiaPackages.stable;
+      };
+      graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
 
-    programs.steam = lib.mkIf cfg.use-steam {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-      localNetworkGameTransfers.openFirewall = true;
-      gamescopeSession.enable = true;
+      bluetooth.enable = true;
+      bluetooth.powerOnBoot = true;
     };
-    programs.gamemode.enable = lib.mkIf cfg.use-steam true;
-    services.xserver.videoDrivers = lib.mkIf cfg.use-nvidia ["nvidia"];
-    hardware.nvidia = lib.mkIf cfg.use-nvidia {
-      modesetting.enable = true;
-      powerManagement.enable = false;
-      powerManagement.finegrained = false;
-      open = false;
-      nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-    };
-    hardware.graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
-
-    hardware.bluetooth.enable = true;
-    hardware.bluetooth.powerOnBoot = true;
-
-    services.blueman.enable = true;
-    services.hypridle.enable = true;
 
     system.autoUpgrade = {
       enable = true;
@@ -365,12 +355,31 @@ in {
       dates = "03:00";
       randomizedDelaySec = "45min";
     };
+    boot = {
+      loader.systemd-boot.enable = true;
+      loader.efi.canTouchEfiVariables = true;
 
-    boot.kernelModules = ["v4l2loopback"];
-    boot.extraModulePackages = [pkgs.linuxPackages.v4l2loopback];
+      kernelModules = ["v4l2loopback"];
+      extraModulePackages = [pkgs.linuxPackages.v4l2loopback];
+    };
+    nix = {
+      settings = {experimental-features = ["nix-command" "flakes"];};
+      gc = {
+        automatic = true;
+        dates = "daily";
+        options = "--delete-older-than 3d";
+      };
+    };
+    networking = {
+      hostName = "nixos";
+      # networking.wireless.enable = true;
 
-    nix.gc.automatic = true;
-    nix.gc.dates = "daily";
-    nix.gc.options = "--delete-older-than 3d";
+      # Configure network proxy if necessary
+      # networking.proxy.default = "http://user:password@proxy:port/";
+      # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+      # Enable networking
+      networkmanager.enable = true;
+    };
   };
 }
