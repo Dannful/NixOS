@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   imports = [
     ../modules/kitty/custom-kitty.nix
     ../modules/zed/zed.nix
@@ -14,7 +12,7 @@
 
   home.stateVersion = "24.05";
 
-  nixpkgs = { config = { allowUnfree = true; }; };
+  nixpkgs = {config = {allowUnfree = true;};};
 
   home.file.".ssh/config" = {
     text = ''
@@ -36,29 +34,37 @@
     gemini-cli
   ];
 
-  home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };
+  home.sessionVariables = {NOMAD_ADDR = "http://52.67.92.147:4646";};
 
   programs.home-manager.enable = true;
 
-  custom-kitty = { enable = true; };
+  custom-kitty = {enable = true;};
 
   custom-zed = {
     enable = true;
     lsp = {
       omnisharp = {
         path = "${pkgs.omnisharp-roslyn}/bin/OmniSharp";
-        arguments = [ "-lsp" ];
+        arguments = ["-lsp"];
       };
     };
   };
 
   custom-hyprland = {
     enable = true;
-    monitors = [{
-      name = "eDP-1";
-      resolution = "1920x1080";
-      refresh-rate = "60.00";
-      position = "0x0";
-    }];
+    monitors = [
+      {
+        name = "HDMI-A-1";
+        resolution = "3440x1440";
+        refresh-rate = "84.96";
+        position = "0x0";
+      }
+      {
+        name = "eDP-1";
+        resolution = "1920x1080";
+        refresh-rate = "60.00";
+        position = "3440x0";
+      }
+    ];
   };
 }
