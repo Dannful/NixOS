@@ -301,7 +301,7 @@ in {
         swaynotificationcenter
       ]
       ++ lib.optionals cfg.use-steam [
-        pkgs.protonup
+        pkgs.protonup-ng
         pkgs.mangohud
         pkgs.wineWow64Packages.waylandFull
         pkgs.winetricks
@@ -348,13 +348,6 @@ in {
       bluetooth.powerOnBoot = true;
     };
 
-    system.autoUpgrade = {
-      enable = true;
-      flake = inputs.self.outPath;
-      flags = ["--update-input" "nixpkgs" "-L"];
-      dates = "03:00";
-      randomizedDelaySec = "45min";
-    };
     boot = {
       loader.systemd-boot.enable = true;
       loader.efi.canTouchEfiVariables = true;

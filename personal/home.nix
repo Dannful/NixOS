@@ -12,27 +12,26 @@
     ../modules/nvim/nvim.nix
   ];
 
-  home.username = "dannly";
-  home.homeDirectory = "/home/dannly";
-
   nixpkgs = {config = {allowUnfree = true;};};
+  home = {
+    username = "dannly";
+    homeDirectory = "/home/dannly";
 
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+    stateVersion = "24.05"; # Please read the comment before changing.
 
-  home.packages = with pkgs; [
-    gh
-    lazygit
-    obs-studio
-    ferium
-    mono
-    prismlauncher
-    corretto21
-    droidcam
-    gemini-cli
-  ];
+    packages = with pkgs; [
+      gh
+      lazygit
+      obs-studio
+      mono
+      prismlauncher
+      droidcam
+      gemini-cli
+    ];
 
-  home.sessionVariables = {
-    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
+    sessionVariables = {
+      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
+    };
   };
 
   programs.home-manager = {enable = true;};

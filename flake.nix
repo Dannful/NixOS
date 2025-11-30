@@ -2,8 +2,8 @@
   description = "Home Manager configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixos.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixos.url = "github:nixos/nixpkgs/nixos-25.11";
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -23,32 +23,39 @@
     };
   };
 
-  outputs =
-    { nixpkgs, nixos, home-manager, hyprland, quickshell, nvf, ... }@inputs:
-    let system = "x86_64-linux";
-    in {
-      nixosConfigurations = {
-        personal = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs system; };
+  outputs = {
+    nixpkgs,
+    nixos,
+    home-manager,
+    hyprland,
+    quickshell,
+    nvf,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+  in {
+    nixosConfigurations = {
+      personal = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs system;};
 
-          modules = [ ./personal/configuration.nix ];
-        };
-        work = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs system; };
-
-          modules = [ ./work/configuration.nix ];
-        };
-        work-laptop = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs system; };
-
-          modules = [ ./work-laptop/configuration.nix ];
-        };
+        modules = [./personal/configuration.nix];
       };
-      templates = {
-        csharp = {
-          path = ./templates/csharp;
-          description = "A C# development environment";
-        };
+      work = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs system;};
+
+        modules = [./work/configuration.nix];
+      };
+      work-laptop = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs system;};
+
+        modules = [./work-laptop/configuration.nix];
       };
     };
+    templates = {
+      csharp = {
+        path = ./templates/csharp;
+        description = "A C# development environment";
+      };
+    };
+  };
 }

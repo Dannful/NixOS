@@ -1,6 +1,10 @@
-{ lib, config, pkgs, inputs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
 
@@ -60,7 +64,7 @@ in {
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
     home.file = {
-      ".config/rofi/config.rasi" = { text = ''@theme "arthur"''; };
+      ".config/rofi/config.rasi" = {text = ''@theme "arthur"'';};
       ".config/quickshell" = {
         source = ../quickshell;
         recursive = true;
@@ -97,8 +101,8 @@ in {
         '';
       };
     };
-    programs.hyprlock = { enable = true; };
-    services.hypridle = { enable = true; };
+    programs.hyprlock = {enable = true;};
+    services.hypridle = {enable = true;};
 
     wayland.windowManager.hyprland = {
       enable = true;
@@ -107,8 +111,7 @@ in {
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
-      plugins =
-        [ inputs.hyprland-plugins.packages."${pkgs.system}".borders-plus-plus ];
+      plugins = [inputs.hyprland-plugins.packages."${pkgs.stdenv.hostPlatform.system}".borders-plus-plus];
 
       extraConfig = lib.optionalString cfg.nvidia ''
         env=LIBVA_DRIVER_NAME,nvidia
@@ -119,23 +122,22 @@ in {
       settings = {
         "$mod" = "SUPER";
         "$alt" = "ALT";
-        general = { gaps_out = "38, 18, 18, 60"; };
-        cursor = { no_hardware_cursors = true; };
+        general = {gaps_out = "38, 18, 18, 60";};
+        cursor = {no_hardware_cursors = true;};
         input = {
           kb_layout = "us";
           kb_variant = "alt-intl";
         };
-        decoration = { rounding = 3; };
+        decoration = {rounding = 3;};
         exec-once = [
           "hyprctl dispatch exec ${startupScript}/bin/start"
           "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
         ];
-        monitor = builtins.map (monitor:
-          "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
+        monitor =
+          builtins.map (monitor: "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
           cfg.monitors;
-        binds = { drag_threshold = 10; };
-        bindm =
-          [ "$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow" ];
+        binds = {drag_threshold = 10;};
+        bindm = ["$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow"];
         bindc = "$mod, mouse:272, togglefloating";
         bindel = [
           ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
@@ -147,23 +149,26 @@ in {
           ", XF86AudioPrev, exec, playerctl previous"
           ", XF86AudioNext, exec, playerctl next"
         ];
-        bind = [
-          "$alt, B, exec, hyprctl dispatch exec ${pkgs.firefox}/bin/firefox"
-          "$alt, F, exec, hyprctl dispatch exec ${pkgs.nautilus}/bin/nautilus"
-          "$alt, D, exec, hyprctl dispatch exec ${pkgs.discord}/bin/discord"
-          "$mod, Return, exec, hyprctl dispatch exec ${pkgs.kitty}/bin/kitty"
-          "$mod, D, exec, hyprctl dispatch exec '${pkgs.rofi}/bin/rofi -show drun'"
-          "$mod, Q, exec, hyprctl kill"
-          "$mod, C, killactive"
-          "$mod, F, fullscreen"
-          '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
-          "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
-        ] ++ (builtins.concatLists (builtins.genList (i:
-          let ws = i + 1;
-          in [
-            "$mod, code:1${toString i}, workspace, ${toString ws}"
-            "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-          ]) 9));
+        bind =
+          [
+            "$alt, B, exec, hyprctl dispatch exec ${pkgs.firefox}/bin/firefox"
+            "$alt, F, exec, hyprctl dispatch exec ${pkgs.nautilus}/bin/nautilus"
+            "$alt, D, exec, hyprctl dispatch exec ${pkgs.discord}/bin/discord"
+            "$mod, Return, exec, hyprctl dispatch exec ${pkgs.kitty}/bin/kitty"
+            "$mod, D, exec, hyprctl dispatch exec '${pkgs.rofi}/bin/rofi -show drun'"
+            "$mod, Q, exec, hyprctl kill"
+            "$mod, C, killactive"
+            "$mod, F, fullscreen"
+            '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
+            "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
+          ]
+          ++ (builtins.concatLists (builtins.genList (i: let
+              ws = i + 1;
+            in [
+              "$mod, code:1${toString i}, workspace, ${toString ws}"
+              "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+            ])
+            9));
         "plugin:borders-plus-plus" = {
           add_borders = 1;
 
