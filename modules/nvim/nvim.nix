@@ -8,6 +8,7 @@
     pkgs.rPackages.janitor
     pkgs.rPackages.here
     pkgs.rPackages.DoE_base
+    pkgs.rPackages.ggh4x
   ];
 in {
   imports = [inputs.nvf.homeManagerModules.default];
