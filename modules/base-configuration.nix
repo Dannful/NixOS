@@ -160,6 +160,7 @@ in {
       pipewire = {
         enable = true;
         alsa.enable = true;
+
         alsa.support32Bit = true;
         pulse.enable = true;
         # If you want to use JACK applications, uncomment this
@@ -373,6 +374,9 @@ in {
 
       # Enable networking
       networkmanager.enable = true;
+      hosts = {
+        "127.0.0.1" = ["keycloak" "s3" "vanescola-router" "vanescola-portal"];
+      };
     };
   };
 }
