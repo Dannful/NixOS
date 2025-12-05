@@ -27,6 +27,10 @@
     };
   };
 
-  boot.kernelModules = ["v4l2loopback"];
+  boot.kernelModules = ["v4l2loopback" "k10temp"];
   boot.extraModulePackages = [pkgs.linuxPackages.v4l2loopback];
+  environment.systemPackages = with pkgs; [
+    btop
+    lm_sensors
+  ];
 }

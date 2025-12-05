@@ -344,6 +344,7 @@ in {
         enable = true;
         enable32Bit = true;
       };
+      enableRedistributableFirmware = true;
 
       bluetooth.enable = true;
       bluetooth.powerOnBoot = true;
@@ -354,6 +355,7 @@ in {
       loader.efi.canTouchEfiVariables = true;
 
       kernelModules = ["v4l2loopback"];
+      kernelPackages = pkgs.linuxPackages_latest;
       extraModulePackages = [pkgs.linuxPackages.v4l2loopback];
     };
     nix = {
