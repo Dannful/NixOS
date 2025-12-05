@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   imports = [
     ../modules/kitty/custom-kitty.nix
     ../modules/zed/zed.nix
@@ -9,44 +7,46 @@
     ../modules/emacs/emacs.nix
     ../modules/nvim/nvim.nix
   ];
-  home.username = "work";
-  home.homeDirectory = "/home/work";
+  home = {
+    username = "work";
+    homeDirectory = "/home/work";
 
-  home.stateVersion = "24.05";
+    stateVersion = "24.05";
 
-  nixpkgs = { config = { allowUnfree = true; }; };
+    packages = with pkgs; [
+      gh
+      lazygit
+      awscli2
+      bruno
+      nomad
+      jetbrains.datagrip
+      droidcam
+      gemini-cli
+    ];
 
-  home.packages = with pkgs; [
-    gh
-    lazygit
-    awscli2
-    bruno
-    nomad
-    jetbrains.datagrip
-    droidcam
-    gemini-cli
-  ];
+    sessionVariables = {NOMAD_ADDR = "http://52.67.92.147:4646";};
+  };
 
-  home.sessionVariables = { NOMAD_ADDR = "http://52.67.92.147:4646"; };
+  nixpkgs = {config = {allowUnfree = true;};};
 
   programs.home-manager.enable = true;
 
-  custom-kitty = { enable = true; };
+  custom-kitty = {enable = true;};
 
-  custom-zed = { enable = true; };
+  custom-zed = {enable = true;};
 
   custom-hyprland = {
     enable = true;
     nvidia = true;
     monitors = [
       {
-        name = "DP-1";
+        name = "DP-4";
         resolution = "1920x1080";
         refresh-rate = "165.00";
         position = "0x0";
       }
       {
-        name = "HDMI-A-1";
+        name = "HDMI-A-2";
         resolution = "1920x1200";
         refresh-rate = "59.95";
         position = "1920x0";

@@ -21,7 +21,7 @@
     ];
     login = {
       display = {
-        name = "DP-1";
+        name = "DP-4";
         mode = "1920x1080@165";
       };
     };

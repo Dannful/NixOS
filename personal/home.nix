@@ -45,13 +45,13 @@
     nvidia = true;
     monitors = [
       {
-        name = "DP-1";
+        name = "DP-4";
         resolution = "1920x1080";
         refresh-rate = "165.00";
         position = "0x0";
       }
       {
-        name = "HDMI-A-1";
+        name = "HDMI-A-2";
         resolution = "1920x1200";
         refresh-rate = "59.95";
         position = "1920x0";
