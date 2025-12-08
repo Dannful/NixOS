@@ -212,7 +212,6 @@ in {
           nvim-biscuits.enable = true;
         };
         ui = {
-          illuminate.enable = true;
           noice.enable = true;
           borders.enable = true;
           colorizer.enable = true;
