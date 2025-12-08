@@ -71,16 +71,190 @@ in {
         '';
         keymaps = [
           {
-            key = "<leader>e";
-            mode = ["n"];
-            silent = true;
-            action = "<cmd>Oil --float<CR>";
-          }
-          {
             key = "g.";
             mode = ["n" "v"];
             action = "<cmd>lua require(\"fastaction\").code_action()<CR>";
             silent = true;
+          }
+          {
+            key = "<leader><space>";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.smart()<CR>";
+            desc = "Smart Find Files";
+          }
+          {
+            key = "<leader>,";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.buffers()<CR>";
+            desc = "Buffers";
+          }
+          {
+            key = "<leader>/";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.grep()<CR>";
+            desc = "Grep";
+          }
+          {
+            key = "<leader>:";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.command_history()<CR>";
+            desc = "Command History";
+          }
+          {
+            key = "<leader>n";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.notifications()<CR>";
+            desc = "Notification History";
+          }
+          {
+            key = "<leader>e";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.explorer()<CR>";
+            desc = "File Explorer";
+          }
+          {
+            key = "<leader>fb";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.buffers()<CR>";
+            desc = "Buffers";
+          }
+          {
+            key = "<leader>ff";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.files()<CR>";
+            desc = "Find Files";
+          }
+          {
+            key = "<leader>fg";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.git_files()<CR>";
+            desc = "Find Git Files";
+          }
+          {
+            key = "<leader>fr";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.recent()<CR>";
+            desc = "Recent";
+          }
+          {
+            key = "<leader>gl";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.git_log()<CR>";
+            desc = "Git Log";
+          }
+          {
+            key = "<leader>gd";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.git_diff()<CR>";
+            desc = "Git Diff (Hunks)";
+          }
+          {
+            key = "<leader>z";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.zen()<CR>";
+            desc = "Toggle Zen Mode";
+          }
+          {
+            key = "<leader>Z";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.zen.zoom()<CR>";
+            desc = "Toggle Zoom";
+          }
+          {
+            key = "<leader>.";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.scratch()<CR>";
+            desc = "Toggle Scratch Buffer";
+          }
+          {
+            key = "<leader>S";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.scratch.select()<CR>";
+            desc = "Select Scratch Buffer";
+          }
+          {
+            key = "<leader>bd";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.bufdelete()<CR>";
+            desc = "Delete Buffer";
+          }
+          {
+            key = "<leader>cR";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.rename.rename_file()<CR>";
+            desc = "Rename File";
+          }
+          {
+            key = "<leader>gB";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.gitbrowse()<CR>";
+            desc = "Git Browse";
+          }
+          {
+            key = "<leader>gg";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.lazygit()<CR>";
+            desc = "Lazygit";
+          }
+          {
+            key = "<leader>un";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.notifier.hide()<CR>";
+            desc = "Dismiss All Notifications";
+          }
+          {
+            key = "<c-/>";
+            mode = ["n" "t"];
+            action = "<cmd>lua Snacks.terminal()<CR>";
+            desc = "Toggle Terminal";
+          }
+          {
+            key = "gd";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_definitions()<CR>";
+            desc = "Goto Definition";
+          }
+          {
+            key = "gD";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_declarations()<CR>";
+            desc = "Goto Declaration";
+          }
+          {
+            key = "gr";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_references()<CR>";
+            desc = "References";
+          }
+          {
+            key = "gI";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_implementations()<CR>";
+            desc = "Goto Implementation";
+          }
+          {
+            key = "gy";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_type_definitions()<CR>";
+            desc = "Goto T[y]pe Definition";
+          }
+          {
+            key = "<leader>ss";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_symbols()<CR>";
+            desc = "LSP Symbols";
+          }
+          {
+            key = "<leader>sS";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.lsp_workspace_symbols()<CR>";
+            desc = "LSP Workspace Symbols";
+          }
+          {
+            key = "gn";
+            mode = ["n"];
+            action = "<cmd>lua vim.lsp.buf.rename()<CR>";
+            desc = "LSP Rename Symbol";
           }
         ];
         theme = {
@@ -119,33 +293,11 @@ in {
           trouble.enable = true;
           otter-nvim.enable = true;
           nvim-docs-view.enable = true;
-          mappings = {
-            goToDeclaration = "gD";
-            goToDefinition = "gd";
-            renameSymbol = "gn";
-          };
         };
 
         binds = {
           whichKey.enable = true;
           cheatsheet.enable = true;
-        };
-
-        telescope = {
-          enable = true;
-          mappings = {
-            lspDocumentSymbols = "gs";
-            lspImplementations = "gI";
-            lspReferences = "gr";
-            lspTypeDefinitions = "gt";
-            lspWorkspaceSymbols = "gS";
-          };
-          extensions = [
-            {
-              name = "ui-select";
-              packages = [pkgs.vimPlugins.telescope-ui-select-nvim];
-            }
-          ];
         };
 
         minimap.codewindow.enable = true;
@@ -192,10 +344,6 @@ in {
             ];
           };
         };
-        terminal.toggleterm = {
-          enable = true;
-          lazygit.enable = true;
-        };
         git.gitsigns = {
           enable = true;
           setupOpts = {
@@ -208,8 +356,28 @@ in {
             flash-nvim.enable = true;
             precognition.enable = true;
           };
-          oil-nvim.enable = true;
           nvim-biscuits.enable = true;
+          snacks-nvim = {
+            enable = true;
+            setupOpts = {
+              bigfile.enabled = true;
+              dashboard.enabled = true;
+              explorer.enabled = true;
+              indent.enabled = true;
+              input.enabled = true;
+              notifier.enabled = true;
+              picker.enabled = true;
+              quickfile.enabled = true;
+              scope.enabled = true;
+              scroll.enabled = true;
+              statuscolumn.enabled = true;
+              words.enabled = true;
+              zen.enabled = true;
+              bufdelete.enabled = true;
+              gitsigns.enabled = true;
+              image.enabled = true;
+            };
+          };
         };
         ui = {
           noice.enable = true;
@@ -220,9 +388,6 @@ in {
             enable = true;
             navbuddy.enable = true;
           };
-        };
-        notify = {
-          nvim-notify.enable = true;
         };
         comments.comment-nvim.enable = true;
         highlight = {
@@ -236,12 +401,6 @@ in {
         };
 
         lazy.plugins = {
-          "neoscroll.nvim" = {
-            package = pkgs.vimPlugins.neoscroll-nvim;
-            setupModule = "neoscroll";
-            event = ["BufEnter"];
-          };
-
           "iron.nvim" = {
             package = pkgs.vimPlugins.iron-nvim;
             setupModule = "iron.core";
@@ -265,18 +424,6 @@ in {
 
         visuals = {
           fidget-nvim.enable = true;
-          indent-blankline = {
-            enable = true;
-            setupOpts.indent.highlight = [
-              "RainbowRed"
-              "RainbowYellow"
-              "RainbowBlue"
-              "RainbowOrange"
-              "RainbowGreen"
-              "RainbowViolet"
-              "RainbowCyan"
-            ];
-          };
         };
         notes = {
           todo-comments.enable = true;
