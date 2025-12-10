@@ -9,6 +9,7 @@
     pkgs.rPackages.here
     pkgs.rPackages.DoE_base
     pkgs.rPackages.ggh4x
+    pkgs.rPackages.plotly
   ];
 in {
   imports = [inputs.nvf.homeManagerModules.default];
