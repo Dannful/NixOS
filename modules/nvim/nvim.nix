@@ -337,6 +337,7 @@ in {
             enable = true;
             extensions.markview-nvim.enable = true;
           };
+          java.enable = true;
         };
         formatter.conform-nvim = {
           setupOpts.formatters_by_ft = {
@@ -362,7 +363,6 @@ in {
             enable = true;
             setupOpts = {
               bigfile.enabled = true;
-              dashboard.enabled = true;
               explorer.enabled = true;
               indent.enabled = true;
               input.enabled = true;
