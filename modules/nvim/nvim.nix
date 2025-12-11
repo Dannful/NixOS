@@ -20,6 +20,8 @@ in {
         packages = customRPackages;
       })
     pkgs.visidata
+    pkgs.ripgrep
+    pkgs.fd
   ];
 
   programs.nvf = {
@@ -256,6 +258,18 @@ in {
             mode = ["n"];
             action = "<cmd>lua vim.lsp.buf.rename()<CR>";
             desc = "LSP Rename Symbol";
+          }
+          {
+            key = "<leader>sd";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.diagnostics()<CR>";
+            desc = "LSP Diagnostics";
+          }
+          {
+            key = "<leader>sD";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.diagnostics_buffer()<CR>";
+            desc = "LSP Buffer Diagnostics";
           }
         ];
         theme = {
