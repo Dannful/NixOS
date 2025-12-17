@@ -242,13 +242,13 @@ in {
             desc = "Goto T[y]pe Definition";
           }
           {
-            key = "<leader>ss";
+            key = "gs";
             mode = ["n"];
             action = "<cmd>lua Snacks.picker.lsp_symbols()<CR>";
             desc = "LSP Symbols";
           }
           {
-            key = "<leader>sS";
+            key = "gS";
             mode = ["n"];
             action = "<cmd>lua Snacks.picker.lsp_workspace_symbols()<CR>";
             desc = "LSP Workspace Symbols";
@@ -260,13 +260,13 @@ in {
             desc = "LSP Rename Symbol";
           }
           {
-            key = "<leader>sd";
+            key = "<leader>sD";
             mode = ["n"];
             action = "<cmd>lua Snacks.picker.diagnostics()<CR>";
             desc = "LSP Diagnostics";
           }
           {
-            key = "<leader>sD";
+            key = "<leader>sd";
             mode = ["n"];
             action = "<cmd>lua Snacks.picker.diagnostics_buffer()<CR>";
             desc = "LSP Buffer Diagnostics";
@@ -366,7 +366,6 @@ in {
             current_line_blame = true;
           };
         };
-
         utility = {
           motion = {
             flash-nvim.enable = true;
