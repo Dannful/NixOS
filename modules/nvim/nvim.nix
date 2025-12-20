@@ -22,56 +22,86 @@ in {
     pkgs.visidata
     pkgs.ripgrep
     pkgs.fd
+    pkgs.neovide
   ];
+
+  xdg.configFile."neovide/config.toml".text = ''
+    [window]
+    maximize = false
+    remember-window-size = true
+  '';
+
+  home.shellAliases = {
+    neovide = "neovide --fork";
+    nvim = "neovide";
+    vim = "neovide";
+    vi = "neovide";
+  };
 
   programs.nvf = {
     enable = true;
     settings = {
       vim = {
-        viAlias = true;
-        vimAlias = true;
+        globals = {
+          neovide_opacity = 0.9;
+          neovide_floating_blur_amount_x = 2.0;
+          neovide_floating_blur_amount_y = 2.0;
+          neovide_remember_window_size = true;
+          neovide_cursor_vfx_mode = "railgun";
+        };
 
-        luaConfigRC.r_iron_keymaps = ''
-          vim.api.nvim_create_autocmd("FileType", {
-            pattern = "r",
-            desc = "Set up R-specific REPL keybindings",
-            callback = function()
-              local iron = require("iron.core")
-              local map = vim.keymap.set
-
-              -- 1. Toggle / Restart REPL
-              map("n", "<leader>rr", "<cmd>IronRepl<cr>", { desc = "Toggle R REPL", buffer = true })
-              map("n", "<leader>rR", "<cmd>IronRestart<cr>", { desc = "Restart R REPL", buffer = true })
-
-              -- 2. Code Execution
-              map("n", "<leader>rl", function()
-                iron.send_line()
-                vim.cmd("normal! j")
-              end, { desc = "Send Line to R", buffer = true })
-
-              map("n", "<leader>rf", iron.send_file, { desc = "Send File to R", buffer = true })
-              map("v", "<leader>rs", iron.visual_send, { desc = "Send Selection to R", buffer = true })
-              map("n", "<leader>rs", function() iron.run_motion("send_motion") end, { desc = "Send Motion to R", buffer = true })
+        options = {
+          guifont = "FiraCode Nerd Font:h12";
+        };
+        luaConfigRC = {
+          neovide_font = ''
+            if vim.g.neovide then
+              vim.o.guifont = "FiraCode Nerd Font:h12"
             end
-          })
-          vim.api.nvim_create_user_command("RView", function(opts)
-            local df_name = opts.args
-            if df_name == "" then print("Usage: :RView <dataframe>"); return end
+          '';
 
-            -- 1. Construct R code to save to temp csv
-            local cmd = string.format('write.csv(%s, file = "/tmp/nvim_r_view.csv", row.names = FALSE)', df_name)
+          r_iron_keymaps = ''
+            vim.api.nvim_create_autocmd("FileType", {
+              pattern = "r",
+              desc = "Set up R-specific REPL keybindings",
+              callback = function()
+                local iron = require("iron.core")
+                local map = vim.keymap.set
 
-            -- 2. Send to Iron
-            require("iron.core").send(nil, cmd)
+                -- 1. Toggle / Restart REPL
+                map("n", "<leader>rr", "<cmd>IronRepl<cr>", { desc = "Toggle R REPL", buffer = true })
+                map("n", "<leader>rR", "<cmd>IronRestart<cr>", { desc = "Restart R REPL", buffer = true })
 
-            -- 3. Open Visidata in a split
-            vim.defer_fn(function()
-              vim.cmd("vsplit | terminal ${pkgs.visidata}/bin/vd /tmp/nvim_r_view.csv")
-            end, 500)
-          end, { nargs = 1 })
-        '';
-        luaConfigRC.r_view = ''
-        '';
+                -- 2. Code Execution
+                map("n", "<leader>rl", function()
+                  iron.send_line()
+                  vim.cmd("normal! j")
+                end, { desc = "Send Line to R", buffer = true })
+
+                map("n", "<leader>rf", iron.send_file, { desc = "Send File to R", buffer = true })
+                map("v", "<leader>rs", iron.visual_send, { desc = "Send Selection to R", buffer = true })
+                map("n", "<leader>rs", function() iron.run_motion("send_motion") end, { desc = "Send Motion to R", buffer = true })
+              end
+            })
+            vim.api.nvim_create_user_command("RView", function(opts)
+              local df_name = opts.args
+              if df_name == "" then print("Usage: :RView <dataframe>"); return end
+
+              -- 1. Construct R code to save to temp csv
+              local cmd = string.format('write.csv(%s, file = "/tmp/nvim_r_view.csv", row.names = FALSE)', df_name)
+
+              -- 2. Send to Iron
+              require("iron.core").send(nil, cmd)
+
+              -- 3. Open Visidata in a split
+              vim.defer_fn(function()
+                vim.cmd("vsplit | terminal ${pkgs.visidata}/bin/vd /tmp/nvim_r_view.csv")
+              end, 500)
+            end, { nargs = 1 })
+          '';
+          r_view = ''
+          '';
+        };
         keymaps = [
           {
             key = "g.";
@@ -383,7 +413,6 @@ in {
               picker.enabled = true;
               quickfile.enabled = true;
               scope.enabled = true;
-              scroll.enabled = true;
               statuscolumn.enabled = true;
               words.enabled = true;
               zen.enabled = true;
@@ -420,15 +449,15 @@ in {
             setupModule = "iron.core";
             setupOpts = {
               config = {
-                scratch_repl = true; # Wipe REPL history on close
+                scratch_repl = true;
                 repl_definition = {
                   r = {
-                    command = ["R"]; # Command to launch R
+                    command = ["R"];
                   };
                 };
                 repl_open_cmd = "vertical botright 40 split";
               };
-              keymaps = {}; # Handled manually in luaConfigRC
+              keymaps = {};
               highlight = {
                 italic = true;
               };
