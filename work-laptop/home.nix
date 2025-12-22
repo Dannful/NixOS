@@ -50,6 +50,20 @@
     };
   };
 
+  services.batsignal = {
+    enable = true;
+    extraArgs = [
+      "-w"
+      "30"
+      "-c"
+      "15"
+      "-d"
+      "10"
+      "-m"
+      "Battery low"
+    ];
+  };
+
   custom-hyprland = {
     enable = true;
     monitors = [
