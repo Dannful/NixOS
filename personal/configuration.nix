@@ -27,6 +27,9 @@
     };
   };
 
+  hardware.xpadneo.enable = true;
+  hardware.xone.enable = true;
+
   boot.kernelModules = ["k10temp"];
   environment.systemPackages = with pkgs; [
     btop
