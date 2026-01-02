@@ -358,23 +358,14 @@ in {
           bash.enable = true;
           ts = {
             enable = true;
-            format.type = "biome";
+            format.type = ["biome"];
           };
           html.enable = true;
           terraform.enable = true;
-          r = let
-            r-with-languageserver = pkgs.rWrapper.override {
-              packages = [pkgs.rPackages.languageserver] ++ customRPackages;
-            };
-          in {
-            enable = true;
-            lsp.package = pkgs.writeShellScriptBin "r_lsp" ''
-              ${r-with-languageserver}/bin/R --slave -e "languageserver::run()"
-            '';
-          };
+          r.enable = true;
           css = {
             enable = true;
-            format.type = "biome";
+            format.type = ["biome"];
           };
           yaml.enable = true;
           markdown = {
@@ -383,6 +374,12 @@ in {
           };
           java.enable = true;
         };
+        lsp.servers.r_language_server.cmd = let
+          r-with-languageserver = pkgs.rWrapper.override {
+            packages = [pkgs.rPackages.languageserver] ++ customRPackages;
+          };
+        in
+          pkgs.lib.mkForce [(pkgs.lib.getExe r-with-languageserver) "--no-echo" "-e" "languageserver::run()"];
         formatter.conform-nvim = {
           setupOpts.formatters_by_ft = {
             javascript = [
