@@ -30,6 +30,7 @@
   nixpkgs = {config = {allowUnfree = true;};};
 
   programs.home-manager.enable = true;
+  programs.nvf.settings.vim.languages.csharp.enable = true;
 
   custom-kitty = {enable = true;};
 

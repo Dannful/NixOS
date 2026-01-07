@@ -64,6 +64,8 @@
     ];
   };
 
+  programs.nvf.settings.vim.languages.csharp.enable = true;
+
   custom-hyprland = {
     enable = true;
     monitors = [
