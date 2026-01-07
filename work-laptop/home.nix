@@ -36,8 +36,6 @@
 
   home.sessionVariables = {NOMAD_ADDR = "http://52.67.92.147:4646";};
 
-  programs.home-manager.enable = true;
-
   custom-kitty = {enable = true;};
 
   custom-zed = {
@@ -63,8 +61,16 @@
       "Battery low"
     ];
   };
+  programs = {
+    home-manager.enable = true;
 
-  programs.nvf.settings.vim.languages.csharp.enable = true;
+    nvf.settings.vim.languages.csharp.enable = true;
+    nvf.settings.vim.lsp.servers.powershell_es = {
+      enable = true;
+      cmd = [(pkgs.lib.getExe pkgs.powershell-editor-services) "-Stdio" "-HostName" "nvim" "-HostProfileId" "nvim" "-HostVersion" "1.0.0" "-LogLevel" "Normal"];
+      filetypes = ["ps1" "psm1" "psd1"];
+    };
+  };
 
   custom-hyprland = {
     enable = true;

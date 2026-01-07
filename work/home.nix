@@ -30,7 +30,14 @@
   nixpkgs = {config = {allowUnfree = true;};};
 
   programs.home-manager.enable = true;
-  programs.nvf.settings.vim.languages.csharp.enable = true;
+  programs.nvf = {
+    settings.vim.languages.csharp.enable = true;
+    settings.vim.lsp.servers.powershell_es = {
+      enable = true;
+      cmd = [(pkgs.lib.getExe pkgs.powershell-editor-services) "-Stdio" "-HostName" "nvim" "-HostProfileId" "nvim" "-HostVersion" "1.0.0" "-LogLevel" "Normal"];
+      filetypes = ["ps1" "psm1" "psd1"];
+    };
+  };
 
   custom-kitty = {enable = true;};
 
