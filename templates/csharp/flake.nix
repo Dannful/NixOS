@@ -13,15 +13,31 @@
         };
       };
       dotnetPackages = pkgs.dotnetCorePackages.combinePackages [
-        pkgs.dotnetCorePackages.sdk_6_0
+        pkgs.dotnetCorePackages.sdk_8_0
         pkgs.dotnetCorePackages.sdk_9_0
-        pkgs.dotnetCorePackages.aspnetcore_6_0
+        pkgs.dotnetCorePackages.aspnetcore_8_0
       ];
-    in {
-      devShell = pkgs.mkShell {
-        buildInputs = [dotnetPackages];
-        shellHook = ''
+      dotnet-fhs = pkgs.buildFHSEnv {
+        name = "dotnet-fhs";
+        targetPkgs = pkgs: [
+          (pkgs.dotnetCorePackages.combinePackages [
+            pkgs.dotnetCorePackages.sdk_6_0
+            pkgs.dotnetCorePackages.sdk_8_0
+            pkgs.dotnetCorePackages.sdk_9_0
+            pkgs.dotnetCorePackages.aspnetcore_6_0
+            pkgs.dotnetCorePackages.aspnetcore_8_0
+          ])
+        ];
+        profile = ''
           export DOTNET_ROOT="${dotnetPackages}";
+        '';
+        runScript = "zsh";
+      };
+    in {
+      devShells.default = pkgs.mkShell {
+        buildInputs = [dotnet-fhs];
+        shellHook = ''
+          echo "Dotnet environment loaded. Enter it with '${dotnet-fhs.meta.mainProgram}'"
         '';
       };
     });
