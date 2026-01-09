@@ -8,7 +8,13 @@ Item {
     required property ShellScreen screen
     required property bool visibility
 
-    visible: width > 0
+    width: implicitWidth
+    height: implicitHeight
+    
+    readonly property real targetWidth: Sizing.networkMenuWidth + Sizing.margins.medium * 2
+    readonly property real targetHeight: 350
+    
+    clip: true
 
     states: [
         State {
@@ -26,8 +32,8 @@ Item {
             when: root.visibility
             PropertyChanges {
                 target: root
-                implicitWidth: Sizing.networkMenuWidth + Sizing.margins.medium * 2
-                implicitHeight: Fonts.sizing.large * 2 + Sizing.margins.medium * 2
+                implicitWidth: root.targetWidth
+                implicitHeight: root.targetHeight
                 opacity: 1
             }
         }
@@ -41,7 +47,7 @@ Item {
             NumberAnimation {
                 target: root
                 properties: "implicitWidth,implicitHeight,opacity"
-                duration: Animations.durations.fast
+                duration: Animations.durations.medium
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
             }
@@ -49,8 +55,10 @@ Item {
     ]
 
     Loader {
-        active: root.implicitWidth > 0
-        anchors.fill: parent
+        width: root.targetWidth
+        height: root.targetHeight
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
         source: "Content.qml"
     }
 }

@@ -232,7 +232,7 @@ in {
           hashedPassword = user.password;
           isNormalUser = true;
           description = user.name;
-          extraGroups = ["networkManager" "wheel" "docker"] ++ user.groups;
+          extraGroups = ["networkmanager" "wheel" "docker"] ++ user.groups;
           packages = [];
           shell = pkgs.zsh;
         };
@@ -286,6 +286,7 @@ in {
         kdePackages.qtdeclarative
         feh
         gnome-system-monitor
+        libnotify
 
         # Terminal
         kitty

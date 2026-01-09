@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import QtQuick
-import Qt.labs.folderlistmodel
 import "root:/core"
 import "root:/bars/left"
 import "root:/bars/top"
@@ -12,7 +11,6 @@ import "root:/bars/right"
 import "root:/bars/bottom"
 import "root:/bars"
 import "root:/services"
-import Quickshell.Services.Mpris
 
 Scope {
     id: scope
@@ -35,15 +33,15 @@ Scope {
                     property bool calendar: false
                 }
 
+                WlrLayershell.layer: WlrLayer.Top
+                WlrLayershell.keyboardFocus: (visibilities.powerMenu || visibilities.networkMenu || visibilities.calendar)
+                    ? WlrKeyboardFocus.OnDemand
+                    : WlrKeyboardFocus.None
+
                 mask: Region {
                     id: mask
-                    width: root.implicitWidth
-                    height: root.implicitHeight
-                    intersection: Intersection.Xor
                     regions: regions.instances
                 }
-
-                Image {}
 
                 Variants {
                     id: regions
@@ -54,7 +52,6 @@ Scope {
                         y: modelData.y
                         width: modelData.implicitWidth
                         height: modelData.implicitHeight
-                        intersection: Intersection.Subtract
                     }
                 }
 

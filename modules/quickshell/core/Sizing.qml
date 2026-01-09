@@ -11,7 +11,7 @@ Singleton {
     readonly property Meter meter: Meter {}
     readonly property int leftBarWidth: 51
     readonly property int topBarHeight: 29
-    readonly property int networkMenuWidth: 120
+    readonly property int networkMenuWidth: 250
 
     component Meter: QtObject {
         readonly property int width: 6
