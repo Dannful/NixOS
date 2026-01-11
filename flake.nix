@@ -21,6 +21,10 @@
       url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-minecraft = {
+      url = "github:Infinidoge/nix-minecraft";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -30,6 +34,7 @@
     hyprland,
     quickshell,
     nvf,
+    nix-minecraft,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -38,7 +43,11 @@
       personal = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs system;};
 
-        modules = [./personal/configuration.nix];
+        modules = [
+          ./personal/configuration.nix
+          nix-minecraft.nixosModules.minecraft-servers
+          {nixpkgs.overlays = [nix-minecraft.overlay];}
+        ];
       };
       work = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs system;};
