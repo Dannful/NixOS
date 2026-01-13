@@ -77,15 +77,15 @@
     monitors = [
       {
         name = "HDMI-A-1";
-        resolution = "3440x1440";
-        refresh-rate = "84.96";
+        resolution = "2560x1080";
+        refresh-rate = "59.98";
         position = "0x0";
       }
       {
         name = "eDP-1";
         resolution = "1920x1080";
         refresh-rate = "60.00";
-        position = "3440x0";
+        position = "2560x0";
       }
     ];
   };
