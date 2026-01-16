@@ -178,14 +178,8 @@ in {
       extraPortals = [
         pkgs.xdg-desktop-portal-gtk
       ];
-      config = {
-        common = {
-          default = ["gtk"];
-        };
-        hyprland = {
-          default = ["gtk" "hyprland"];
-        };
-      };
+      config.common.default = "gtk";
+      xdgOpenUsePortal = true;
     };
 
     xdg.mime.defaultApplications = {

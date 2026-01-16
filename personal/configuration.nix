@@ -31,11 +31,6 @@
   hardware.xone.enable = true;
 
   boot.kernelModules = ["k10temp"];
-  environment.systemPackages = with pkgs; [
-    btop
-    lm_sensors
-    jdk
-  ];
   services.minecraft-servers = {
     enable = true;
     eula = true;
@@ -90,6 +85,19 @@
       };
 
       jvmOpts = "-Xms4G -Xmx4G -XX:+UseG1GC";
+    };
+  };
+  services.flatpak.enable = true;
+  environment = {
+    systemPackages = with pkgs; [
+      btop
+      lm_sensors
+      jdk
+    ];
+    sessionVariables = {
+      WLR_NO_HARDWARE_CURSORS = "1";
+      LIBVA_DRIVER_NAME = "nvidia";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
   };
   networking.firewall.allowedUDPPorts = [19132];
