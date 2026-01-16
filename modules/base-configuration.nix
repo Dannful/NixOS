@@ -172,9 +172,20 @@ in {
       blueman.enable = true;
       hypridle.enable = true;
     };
+    services.dbus.enable = true;
     xdg.portal = {
       enable = true;
-      extraPortals = [pkgs.kdePackages.xdg-desktop-portal-kde];
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+      ];
+      config = {
+        common = {
+          default = ["gtk"];
+        };
+        hyprland = {
+          default = ["gtk" "hyprland"];
+        };
+      };
     };
 
     xdg.mime.defaultApplications = {
@@ -324,7 +335,9 @@ in {
       };
     };
 
-    environment.sessionVariables = {NIXOS_OZONE_WL = "1";};
+    environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+    };
 
     system.stateVersion = "24.05";
     hardware = {
