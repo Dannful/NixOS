@@ -100,5 +100,5 @@
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
   };
-  networking.firewall.allowedUDPPorts = [19132];
+  networking.firewall.allowedUDPPorts = [19132 5520];
 }
