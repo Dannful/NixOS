@@ -92,7 +92,7 @@
     systemPackages = with pkgs; [
       btop
       lm_sensors
-      jdk
+      javaPackages.compiler.temurin-bin.jdk-25
     ];
     sessionVariables = {
       WLR_NO_HARDWARE_CURSORS = "1";
