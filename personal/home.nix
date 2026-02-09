@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ../modules/hyprland/custom-hyprland.nix
     ../modules/kitty/custom-kitty.nix
