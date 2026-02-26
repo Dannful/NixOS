@@ -99,8 +99,6 @@ in {
               end, 500)
             end, { nargs = 1 })
           '';
-          r_view = ''
-          '';
         };
         keymaps = [
           {
@@ -301,6 +299,18 @@ in {
             action = "<cmd>lua Snacks.picker.diagnostics_buffer()<CR>";
             desc = "LSP Buffer Diagnostics";
           }
+          {
+            key = "<leader>gi";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.gh_issue()<CR>";
+            desc = "GitHub Issues (open)";
+          }
+          {
+            key = "<leader>gp";
+            mode = ["n"];
+            action = "<cmd>lua Snacks.picker.gh_pr()<CR>";
+            desc = "GitHub Pull Requests (open)";
+          }
         ];
         theme = {
           enable = true;
@@ -332,7 +342,6 @@ in {
 
         lsp = {
           enable = true;
-          formatOnSave = true;
           inlayHints.enable = true;
           lightbulb.enable = true;
           trouble.enable = true;
@@ -380,13 +389,6 @@ in {
           };
         in
           pkgs.lib.mkForce [(pkgs.lib.getExe r-with-languageserver) "--no-echo" "-e" "languageserver::run()"];
-        formatter.conform-nvim = {
-          setupOpts.formatters_by_ft = {
-            javascript = [
-              "biome"
-            ];
-          };
-        };
         git.gitsigns = {
           enable = true;
           setupOpts = {
@@ -394,6 +396,7 @@ in {
           };
         };
         utility = {
+          direnv.enable = true;
           motion = {
             flash-nvim.enable = true;
             precognition.enable = true;
@@ -412,9 +415,9 @@ in {
               scope.enabled = true;
               statuscolumn.enabled = true;
               words.enabled = true;
-              zen.enabled = true;
               bufdelete.enabled = true;
               gitsigns.enabled = true;
+              gh.enabled = true;
               image.enabled = true;
             };
           };
