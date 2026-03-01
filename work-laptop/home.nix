@@ -1,52 +1,39 @@
 {pkgs, ...}: {
   imports = [
     ../modules/kitty/custom-kitty.nix
-    ../modules/zed/zed.nix
     ../modules/hyprland/custom-hyprland.nix
     ../modules/git/git.nix
     ../modules/emacs/emacs.nix
     ../modules/nvim/nvim.nix
   ];
-  home.username = "vinidan";
-  home.homeDirectory = "/home/vinidan";
+  home = {
+    username = "vinidan";
+    homeDirectory = "/home/vinidan";
 
-  home.stateVersion = "24.05";
+    stateVersion = "24.05";
+
+    file.".ssh/config" = {
+      text = ''
+        Host github.com
+          Hostname ssh.github.com
+          Port 443
+          User git
+      '';
+    };
+
+    packages = with pkgs; [
+      gh
+      lazygit
+      bruno
+      brightnessctl
+      jetbrains.datagrip
+      gemini-cli
+    ];
+  };
 
   nixpkgs = {config = {allowUnfree = true;};};
 
-  home.file.".ssh/config" = {
-    text = ''
-      Host github.com
-        Hostname ssh.github.com
-        Port 443
-        User git
-    '';
-  };
-
-  home.packages = with pkgs; [
-    gh
-    lazygit
-    awscli2
-    bruno
-    brightnessctl
-    nomad
-    jetbrains.datagrip
-    gemini-cli
-  ];
-
-  home.sessionVariables = {NOMAD_ADDR = "http://52.67.92.147:4646";};
-
   custom-kitty = {enable = true;};
-
-  custom-zed = {
-    enable = true;
-    lsp = {
-      omnisharp = {
-        path = "${pkgs.omnisharp-roslyn}/bin/OmniSharp";
-        arguments = ["-lsp"];
-      };
-    };
-  };
 
   services.batsignal = {
     enable = true;
@@ -63,12 +50,10 @@
   };
   programs = {
     home-manager.enable = true;
-
-    nvf.settings.vim.languages.csharp.enable = true;
-    nvf.settings.vim.lsp.servers.powershell_es = {
-      enable = true;
-      cmd = [(pkgs.lib.getExe pkgs.powershell-editor-services) "-Stdio" "-HostName" "nvim" "-HostProfileId" "nvim" "-HostVersion" "1.0.0" "-LogLevel" "Normal"];
-      filetypes = ["ps1" "psm1" "psd1"];
+    nvf.settings.vim = {
+      languages = {
+        ruby.enable = true;
+      };
     };
   };
 

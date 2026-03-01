@@ -2,13 +2,16 @@
   imports = [
     ../modules/hyprland/custom-hyprland.nix
     ../modules/kitty/custom-kitty.nix
-    ../modules/zed/zed.nix
     ../modules/git/git.nix
     ../modules/emacs/emacs.nix
     ../modules/nvim/nvim.nix
   ];
 
-  nixpkgs = {config = {allowUnfree = true;};};
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+    };
+  };
   home = {
     username = "dannly";
     homeDirectory = "/home/dannly";
@@ -23,6 +26,7 @@
       prismlauncher
       droidcam
       gemini-cli
+      visidata
     ];
 
     sessionVariables = {
@@ -30,11 +34,99 @@
     };
   };
 
-  programs.home-manager = {enable = true;};
+  programs.home-manager = {
+    enable = true;
+  };
+  programs.nvf.settings.vim = {
+    languages = {
+      clang.enable = true;
+      r.enable = true;
+    };
+    lsp.servers.r_language_server.cmd = let
+      customRPackages = [
+        pkgs.rPackages.tidyverse
+        pkgs.rPackages.janitor
+        pkgs.rPackages.here
+        pkgs.rPackages.DoE_base
+        pkgs.rPackages.ggh4x
+        pkgs.rPackages.plotly
+      ];
+      r-with-languageserver = pkgs.rWrapper.override {
+        packages = [pkgs.rPackages.languageserver] ++ customRPackages;
+      };
+    in
+      pkgs.lib.mkForce [
+        (pkgs.lib.getExe r-with-languageserver)
+        "--no-echo"
+        "-e"
+        "languageserver::run()"
+      ];
+    lazy.plugins = {
+      "iron.nvim" = {
+        package = pkgs.vimPlugins.iron-nvim;
+        setupModule = "iron.core";
+        setupOpts = {
+          config = {
+            scratch_repl = true;
+            repl_definition = {
+              r = {
+                command = ["R"];
+              };
+            };
+            repl_open_cmd = "vertical botright 40 split";
+          };
+          keymaps = {};
+          highlight = {
+            italic = true;
+          };
+        };
+      };
+    };
+
+    luaConfigRC = {
+      r_iron_keymaps = ''
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = "r",
+          desc = "Set up R-specific REPL keybindings",
+          callback = function()
+            local iron = require("iron.core")
+            local map = vim.keymap.set
+
+            -- 1. Toggle / Restart REPL
+            map("n", "<leader>rr", "<cmd>IronRepl<cr>", { desc = "Toggle R REPL", buffer = true })
+            map("n", "<leader>rR", "<cmd>IronRestart<cr>", { desc = "Restart R REPL", buffer = true })
+
+            -- 2. Code Execution
+            map("n", "<leader>rl", function()
+              iron.send_line()
+              vim.cmd("normal! j")
+            end, { desc = "Send Line to R", buffer = true })
+
+            map("n", "<leader>rf", iron.send_file, { desc = "Send File to R", buffer = true })
+            map("v", "<leader>rs", iron.visual_send, { desc = "Send Selection to R", buffer = true })
+            map("n", "<leader>rs", function() iron.run_motion("send_motion") end, { desc = "Send Motion to R", buffer = true })
+          end
+        })
+        vim.api.nvim_create_user_command("RView", function(opts)
+          local df_name = opts.args
+          if df_name == "" then print("Usage: :RView <dataframe>"); return end
+
+          -- 1. Construct R code to save to temp csv
+          local cmd = string.format('write.csv(%s, file = "/tmp/nvim_r_view.csv", row.names = FALSE)', df_name)
+
+          -- 2. Send to Iron
+          require("iron.core").send(nil, cmd)
+
+          -- 3. Open Visidata in a split
+          vim.defer_fn(function()
+            vim.cmd("vsplit | terminal ${pkgs.visidata}/bin/vd /tmp/nvim_r_view.csv")
+          end, 500)
+        end, { nargs = 1 })
+      '';
+    };
+  };
 
   custom-kitty.enable = true;
-
-  custom-zed = {enable = true;};
 
   custom-hyprland = {
     enable = true;

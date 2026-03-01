@@ -1,25 +1,12 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
-}: let
-  customRPackages = [
-    pkgs.rPackages.tidyverse
-    pkgs.rPackages.janitor
-    pkgs.rPackages.here
-    pkgs.rPackages.DoE_base
-    pkgs.rPackages.ggh4x
-    pkgs.rPackages.plotly
-  ];
-in {
+}: {
   imports = [inputs.nvf.homeManagerModules.default];
 
   home.packages = [
-    (pkgs.rWrapper.override
-      {
-        packages = customRPackages;
-      })
-    pkgs.visidata
     pkgs.ripgrep
     pkgs.fd
     pkgs.neovide
@@ -53,57 +40,59 @@ in {
         options = {
           guifont = "FiraCode Nerd Font:h12";
         };
+        augroups = [{name = "ForceConformKey";}];
+        autocmds = [
+          {
+            event = ["LspAttach"];
+            group = "ForceConformKey";
+            desc = "Force the use of conform-nvim for formatting";
+            callback = lib.generators.mkLuaInline ''
+              function(ev)
+                vim.keymap.set("n", "<leader>lf", function()
+                   require("conform").format({ async = true, lsp_fallback = true })
+                end, { buffer = ev.buf, desc = "Format buffer (Conform)", silent = true })
+              end
+            '';
+          }
+        ];
         luaConfigRC = {
           neovide_font = ''
             if vim.g.neovide then
               vim.o.guifont = "FiraCode Nerd Font:h12"
             end
           '';
+          language_selector = ''
+            _G.open_language_selector = function()
+              local parsers = require("nvim-treesitter.parsers").get_parser_configs()
+              local languages = {}
 
-          r_iron_keymaps = ''
-            vim.api.nvim_create_autocmd("FileType", {
-              pattern = "r",
-              desc = "Set up R-specific REPL keybindings",
-              callback = function()
-                local iron = require("iron.core")
-                local map = vim.keymap.set
-
-                -- 1. Toggle / Restart REPL
-                map("n", "<leader>rr", "<cmd>IronRepl<cr>", { desc = "Toggle R REPL", buffer = true })
-                map("n", "<leader>rR", "<cmd>IronRestart<cr>", { desc = "Restart R REPL", buffer = true })
-
-                -- 2. Code Execution
-                map("n", "<leader>rl", function()
-                  iron.send_line()
-                  vim.cmd("normal! j")
-                end, { desc = "Send Line to R", buffer = true })
-
-                map("n", "<leader>rf", iron.send_file, { desc = "Send File to R", buffer = true })
-                map("v", "<leader>rs", iron.visual_send, { desc = "Send Selection to R", buffer = true })
-                map("n", "<leader>rs", function() iron.run_motion("send_motion") end, { desc = "Send Motion to R", buffer = true })
+              for lang, _ in pairs(parsers) do
+                table.insert(languages, lang)
               end
-            })
-            vim.api.nvim_create_user_command("RView", function(opts)
-              local df_name = opts.args
-              if df_name == "" then print("Usage: :RView <dataframe>"); return end
 
-              -- 1. Construct R code to save to temp csv
-              local cmd = string.format('write.csv(%s, file = "/tmp/nvim_r_view.csv", row.names = FALSE)', df_name)
+              table.sort(languages)
 
-              -- 2. Send to Iron
-              require("iron.core").send(nil, cmd)
-
-              -- 3. Open Visidata in a split
-              vim.defer_fn(function()
-                vim.cmd("vsplit | terminal ${pkgs.visidata}/bin/vd /tmp/nvim_r_view.csv")
-              end, 500)
-            end, { nargs = 1 })
+              vim.ui.select(languages, {
+                prompt = "Select Language (Filetype):",
+                format_item = function(item)
+                  return "📝 " .. item
+                end,
+              }, function(choice)
+                if choice then
+                  vim.bo.filetype = choice
+                  print("Set filetype to: " .. choice)
+                end
+              end)
+            end
           '';
         };
         keymaps = [
           {
             key = "g.";
-            mode = ["n" "v"];
+            mode = [
+              "n"
+              "v"
+            ];
             action = "<cmd>lua require(\"fastaction\").code_action()<CR>";
             silent = true;
           }
@@ -180,18 +169,6 @@ in {
             desc = "Git Diff (Hunks)";
           }
           {
-            key = "<leader>z";
-            mode = ["n"];
-            action = "<cmd>lua Snacks.zen()<CR>";
-            desc = "Toggle Zen Mode";
-          }
-          {
-            key = "<leader>Z";
-            mode = ["n"];
-            action = "<cmd>lua Snacks.zen.zoom()<CR>";
-            desc = "Toggle Zoom";
-          }
-          {
             key = "<leader>.";
             mode = ["n"];
             action = "<cmd>lua Snacks.scratch()<CR>";
@@ -235,7 +212,10 @@ in {
           }
           {
             key = "<c-/>";
-            mode = ["n" "t"];
+            mode = [
+              "n"
+              "t"
+            ];
             action = "<cmd>lua Snacks.terminal()<CR>";
             desc = "Toggle Terminal";
           }
@@ -311,6 +291,12 @@ in {
             action = "<cmd>lua Snacks.picker.gh_pr()<CR>";
             desc = "GitHub Pull Requests (open)";
           }
+          {
+            key = "<leader>lm";
+            mode = "n";
+            desc = "Select Buffer Language";
+            action = ":lua _G.open_language_selector()<CR>";
+          }
         ];
         theme = {
           enable = true;
@@ -349,6 +335,17 @@ in {
           nvim-docs-view.enable = true;
         };
 
+        formatter.conform-nvim = {
+          enable = true;
+          setupOpts = {
+            format_on_save = {
+              lsp_fallback = true;
+              timeout_ms = 500;
+            };
+            notify_on_error = true;
+          };
+        };
+
         binds = {
           whichKey.enable = true;
           cheatsheet.enable = true;
@@ -363,32 +360,14 @@ in {
           enableExtraDiagnostics = true;
 
           nix.enable = true;
-          clang.enable = true;
           bash.enable = true;
-          ts = {
-            enable = true;
-            format.type = ["biome"];
-          };
-          html.enable = true;
-          terraform.enable = true;
-          r.enable = true;
-          css = {
-            enable = true;
-            format.type = ["biome"];
-          };
           yaml.enable = true;
+          json.enable = true;
           markdown = {
             enable = true;
             extensions.markview-nvim.enable = true;
           };
-          java.enable = true;
         };
-        lsp.servers.r_language_server.cmd = let
-          r-with-languageserver = pkgs.rWrapper.override {
-            packages = [pkgs.rPackages.languageserver] ++ customRPackages;
-          };
-        in
-          pkgs.lib.mkForce [(pkgs.lib.getExe r-with-languageserver) "--no-echo" "-e" "languageserver::run()"];
         git.gitsigns = {
           enable = true;
           setupOpts = {
@@ -443,28 +422,6 @@ in {
           "RainbowCyan".fg = "#56B6C2";
         };
 
-        lazy.plugins = {
-          "iron.nvim" = {
-            package = pkgs.vimPlugins.iron-nvim;
-            setupModule = "iron.core";
-            setupOpts = {
-              config = {
-                scratch_repl = true;
-                repl_definition = {
-                  r = {
-                    command = ["R"];
-                  };
-                };
-                repl_open_cmd = "vertical botright 40 split";
-              };
-              keymaps = {};
-              highlight = {
-                italic = true;
-              };
-            };
-          };
-        };
-
         visuals = {
           fidget-nvim.enable = true;
         };
@@ -481,7 +438,11 @@ in {
                 };
               };
               "core.integrations.nvim-cmp" = {};
-              "core.concealer" = {config = {icon_preset = "diamond";};};
+              "core.concealer" = {
+                config = {
+                  icon_preset = "diamond";
+                };
+              };
               "core.esupports.metagen" = {
                 config = {
                   type = "auto";
@@ -491,11 +452,23 @@ in {
               "core.qol.toc" = {};
               "core.qol.todo_items" = {};
               "core.looking-glass" = {};
-              "core.presenter" = {config = {zen_mode = "zen-mode";};};
+              "core.presenter" = {
+                config = {
+                  zen_mode = "zen-mode";
+                };
+              };
               "core.export" = {};
-              "core.export.markdown" = {config = {extensions = "all";};};
+              "core.export.markdown" = {
+                config = {
+                  extensions = "all";
+                };
+              };
               "core.summary" = {};
-              "core.tangle" = {config = {report_on_empty = false;};};
+              "core.tangle" = {
+                config = {
+                  report_on_empty = false;
+                };
+              };
               "core.ui.calendar" = {};
             };
           };
