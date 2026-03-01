@@ -15,4 +15,26 @@
       }
     ];
   };
+  services.openvpn.servers = {
+    workVPN = {
+      config = ''
+        client
+        dev tun
+        proto udp
+        remote int6.vpn.com.br 1194
+
+        ca   /etc/nixos/vpn/int6/ca.crt
+        cert /etc/nixos/vpn/int6/spadotto-nixos.crt
+        key  /etc/nixos/vpn/int6/spadotto-nixos.key
+
+        # Standard Security Settings
+        cipher AES-256-GCM
+        auth SHA256
+        resolv-retry infinite
+        nobind
+      '';
+      autoStart = true;
+      updateResolvConf = true;
+    };
+  };
 }
