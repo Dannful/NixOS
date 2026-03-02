@@ -20,6 +20,19 @@
       droidcam
       gemini-cli
     ];
+    file.".ssh/config" = {
+      text = ''
+        Host github.com
+          Hostname ssh.github.com
+          User git
+          IdentityFile ~/.ssh/github
+
+        Host bitbucket.org
+          Hostname bitbucket.org
+          User git
+          IdentityFile ~/.ssh/bitbucket
+      '';
+    };
   };
 
   nixpkgs = {config = {allowUnfree = true;};};
