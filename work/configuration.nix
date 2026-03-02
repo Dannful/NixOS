@@ -3,9 +3,7 @@
   pkgs,
   config,
   ...
-}: let
-  int6-vpn-name = "int6-vpn";
-in {
+}: {
   imports = [
     ../modules/base-configuration.nix
     ./hardware-configuration.nix

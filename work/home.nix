@@ -42,6 +42,10 @@
     settings.vim = {
       languages = {
         ruby.enable = true;
+        ts = {
+          enable = true;
+          format.type = "biome";
+        };
       };
     };
   };
