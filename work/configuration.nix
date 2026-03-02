@@ -9,7 +9,6 @@ in {
   imports = [
     ../modules/base-configuration.nix
     ./hardware-configuration.nix
-    ../modules/nginx/work.nix
     inputs.home-manager.nixosModules.home-manager
   ];
 
