@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }: let
   int6-vpn-name = "int6-vpn";
@@ -71,4 +72,5 @@ in {
       RestartSec = "5";
     };
   };
+  environment.etc."timezone".text = config.time.timeZone;
 }
