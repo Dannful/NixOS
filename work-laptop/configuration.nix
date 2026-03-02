@@ -10,31 +10,9 @@
     users = [
       {
         name = "vinidan";
-        password = "$6$8B3VVbnOEmwjl7eR$s3kosL.whd4c2pTLgmFPSw6vZHFLz8LRisQQTGYVaUtOkk0dq9O3GkCVUu/YltyhebxEKnovyH0yKbcQvwVdy/";
+        password = "$6$uoaANV2.eLu/goEB$tjSshXgQLuZ533az.hiD7gsFgfrB2cxV/1LpdcEay7FfNIDJ14JXlw0fp8M33biz.VJNQZ5EC7Fs87fpQJMJq.";
         home-file-path = ./home.nix;
       }
     ];
-  };
-  services.openvpn.servers = {
-    workVPN = {
-      config = ''
-        client
-        dev tun
-        proto udp
-        remote int6.vpn.com.br 1194
-
-        ca   /etc/nixos/vpn/int6/ca.crt
-        cert /etc/nixos/vpn/int6/spadotto-nixos.crt
-        key  /etc/nixos/vpn/int6/spadotto-nixos.key
-
-        # Standard Security Settings
-        cipher AES-256-GCM
-        auth SHA256
-        resolv-retry infinite
-        nobind
-      '';
-      autoStart = true;
-      updateResolvConf = true;
-    };
   };
 }
