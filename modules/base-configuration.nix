@@ -374,6 +374,7 @@ in {
         libnotify
         gnome-system-monitor
         kdePackages.qtdeclarative
+        steam-run
 
         # File Management
         nautilus
