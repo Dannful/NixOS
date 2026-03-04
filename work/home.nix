@@ -44,8 +44,17 @@
         ruby.enable = true;
         ts = {
           enable = true;
-          format.type = "biome";
+          format.enable = false;
         };
+      };
+      formatter.conform-nvim.setupOpts = {
+        formatters_by_ft = {
+          typescript = ["eslint_d"];
+          typescriptreact = ["eslint_d"];
+          javascript = ["eslint_d"];
+          javascriptreact = ["eslint_d"];
+        };
+        formatters.eslint_d.command = pkgs.lib.getExe pkgs.eslint_d;
       };
     };
   };
