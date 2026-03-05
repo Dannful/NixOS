@@ -40,11 +40,11 @@
   programs.home-manager.enable = true;
   programs.nvf = {
     settings.vim = {
-      lsp.servers.ruby_lsp.cmd = pkgs.lib.mkForce ["solargraph"];
+      lsp.servers.ruby_lsp.cmd = pkgs.lib.mkForce ["ruby-lsp"];
       languages = {
         ruby = {
           enable = true;
-          lsp.servers = ["solargraph"];
+          lsp.servers = ["ruby_lsp"];
         };
         ts = {
           enable = true;
