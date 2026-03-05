@@ -41,7 +41,10 @@
   programs.nvf = {
     settings.vim = {
       languages = {
-        ruby.enable = true;
+        ruby = {
+          enable = true;
+          lsp.servers = ["ruby_lsp"];
+        };
         ts = {
           enable = true;
           format.enable = false;
