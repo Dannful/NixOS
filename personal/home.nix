@@ -32,6 +32,14 @@
     sessionVariables = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
     };
+    file.".ssh/config" = {
+      text = ''
+        Host github.com
+          Hostname ssh.github.com
+          User git
+          IdentityFile ~/.ssh/github
+      '';
+    };
   };
 
   programs.home-manager = {
