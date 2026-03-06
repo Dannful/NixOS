@@ -384,6 +384,9 @@ in {
         swaynotificationcenter
         custom-sddm-astronaut
 
+        # Recording
+        obs-studio
+
         # Media / Social
         discord
         youtube-music
