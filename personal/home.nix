@@ -38,6 +38,11 @@
           Hostname ssh.github.com
           User git
           IdentityFile ~/.ssh/github
+
+        Host gppd-hpc.inf.ufrgs.br
+          Hostname gppd-hpc.inf.ufrgs.br
+          User vdspadotto
+          IdentityFile ~/.ssh/pcad
       '';
     };
   };
