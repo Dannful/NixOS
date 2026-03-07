@@ -143,19 +143,12 @@ in {
       bluetooth.enable = true;
       bluetooth.powerOnBoot = true;
     };
+    zramSwap.enable = true;
 
     # --- Networking ---
     networking = {
       hostName = "nixos";
       networkmanager.enable = true;
-      hosts = {
-        "127.0.0.1" = [
-          "keycloak"
-          "s3"
-          "vanescola-router"
-          "vanescola-portal"
-        ];
-      };
     };
 
     # --- Nix Configuration ---
@@ -205,6 +198,11 @@ in {
           variant = "alt-intl";
         };
         videoDrivers = lib.mkIf cfg.use-nvidia ["nvidia"];
+      };
+
+      earlyoom = {
+        enable = true;
+        freeMemThreshold = 5;
       };
 
       displayManager.sddm = {
