@@ -29,8 +29,11 @@
 
   hardware.xpadneo.enable = true;
   hardware.xone.enable = true;
-
-  boot.kernelModules = ["k10temp"];
+  boot = {
+    kernelModules = ["k10temp"];
+    resumeDevice = "/dev/disk/by-uuid/5e66a786-5dc1-4827-a80c-359d9665f880";
+    kernelParams = ["resume_offset=464121856"];
+  };
   services.minecraft-servers = {
     enable = true;
     eula = true;

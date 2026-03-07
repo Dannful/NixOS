@@ -54,11 +54,6 @@
 
         modules = [./work/configuration.nix];
       };
-      work-laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs system;};
-
-        modules = [./work-laptop/configuration.nix];
-      };
     };
     templates = {
       csharp = {
