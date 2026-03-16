@@ -391,6 +391,9 @@ in {
         youtube-music
         zathura
         pavucontrol
+
+        # AI
+        claude-code
       ]
       ++ lib.optionals cfg.use-steam [
         pkgs.protonup-ng

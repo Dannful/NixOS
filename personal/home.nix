@@ -27,6 +27,7 @@
       droidcam
       gemini-cli
       visidata
+      deluge
     ];
 
     sessionVariables = {

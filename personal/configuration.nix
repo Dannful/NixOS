@@ -26,7 +26,10 @@
       };
     };
   };
-
+  xdg.mime.defaultApplications = {
+    "x-scheme-handler/magnet" = "deluge.desktop";
+    "application/x-bittorrent" = "deluge.desktop";
+  };
   hardware.xpadneo.enable = true;
   hardware.xone.enable = true;
   boot = {
