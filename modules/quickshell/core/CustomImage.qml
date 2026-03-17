@@ -20,7 +20,7 @@ Item {
         NumberAnimation {
             duration: Animations.durations.fast
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+            easing.bezierCurve: Animations.bezierCurves.smoothOut
         }
     }
     Behavior on rotation {
@@ -53,7 +53,7 @@ Item {
             NumberAnimation {
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+                easing.bezierCurve: Animations.bezierCurves.smoothOut
             }
         }
     }
@@ -75,7 +75,7 @@ Item {
             NumberAnimation {
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+                easing.bezierCurve: Animations.bezierCurves.smoothOut
             }
         }
     }

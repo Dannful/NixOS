@@ -9,9 +9,6 @@
   cfg = config.custom-hyprland;
 
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    ${
-      inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
-    }/bin/quickshell &
     hypridle &
   '';
 in {
@@ -61,6 +58,7 @@ in {
       swappy
       rofi
       playerctl
+      brightnessctl
       inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
     home.file = {
@@ -104,14 +102,25 @@ in {
     programs.hyprlock = {enable = true;};
     services.hypridle = {enable = true;};
 
+    systemd.user.services.quickshell = {
+      Unit = {
+        Description = "Quickshell Panel";
+        After = ["graphical-session-pre.target"];
+        PartOf = ["graphical-session.target"];
+      };
+      Service = {
+        ExecStart = "${inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/quickshell";
+        Restart = "on-failure";
+      };
+      Install = {WantedBy = ["graphical-session.target"];};
+    };
+
     wayland.windowManager.hyprland = {
       enable = true;
       xwayland.enable = true;
-      systemd.enable = false;
+      systemd.enable = true;
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-
-      plugins = [inputs.hyprland-plugins.packages."${pkgs.stdenv.hostPlatform.system}".borders-plus-plus];
 
       extraConfig = lib.optionalString cfg.nvidia ''
         env=LIBVA_DRIVER_NAME,nvidia
@@ -122,13 +131,56 @@ in {
       settings = {
         "$mod" = "SUPER";
         "$alt" = "ALT";
-        general = {gaps_out = "38, 18, 18, 60";};
+        general = {
+          gaps_in = 5;
+          gaps_out = "58, 18, 18, 60";
+          border_size = 2;
+          "col.active_border" = "rgba(cba6f7ff) rgba(89b4faff) 45deg";
+          "col.inactive_border" = "rgba(313244cc)";
+          layout = "dwindle";
+        };
         cursor = {no_hardware_cursors = true;};
         input = {
           kb_layout = "us";
           kb_variant = "alt-intl";
         };
-        decoration = {rounding = 3;};
+        decoration = {
+          rounding = 10;
+          blur = {
+            enabled = true;
+            size = 4;
+            passes = 3;
+            new_optimizations = true;
+            ignore_opacity = true;
+          };
+          shadow = {
+            enabled = true;
+            range = 10;
+            render_power = 3;
+            color = "rgba(1a1a1aee)";
+          };
+        };
+        animations = {
+          enabled = true;
+          bezier = [
+            "overshot, 0.05, 0.9, 0.1, 1.05"
+            "smoothOut, 0.36, 0, 0.66, -0.56"
+            "smoothIn, 0.25, 1, 0.5, 1"
+          ];
+          animation = [
+            "windows, 1, 5, overshot, slide"
+            "windowsOut, 1, 4, smoothOut, slide"
+            "windowsMove, 1, 4, default"
+            "border, 1, 10, default"
+            "fade, 1, 10, smoothIn"
+            "fadeDim, 1, 10, smoothIn"
+            "workspaces, 1, 6, default"
+          ];
+        };
+        dwindle = {
+          pseudotile = true;
+          preserve_split = true;
+        };
         exec-once = [
           "hyprctl dispatch exec ${startupScript}/bin/start"
           "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
@@ -142,6 +194,8 @@ in {
         bindel = [
           ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
           ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
+          ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
         ];
         bindl = [
           ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
@@ -161,6 +215,26 @@ in {
             "$mod, F, fullscreen"
             '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
             "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
+            
+            # Quick lock screen
+            "$mod, L, exec, loginctl lock-session"
+            
+            # Window focus movement
+            "$mod, left, movefocus, l"
+            "$mod, right, movefocus, r"
+            "$mod, up, movefocus, u"
+            "$mod, down, movefocus, d"
+            
+            # Dwindle layout management
+            "$mod, P, pseudo"
+            
+            # Scratchpad (special workspace)
+            "$mod, S, togglespecialworkspace, magic"
+            "$mod SHIFT, S, movetoworkspace, special:magic"
+
+            # Scroll through existing workspaces with mouse
+            "$mod, mouse_down, workspace, e+1"
+            "$mod, mouse_up, workspace, e-1"
           ]
           ++ (builtins.concatLists (builtins.genList (i: let
               ws = i + 1;
@@ -169,15 +243,6 @@ in {
               "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
             ])
             9));
-        "plugin:borders-plus-plus" = {
-          add_borders = 1;
-
-          "col.border_1" = "rgb(112145)";
-
-          border_size_1 = 6;
-
-          natural_rounding = "yes";
-        };
       };
     };
   };

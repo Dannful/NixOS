@@ -11,6 +11,8 @@ CustomRect {
     id: root
     required property Item panel
     color: Colors.background
+    border.color: Colors.darkSurface
+    border.width: 1
 
     anchors {
         horizontalCenter: panel.right
@@ -27,7 +29,7 @@ CustomRect {
         NumberAnimation {
             duration: Animations.durations.slow
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+            easing.bezierCurve: Animations.bezierCurves.smoothOut
         }
     }
 
@@ -80,7 +82,7 @@ CustomRect {
             properties: "implicitWidth, implicitHeight, radius"
             duration: Animations.durations.medium
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+            easing.bezierCurve: Animations.bezierCurves.snappy
         }
 
         NumberAnimation {
@@ -88,7 +90,7 @@ CustomRect {
             properties: "opacity, scale"
             duration: Animations.durations.medium
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+            easing.bezierCurve: Animations.bezierCurves.snappy
         }
 
         NumberAnimation {
@@ -96,7 +98,7 @@ CustomRect {
             properties: "scale"
             duration: Animations.durations.medium
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+            easing.bezierCurve: Animations.bezierCurves.snappy
         }
         RotationAnimation {
             target: musicIcon
@@ -108,7 +110,7 @@ CustomRect {
             properties: "scale"
             duration: Animations.durations.medium
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+            easing.bezierCurve: Animations.bezierCurves.snappy
         }
         RotationAnimation {
             target: contentLoader.item ? contentLoader.item.trackArt : null

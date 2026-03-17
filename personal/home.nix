@@ -44,6 +44,11 @@
           Hostname gppd-hpc.inf.ufrgs.br
           User vdspadotto
           IdentityFile ~/.ssh/pcad
+
+        Host bitbucket.org
+          Hostname bitbucket.org
+          User git
+          IdentityFile ~/.ssh/bitbucket
       '';
     };
   };
@@ -52,9 +57,28 @@
     enable = true;
   };
   programs.nvf.settings.vim = {
+    lsp.servers.ruby_lsp.cmd = pkgs.lib.mkForce ["ruby-lsp"];
+    formatter.conform-nvim.setupOpts = {
+      formatters_by_ft = {
+        typescript = ["eslint_d"];
+        typescriptreact = ["eslint_d"];
+        javascript = ["eslint_d"];
+        javascriptreact = ["eslint_d"];
+      };
+      formatters.rubocop.command = pkgs.lib.mkForce "rubocop";
+      formatters.eslint_d.command = pkgs.lib.getExe pkgs.eslint_d;
+    };
     languages = {
       clang.enable = true;
       r.enable = true;
+      ruby = {
+        enable = true;
+        lsp.servers = ["ruby_lsp"];
+      };
+      ts = {
+        enable = true;
+        format.enable = false;
+      };
     };
     lsp.servers.r_language_server.cmd = let
       customRPackages = [

@@ -2,7 +2,6 @@ import QtQuick
 import Quickshell
 
 import "root:/core"
-import "root:/core"
 
 Item {
     id: root
@@ -11,23 +10,43 @@ Item {
     required property string iconName
     property string iconSize: Fonts.sizing.large
 
+    // Expose hover state for menu closing logic
+    property alias containsMouse: mouseArea.containsMouse
+
     implicitWidth: Sizing.leftBarWidth
     implicitHeight: iconMetrics.height
 
-    MouseArea {
-        hoverEnabled: true
+    Rectangle {
+        id: hoverBg
+        anchors.centerIn: parent
+        width: 0
+        height: 0
+        radius: Sizing.radius.medium
+        color: Colors.darkSurface
+        opacity: 0
 
-        x: icon.x
-        y: icon.y
-        implicitWidth: (icon.implicitWidth + Sizing.leftBarWidth) / 2
-        implicitHeight: icon.implicitHeight
+        Behavior on width { NumberAnimation { duration: Animations.durations.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Animations.bezierCurves.snappy } }
+        Behavior on height { NumberAnimation { duration: Animations.durations.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Animations.bezierCurves.snappy } }
+        Behavior on opacity { NumberAnimation { duration: Animations.durations.fast } }
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
 
         onEntered: {
             setVisibility(true);
+            hoverBg.width = root.implicitWidth - 10;
+            hoverBg.height = root.implicitHeight + 10;
+            hoverBg.opacity = 1;
         }
 
         onExited: {
-            setVisibility(false);
+            // Don't close menu here - let the Wrapper handle it
+            hoverBg.width = 0;
+            hoverBg.height = 0;
+            hoverBg.opacity = 0;
         }
     }
 
@@ -41,9 +60,11 @@ Item {
         id: icon
         name: root.iconName
         size: parent.iconSize
-        color: Colors.foreground
+        color: mouseArea.containsMouse || root.visibility ? Colors.primary : Colors.foreground
         anchors {
             horizontalCenter: parent.horizontalCenter
         }
+        scale: mouseArea.containsMouse ? 1.1 : 1.0
+        Behavior on scale { NumberAnimation { duration: Animations.durations.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Animations.bezierCurves.snappy } }
     }
 }

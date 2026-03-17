@@ -89,6 +89,7 @@ Scope {
                     anchors {
                         verticalCenter: parent.verticalCenter
                         left: parent.left
+                        leftMargin: Sizing.margins.small
                     }
                 }
 
@@ -100,6 +101,7 @@ Scope {
                         top: parent.top
                         left: parent.left
                         right: parent.right
+                        margins: Sizing.margins.small
                     }
                 }
             }

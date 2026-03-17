@@ -7,14 +7,56 @@ Item {
     id: root
     required property ShellScreen screen
     required property bool visibility
+    property Item triggerItem: null
+
+    signal requestClose()
 
     width: implicitWidth
     height: implicitHeight
-    
-    readonly property real targetWidth: Sizing.networkMenuWidth + Sizing.margins.medium * 2
-    readonly property real targetHeight: 350
-    
+
+    readonly property real targetWidth: 400
+    readonly property real targetHeight: 500
+
     clip: true
+
+    // Track hover state for both menu and trigger
+    property bool menuHovered: false
+    property bool triggerHovered: triggerItem ? triggerItem.containsMouse || false : false
+
+    Timer {
+        id: closeTimer
+        interval: 50
+        onTriggered: {
+            if (!root.menuHovered && !root.triggerHovered) {
+                root.requestClose();
+            }
+        }
+    }
+
+    HoverHandler {
+        id: hoverHandler
+        onHoveredChanged: {
+            root.menuHovered = hovered;
+            if (!hovered && !root.triggerHovered) {
+                closeTimer.restart();
+            } else {
+                closeTimer.stop();
+            }
+        }
+    }
+
+    // Watch trigger item hover changes
+    Connections {
+        target: root.triggerItem
+        function onContainsMouseChanged() {
+            root.triggerHovered = root.triggerItem.containsMouse;
+            if (!root.triggerHovered && !root.menuHovered) {
+                closeTimer.restart();
+            } else {
+                closeTimer.stop();
+            }
+        }
+    }
 
     states: [
         State {
@@ -47,9 +89,9 @@ Item {
             NumberAnimation {
                 target: root
                 properties: "implicitWidth,implicitHeight,opacity"
-                duration: Animations.durations.medium
+                duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+                easing.bezierCurve: Animations.bezierCurves.snappy
             }
         }
     ]

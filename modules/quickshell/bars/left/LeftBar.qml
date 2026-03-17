@@ -18,6 +18,8 @@ CustomRect {
     implicitHeight: screen.height * 0.75
     color: Colors.background
     radius: Sizing.radius.large
+    border.color: Colors.darkSurface
+    border.width: 1
 
     property alias powerIcon: powerIcon
     property alias networkIcon: networkIcon
@@ -62,18 +64,20 @@ CustomRect {
             id: networkIcon
             visibility: visibilities.networkMenu
             iconName: {
-                const strength = Network.currentNetwork?.strength;
-                if (strength === undefined) {
-                    return "wifi_lock";
-                } else if (strength >= 75) {
-                    return "signal_wifi_4_bar";
-                } else if (strength >= 50) {
-                    return "network_wifi_3_bar";
-                } else if (strength >= 25) {
-                    return "network_wifi_2_bar";
-                } else {
-                    return "network_wifi_1_bar";
-                }
+                if (Network.vpnConnected) return "vpn_lock";
+                if (Network.ethernetConnected) return "settings_ethernet";
+                if (!Network.wifiEnabled) return "wifi_off";
+                
+                const current = Network.connections.find(c => c.active && (c.type.includes("wireless") || c.type.includes("wifi")));
+                if (!current) return "signal_wifi_0_bar";
+                
+                const wifi = Network.wifiScanResults.find(w => w.ssid === current.name);
+                const strength = wifi ? wifi.strength : 100;
+
+                if (strength >= 80) return "wifi";
+                if (strength >= 60) return "wifi_2_bar";
+                if (strength >= 40) return "wifi_1_bar";
+                return "signal_wifi_bad";
             }
             setVisibility: visible => {
                 visibilities.networkMenu = visible;

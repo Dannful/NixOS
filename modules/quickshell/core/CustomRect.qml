@@ -10,7 +10,7 @@ Rectangle {
         ColorAnimation {
             duration: Animations.durations.fast
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+            easing.bezierCurve: Animations.bezierCurves.smoothOut
         }
     }
 }

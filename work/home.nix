@@ -58,7 +58,7 @@
           javascript = ["eslint_d"];
           javascriptreact = ["eslint_d"];
         };
-        formatters.rubocop.command = "rubocop";
+        formatters.rubocop.command = pkgs.lib.mkForce "rubocop";
         formatters.eslint_d.command = pkgs.lib.getExe pkgs.eslint_d;
       };
     };

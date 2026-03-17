@@ -7,6 +7,7 @@ Text {
     property string animationTarget: "scale"
     property real animationFrom: 0
     property real animationTo: 1
+    color: Colors.foreground
 
     font {
         family: "FiraCode Nerd Font Mono"
@@ -17,7 +18,7 @@ Text {
         ColorAnimation {
             duration: Animations.durations.fast
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+            easing.bezierCurve: Animations.bezierCurves.smoothOut
         }
     }
 
@@ -29,7 +30,7 @@ Text {
                 to: root.animationFrom
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+                easing.bezierCurve: Animations.bezierCurves.smoothOut
             }
             NumberAnimation {
                 target: root
@@ -37,7 +38,7 @@ Text {
                 to: root.animationTo
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+                easing.bezierCurve: Animations.bezierCurves.smoothOut
             }
         }
     }

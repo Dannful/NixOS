@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }: {
   imports = [
@@ -107,4 +108,8 @@
     };
   };
   networking.firewall.allowedUDPPorts = [19132 5520];
+  environment.etc."timezone".text = config.time.timeZone;
+  networking.networkmanager.plugins = [
+    pkgs.networkmanager-l2tp
+  ];
 }

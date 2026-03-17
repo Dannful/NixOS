@@ -11,6 +11,8 @@ CustomRect {
     required property ShellScreen screen
     required property Item panel
     color: Colors.background
+    border.color: Colors.darkSurface
+    border.width: 1
     clip: true
 
     anchors {
@@ -57,14 +59,14 @@ CustomRect {
                 properties: "implicitWidth, implicitHeight, radius"
                 duration: Animations.durations.medium
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+                easing.bezierCurve: Animations.bezierCurves.snappy
             }
             NumberAnimation {
                 target: contentLoader.item?.swipeView ?? null
                 properties: "scale, opacity"
                 duration: Animations.durations.medium
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutQuad
+                easing.bezierCurve: Animations.bezierCurves.snappy
             }
         }
     ]

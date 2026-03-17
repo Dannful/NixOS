@@ -27,39 +27,25 @@ Item {
             radius: Sizing.radius.small
 
             Rectangle {
+                id: fill
                 anchors {
                     left: parent.left
                     right: parent.right
                     bottom: parent.bottom
                 }
                 implicitHeight: parent.implicitHeight * root.progress
-                color: Colors.primary
-                bottomLeftRadius: parent.radius
-                bottomRightRadius: parent.radius
-                topLeftRadius: root.progress >= 0.96 ? parent.radius : 0
-                topRightRadius: root.progress >= 0.96 ? parent.radius : 0
+                radius: parent.radius
+                
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Colors.secondary }
+                    GradientStop { position: 1.0; color: Colors.primary }
+                }
 
                 Behavior on implicitHeight {
                     NumberAnimation {
-                        duration: Animations.durations.slow
+                        duration: Animations.durations.medium
                         easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
-                    }
-                }
-
-                Behavior on topLeftRadius {
-                    NumberAnimation {
-                        duration: Animations.durations.slow
-                        easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
-                    }
-                }
-
-                Behavior on topRightRadius {
-                    NumberAnimation {
-                        duration: Animations.durations.slow
-                        easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+                        easing.bezierCurve: Animations.bezierCurves.snappy
                     }
                 }
             }

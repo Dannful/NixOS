@@ -6,71 +6,328 @@ import Quickshell.Io
 
 Singleton {
     id: root
-    readonly property list<Network> networks: []
-    readonly property Network currentNetwork: networks.find(network => network.connected) ?? null
-    property bool wifiEnabled: true
+
+    property var connections: []
+    property bool wifiEnabled: false
     property bool scanning: false
-    property string connectingSsid: ""
-    property bool updatesFrozen: false
-    property bool isConnecting: false
-    property bool isDisconnecting: false
+    property bool vpnConnected: false
+    property bool ethernetConnected: false
+    property var wifiScanResults: []
+
+    property bool busy: false
+    property string status: ""
+    property string pendingConnection: ""
+
     reloadableId: "network"
-    
-    onWifiEnabledChanged: {
-        if (wifiEnabled) {
-            scanDelay.restart();
-        }
-    }
-    
-    Timer {
-        id: scanDelay
-        interval: 2000
-        repeat: false
-        onTriggered: scan()
+
+    function clearStatus() {
+        root.status = "";
+        root.pendingConnection = "";
     }
 
     Timer {
-        id: scanCooldown
-        interval: 4000
-        onTriggered: {
-            root.scanning = false
-            networkInspector.running = true
-        }
+        id: statusTimer
+        interval: 3000
+        onTriggered: root.clearStatus()
     }
 
-    Process {
+    function setStatus(msg, autoClear) {
+        root.status = msg;
+        if (autoClear) statusTimer.restart();
+    }
+
+    function update() {
+        checkWifiStatus.running = false;
+        checkWifiStatus.running = true;
+        refreshConnections.running = false;
+        refreshConnections.running = true;
+        networkInspector.running = false;
+        networkInspector.running = true;
+    }
+
+    Timer {
+        interval: 5000
         running: true
-        command: ["nmcli", "monitor"]
-        stdout: SplitParser {
-            onRead: data => {
-                networkInspector.running = true
-                checkWifiStatus.running = true
-            }
-        }
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.update()
     }
 
     Process {
         id: checkWifiStatus
-        running: true
         command: ["nmcli", "radio", "wifi"]
-        stdout: SplitParser {
-            onRead: data => root.wifiEnabled = data.trim() === "enabled"
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (!text) return;
+                root.wifiEnabled = text.trim() === "enabled";
+            }
         }
     }
 
     Process {
-        id: commandRunner
-        
-        onRunningChanged: {
-            if (!running) {
-                root.isConnecting = false;
-                root.isDisconnecting = false;
-                root.connectingSsid = "";
-                
-                checkWifiStatus.running = true
-                networkInspector.running = true
+        id: refreshConnections
+        command: ["nmcli", "-t", "-e", "no", "-f", "NAME,TYPE,UUID,DEVICE,STATE", "connection", "show"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (!text) return;
+
+                let lines = text.trim().split("\n");
+                let profileMap = {};
+                let vpn = false;
+                let eth = false;
+
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    let parts = line.split(":");
+                    if (parts.length < 5) continue;
+
+                    let connName = parts[0];
+                    let connType = parts[1];
+                    let connUuid = parts[2];
+                    let connDevice = parts[3];
+                    let connState = parts.slice(4).join(":");
+
+                    if (!connName || connName === "lo" || connType === "bridge" || connType === "loopback") continue;
+                    if (connName.indexOf("docker") >= 0 || connName.indexOf("br-") >= 0 || connName.indexOf("veth") >= 0) continue;
+
+                    let isActive = connState.indexOf("activated") >= 0;
+                    let isConnecting = connState.indexOf("activating") >= 0;
+
+                    let isVpnType = connType.indexOf("vpn") >= 0 || connType === "wireguard";
+                    let isEthType = connType.indexOf("ethernet") >= 0;
+
+                    if (isActive && isVpnType) vpn = true;
+                    if (isActive && isEthType) eth = true;
+
+                    if (!profileMap[connName] || isActive || isConnecting) {
+                        profileMap[connName] = {
+                            connName: connName,
+                            connType: connType,
+                            connUuid: connUuid,
+                            connDevice: connDevice,
+                            connActive: isActive,
+                            connConnecting: isConnecting
+                        };
+                    }
+                }
+
+                let finalConns = [];
+                for (let key in profileMap) {
+                    finalConns.push(profileMap[key]);
+                }
+
+                for (let j = 0; j < root.wifiScanResults.length; j++) {
+                    let net = root.wifiScanResults[j];
+                    if (!profileMap[net.ssid]) {
+                        finalConns.push({
+                            connName: net.ssid,
+                            connUuid: "",
+                            connType: "802-11-wireless",
+                            connDevice: "",
+                            connActive: net.connected,
+                            connConnecting: false,
+                            connSignal: net.strength,
+                            connSecurity: net.security,
+                            connUnsaved: true
+                        });
+                    }
+                }
+
+                finalConns.sort(function(a, b) {
+                    if (a.connActive !== b.connActive) return b.connActive ? 1 : -1;
+                    if (a.connConnecting !== b.connConnecting) return b.connConnecting ? 1 : -1;
+
+                    function typeOrder(t) {
+                        if (t.indexOf("vpn") >= 0 || t === "wireguard") return 0;
+                        if (t.indexOf("ethernet") >= 0) return 1;
+                        return 2;
+                    }
+
+                    let orderDiff = typeOrder(a.connType) - typeOrder(b.connType);
+                    if (orderDiff !== 0) return orderDiff;
+                    return a.connName.localeCompare(b.connName);
+                });
+
+                root.vpnConnected = vpn;
+                root.ethernetConnected = eth;
+                root.connections = finalConns;
+
+                if (root.pendingConnection) {
+                    for (let k = 0; k < finalConns.length; k++) {
+                        if (finalConns[k].connName === root.pendingConnection && finalConns[k].connActive) {
+                            root.setStatus("Connected to " + root.pendingConnection, true);
+                            root.pendingConnection = "";
+                            root.busy = false;
+                            break;
+                        }
+                    }
+                }
             }
         }
+    }
+
+    Process {
+        id: networkInspector
+        command: ["nmcli", "-t", "-e", "no", "-f", "SSID,ACTIVE,SIGNAL,SECURITY", "device", "wifi", "list"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (!text) return;
+
+                let lines = text.trim().split("\n");
+                let results = [];
+                let seen = {};
+
+                for (let i = 0; i < lines.length; i++) {
+                    let parts = lines[i].split(":");
+                    if (parts.length < 4 || !parts[0]) continue;
+                    if (seen[parts[0]]) continue;
+                    seen[parts[0]] = true;
+
+                    results.push({
+                        ssid: parts[0],
+                        connected: parts[1] === "yes",
+                        strength: parseInt(parts[2]) || 0,
+                        security: parts[3] || ""
+                    });
+                }
+
+                root.wifiScanResults = results;
+            }
+        }
+    }
+
+    function toggleWifi(enable) {
+        root.busy = true;
+        root.setStatus(enable ? "Enabling Wi-Fi..." : "Disabling Wi-Fi...", false);
+        let state = enable ? "on" : "off";
+        commandRunner.command = ["nmcli", "radio", "wifi", state];
+        commandRunner.running = true;
+    }
+
+    function scan() {
+        if (!wifiEnabled) return;
+        root.scanning = true;
+        root.setStatus("Scanning...", false);
+        wifiRescan.running = true;
+    }
+
+    function activateConnection(connUuid, connName) {
+        root.busy = true;
+        root.pendingConnection = connName;
+        root.setStatus("Connecting to " + connName + "...", false);
+
+        if (connUuid) {
+            commandRunner.command = ["nmcli", "connection", "up", "uuid", connUuid];
+        } else {
+            commandRunner.command = ["nmcli", "device", "wifi", "connect", connName];
+        }
+        commandRunner.running = true;
+    }
+
+    function deactivateConnection(connUuid, connName, connDevice) {
+        root.busy = true;
+        root.setStatus("Disconnecting from " + connName + "...", false);
+
+        if (connUuid) {
+            commandRunner.command = ["nmcli", "connection", "down", "uuid", connUuid];
+        } else if (connDevice) {
+            commandRunner.command = ["nmcli", "device", "disconnect", connDevice];
+        } else {
+            commandRunner.command = ["nmcli", "connection", "down", connName];
+        }
+        commandRunner.running = true;
+    }
+
+    function deleteConnection(connUuid, connName) {
+        if (connUuid) {
+            root.busy = true;
+            root.setStatus("Removing " + connName + "...", false);
+            commandRunner.command = ["nmcli", "connection", "delete", "uuid", connUuid];
+            commandRunner.running = true;
+        }
+    }
+
+    function connectWifiWithPassword(ssid, password) {
+        root.busy = true;
+        root.pendingConnection = ssid;
+        root.setStatus("Connecting to " + ssid + "...", false);
+        commandRunner.command = ["nmcli", "device", "wifi", "connect", ssid, "password", password];
+        commandRunner.running = true;
+    }
+
+    // Create Wi-Fi connection with full options
+    function createWifiConnection(name, ssid, password, hidden, autoconnect, ipv4Method, ipv4Address, ipv4Gateway, ipv4Dns) {
+        root.busy = true;
+        root.pendingConnection = name;
+        root.setStatus("Creating " + name + "...", false);
+
+        let cmd = ["nmcli", "connection", "add",
+            "type", "wifi",
+            "con-name", name,
+            "ssid", ssid,
+            "connection.autoconnect", autoconnect ? "yes" : "no"
+        ];
+
+        if (hidden) {
+            cmd.push("wifi.hidden", "yes");
+        }
+
+        if (password) {
+            cmd.push("wifi-sec.key-mgmt", "wpa-psk");
+            cmd.push("wifi-sec.psk", password);
+        }
+
+        if (ipv4Method === "manual" && ipv4Address) {
+            cmd.push("ipv4.method", "manual");
+            cmd.push("ipv4.addresses", ipv4Address);
+            if (ipv4Gateway) cmd.push("ipv4.gateway", ipv4Gateway);
+            if (ipv4Dns) cmd.push("ipv4.dns", ipv4Dns.replace(/,\s*/g, " "));
+        } else if (ipv4Method === "disabled") {
+            cmd.push("ipv4.method", "disabled");
+        }
+
+        createConnectionRunner.connName = name;
+        createConnectionRunner.command = cmd;
+        createConnectionRunner.running = true;
+    }
+
+    // Create Ethernet connection with full options
+    function createEthernetConnection(name, device, autoconnect, ipv4Method, ipv4Address, ipv4Gateway, ipv4Dns) {
+        root.busy = true;
+        root.pendingConnection = name;
+        root.setStatus("Creating " + name + "...", false);
+
+        let cmd = ["nmcli", "connection", "add",
+            "type", "ethernet",
+            "con-name", name,
+            "connection.autoconnect", autoconnect ? "yes" : "no"
+        ];
+
+        if (device) {
+            cmd.push("ifname", device);
+        }
+
+        if (ipv4Method === "manual" && ipv4Address) {
+            cmd.push("ipv4.method", "manual");
+            cmd.push("ipv4.addresses", ipv4Address);
+            if (ipv4Gateway) cmd.push("ipv4.gateway", ipv4Gateway);
+            if (ipv4Dns) cmd.push("ipv4.dns", ipv4Dns.replace(/,\s*/g, " "));
+        } else if (ipv4Method === "disabled") {
+            cmd.push("ipv4.method", "disabled");
+        }
+
+        createConnectionRunner.connName = name;
+        createConnectionRunner.command = cmd;
+        createConnectionRunner.running = true;
+    }
+
+    // Legacy functions for backward compatibility
+    function addWifiConnection(ssid, password, autoconnect) {
+        createWifiConnection(ssid, ssid, password, false, autoconnect, "auto", "", "", "");
+    }
+
+    function addOpenWifiConnection(ssid, autoconnect) {
+        createWifiConnection(ssid, ssid, "", false, autoconnect, "auto", "", "", "");
     }
 
     Process {
@@ -78,162 +335,77 @@ Singleton {
         command: ["nmcli", "device", "wifi", "rescan"]
         onRunningChanged: {
             if (!running) {
-                // Rescan finished, refresh the list
-                networkInspector.running = true
+                root.scanning = false;
+                root.setStatus("Scan complete", true);
+                root.update();
             }
         }
-    }
-
-    function escapeArg(arg) {
-        return "'" + arg.replace(/'/g, "'\\''") + "'";
-    }
-
-    function scan() {
-        if (!wifiEnabled) return;
-        scanning = true;
-        scanCooldown.restart();
-        wifiRescan.running = true;
-    }
-
-    function connect(ssid, password) {
-        connectingSsid = ssid;
-        isConnecting = true;
-        
-        var cmd = "";
-        if (password && password !== "") {
-            // If password is provided, we delete the old connection to force a fresh 
-            // connection with the new credentials. This fixes the "property missing" error
-            // by ensuring nmcli derives security settings from the current scan results.
-            cmd = "nmcli connection delete id " + escapeArg(ssid) + " >/dev/null 2>&1; ";
-            cmd += "output=$(nmcli device wifi connect " + escapeArg(ssid) + " password " + escapeArg(password) + " 2>&1); res=$?; ";
-        } else {
-            cmd = "output=$(nmcli device wifi connect " + escapeArg(ssid) + " 2>&1); res=$?; ";
-        }
-        
-        cmd += "if [ $res -eq 0 ]; then ";
-        cmd += "notify-send 'Wi-Fi' 'Connected to " + escapeArg(ssid) + "'; ";
-        cmd += "else ";
-        cmd += "notify-send -u critical 'Wi-Fi' \"Failed to connect to " + escapeArg(ssid) + "\n$output\"; ";
-        cmd += "fi";
-        
-        commandRunner.command = ["bash", "-c", cmd];
-        commandRunner.running = true;
-    }
-
-    function disconnect(ssid) {
-        isDisconnecting = true;
-        
-        var cmd = "output=$(nmcli connection down id " + escapeArg(ssid) + " 2>&1); res=$?; ";
-        cmd += "if [ $res -eq 0 ]; then ";
-        cmd += "notify-send 'Wi-Fi' 'Disconnected'; ";
-        cmd += "else ";
-        cmd += "notify-send -u critical 'Wi-Fi' \"Failed to disconnect\n$output\"; ";
-        cmd += "fi";
-
-        commandRunner.command = ["bash", "-c", cmd];
-        commandRunner.running = true;
-    }
-
-    function toggleWifi(enable) {
-        commandRunner.command = ["nmcli", "radio", "wifi", enable ? "on" : "off"];
-        commandRunner.running = true;
     }
 
     Process {
-        id: networkInspector
-        running: true
-        command: ["nmcli", "-g", "SSID,ACTIVE,SIGNAL,FREQ", "device", "wifi", "list"]
-        stdout: StdioCollector {
+        id: commandRunner
+        stdout: StdioCollector { onStreamFinished: {} }
+        stderr: StdioCollector {
             onStreamFinished: {
-                if (root.updatesFrozen) return;
-
-                if (!scanCooldown.running) {
-                    root.scanning = false; 
+                if (text && text.trim()) {
+                    root.setStatus("Error: " + text.trim().split("\n")[0], true);
+                    root.busy = false;
+                    root.pendingConnection = "";
                 }
-                
-                // Temporary map to handle deduplication by SSID
-                const uniqueNetworks = {};
-
-                text.trim().split("\n").forEach(network => {
-                    if (!network.trim()) return;
-                    
-                    const networkChunks = network.split(":");
-                    if (networkChunks.length < 4) return;
-                    
-                    const ssid = networkChunks[0]; 
-                    // Filter out hidden/empty SSIDs
-                    if (!ssid || ssid.trim() === "") return;
-
-                    const connected = networkChunks[1] === "yes";
-                    const strength = parseInt(networkChunks[2]) || 0;
-                    const freqStr = networkChunks[3] || "";
-                    const frequency = parseInt(freqStr.split(" ")[0]) || 0;
-                    
-                    const newEntry = {
-                        ssid: ssid,
-                        connected: connected,
-                        strength: strength,
-                        frequency: frequency
-                    };
-
-                    // Logic: prefer connected network, then stronger signal
-                    if (!uniqueNetworks[ssid]) {
-                        uniqueNetworks[ssid] = newEntry;
-                    } else {
-                        const existing = uniqueNetworks[ssid];
-                        if (newEntry.connected) {
-                            uniqueNetworks[ssid] = newEntry;
-                        } else if (!existing.connected && newEntry.strength > existing.strength) {
-                            uniqueNetworks[ssid] = newEntry;
-                        }
-                    }
-                });
-
-                const networks = Object.values(uniqueNetworks);
-
-                const toBeDeleted = root.networks.filter(rootNetwork => 
-                    !networks.find(currentNetwork => 
-                        currentNetwork.ssid === rootNetwork.ssid && 
-                        currentNetwork.strength === rootNetwork.strength && 
-                        currentNetwork.frequency === rootNetwork.frequency && 
-                        currentNetwork.connected === rootNetwork.connected
-                    )
-                );
-                
-                for (const element of toBeDeleted) {
-                    root.networks.splice(root.networks.indexOf(element), 1).forEach(o => o.destroy());
-                }
-                
-                for (const network of networks) {
-                    const existingNetwork = root.networks.find(n => 
-                        n.ssid === network.ssid && 
-                        n.strength === network.strength && 
-                        n.frequency === network.frequency && 
-                        n.connected === network.connected
-                    );
-                    
-                    if (existingNetwork) {
-                        existingNetwork.networkObject = network;
-                    } else {
-                        root.networks.push(networkComponent.createObject(root, {
-                            networkObject: network
-                        }));
+            }
+        }
+        onRunningChanged: {
+            if (!running) {
+                root.update();
+                if (!root.pendingConnection) {
+                    root.busy = false;
+                    if (!root.status.startsWith("Error")) {
+                        root.setStatus("Done", true);
                     }
                 }
             }
         }
     }
 
-    component Network: QtObject {
-        required property var networkObject
-        readonly property string ssid: networkObject.ssid
-        readonly property int strength: networkObject.strength
-        readonly property int frequency: networkObject.frequency
-        readonly property bool connected: networkObject.connected
+    Process {
+        id: createConnectionRunner
+        property string connName: ""
+
+        stdout: StdioCollector { onStreamFinished: {} }
+        stderr: StdioCollector {
+            onStreamFinished: {
+                if (text && text.trim()) {
+                    root.setStatus("Failed: " + text.trim().split("\n")[0], true);
+                    root.busy = false;
+                    root.pendingConnection = "";
+                }
+            }
+        }
+        onRunningChanged: {
+            if (!running && connName) {
+                root.setStatus("Connecting to " + connName + "...", false);
+                activateRunner.command = ["nmcli", "connection", "up", connName];
+                activateRunner.running = true;
+            }
+        }
     }
 
-    Component {
-        id: networkComponent
-        Network {}
+    Process {
+        id: activateRunner
+        stdout: StdioCollector { onStreamFinished: {} }
+        stderr: StdioCollector {
+            onStreamFinished: {
+                if (text && text.trim()) {
+                    root.setStatus("Connection failed: " + text.trim().split("\n")[0], true);
+                    root.busy = false;
+                    root.pendingConnection = "";
+                }
+            }
+        }
+        onRunningChanged: {
+            if (!running) {
+                root.update();
+            }
+        }
     }
 }

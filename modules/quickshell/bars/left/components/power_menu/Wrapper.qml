@@ -7,9 +7,51 @@ Item {
     id: root
     required property ShellScreen screen
     required property bool visibility
+    property Item triggerItem: null
+
+    signal requestClose()
 
     visible: implicitWidth > 0
     implicitHeight: Fonts.sizing.large * 3 + Sizing.spacing.small * 4
+
+    // Track hover state for both menu and trigger
+    property bool menuHovered: false
+    property bool triggerHovered: triggerItem ? triggerItem.containsMouse || false : false
+
+    Timer {
+        id: closeTimer
+        interval: 50
+        onTriggered: {
+            if (!root.menuHovered && !root.triggerHovered) {
+                root.requestClose();
+            }
+        }
+    }
+
+    HoverHandler {
+        id: hoverHandler
+        onHoveredChanged: {
+            root.menuHovered = hovered;
+            if (!hovered && !root.triggerHovered) {
+                closeTimer.restart();
+            } else {
+                closeTimer.stop();
+            }
+        }
+    }
+
+    // Watch trigger item hover changes
+    Connections {
+        target: root.triggerItem
+        function onContainsMouseChanged() {
+            root.triggerHovered = root.triggerItem.containsMouse;
+            if (!root.triggerHovered && !root.menuHovered) {
+                closeTimer.restart();
+            } else {
+                closeTimer.stop();
+            }
+        }
+    }
 
     states: [
         State {
@@ -42,7 +84,7 @@ Item {
                 properties: "implicitWidth,opacity"
                 duration: Animations.durations.fast
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+                easing.bezierCurve: Animations.bezierCurves.snappy
             }
         }
     ]

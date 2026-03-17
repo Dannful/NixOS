@@ -10,6 +10,9 @@ CustomRect {
     required property PersistentProperties visibilities
 
     color: Colors.surface
+    radius: Sizing.radius.medium
+    border.color: Colors.darkSurface
+    border.width: 1
 
     implicitHeight: Sizing.topBarHeight
 
