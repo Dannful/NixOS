@@ -25,11 +25,16 @@ CustomRect {
     property alias networkIcon: networkIcon
 
     function getY(target, reference) {
-        return column.y + reference.y + reference.implicitHeight - target.implicitHeight + root.y;
+        // Position menu aligned with icon, but ensure it doesn't go above top bar area
+        const iconBottom = column.y + reference.y + reference.implicitHeight + root.y;
+        const menuTop = iconBottom - target.implicitHeight;
+        const minY = Sizing.topBarHeight + Sizing.margins.small; // Below top bar
+        return Math.max(minY, menuTop);
     }
 
     function getX(reference) {
-        return reference.x + column.implicitWidth;
+        // Position menu directly at the right edge of the left bar (no gap)
+        return root.x + root.implicitWidth;
     }
 
     ColumnLayout {

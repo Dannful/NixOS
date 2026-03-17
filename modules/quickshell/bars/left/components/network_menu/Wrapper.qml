@@ -15,7 +15,9 @@ Item {
     height: implicitHeight
 
     readonly property real targetWidth: 400
-    readonly property real targetHeight: 500
+    // Constrain height to available space below top bar
+    readonly property real maxHeight: screen.height - Sizing.topBarHeight - Sizing.margins.small * 2
+    readonly property real targetHeight: Math.min(500, maxHeight)
 
     clip: true
 

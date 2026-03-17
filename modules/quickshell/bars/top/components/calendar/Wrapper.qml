@@ -53,6 +53,10 @@ Item {
         }
     }
 
+    // Constrain height to available space below top bar
+    readonly property real maxHeight: screen.height - Sizing.topBarHeight - Sizing.margins.small * 2
+    readonly property real targetHeight: Math.min(400, maxHeight)
+
     states: [
         State {
             name: "hidden"
@@ -68,7 +72,7 @@ Item {
             when: root.visibility
             PropertyChanges {
                 target: root
-                implicitHeight: 400
+                implicitHeight: root.targetHeight
                 opacity: 1
             }
         }

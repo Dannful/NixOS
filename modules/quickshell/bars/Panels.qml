@@ -18,8 +18,13 @@ Item {
         visibility: root.visibilities.calendar
         triggerItem: topBar.timeText
         onRequestClose: root.visibilities.calendar = false
-        x: topBar.timeText.x - implicitWidth / 2
-        y: topBar.timeText.y + topBar.implicitHeight / 2
+        // Center horizontally under the time text, but keep within screen bounds
+        x: Math.max(Sizing.margins.small, Math.min(
+            topBar.timeText.x + topBar.timeText.width / 2 - implicitWidth / 2,
+            root.screen.width - implicitWidth - Sizing.margins.small
+        ))
+        // Position directly below the top bar (no gap)
+        y: Sizing.topBarHeight + Sizing.margins.small
     }
 
     PowerMenu.Wrapper {
