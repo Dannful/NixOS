@@ -64,9 +64,13 @@
         typescriptreact = ["eslint_d"];
         javascript = ["eslint_d"];
         javascriptreact = ["eslint_d"];
+        tex = ["tex-fmt"];
+        bib = ["bibtex-tidy"];
       };
       formatters.rubocop.command = pkgs.lib.mkForce "rubocop";
       formatters.eslint_d.command = pkgs.lib.getExe pkgs.eslint_d;
+      formatters."tex-fmt".command = pkgs.lib.getExe pkgs.tex-fmt;
+      formatters."bibtex-tidy".command = pkgs.lib.getExe pkgs.bibtex-tidy;
     };
     languages = {
       clang.enable = true;
@@ -99,6 +103,10 @@
         "-e"
         "languageserver::run()"
       ];
+    lsp.servers.texlab = {
+      enable = true;
+      cmd = pkgs.lib.mkForce [(pkgs.lib.getExe pkgs.texlab)];
+    };
     lazy.plugins = {
       "iron.nvim" = {
         package = pkgs.vimPlugins.iron-nvim;
