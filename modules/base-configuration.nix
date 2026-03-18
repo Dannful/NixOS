@@ -253,7 +253,6 @@ in {
       gvfs.enable = true;
       printing.enable = true;
       blueman.enable = true;
-      hypridle.enable = true;
       dbus.enable = true;
       dbus.packages = [pkgs.swaynotificationcenter];
     };

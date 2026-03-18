@@ -7,10 +7,6 @@
 }: let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
-
-  startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    hypridle &
-  '';
 in {
   options.custom-hyprland = {
     enable = lib.mkEnableOption "custom Hyprland";
@@ -182,7 +178,6 @@ in {
           preserve_split = true;
         };
         exec-once = [
-          "hyprctl dispatch exec ${startupScript}/bin/start"
           "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
         ];
         monitor =
