@@ -65,6 +65,65 @@ CustomRect {
             Layout.alignment: Qt.AlignCenter
         }
 
+        Item {
+            id: caffeineButton
+            Layout.alignment: Qt.AlignCenter
+            implicitWidth: Sizing.leftBarWidth
+            implicitHeight: caffeineIconMetrics.height
+
+            Rectangle {
+                id: caffeineHoverBg
+                anchors.centerIn: parent
+                width: 0
+                height: 0
+                radius: Sizing.radius.medium
+                color: Colors.darkSurface
+                opacity: 0
+
+                Behavior on width { NumberAnimation { duration: Animations.durations.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Animations.bezierCurves.snappy } }
+                Behavior on height { NumberAnimation { duration: Animations.durations.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Animations.bezierCurves.snappy } }
+                Behavior on opacity { NumberAnimation { duration: Animations.durations.fast } }
+            }
+
+            MouseArea {
+                id: caffeineMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked: Caffeine.toggle()
+
+                onEntered: {
+                    caffeineHoverBg.width = caffeineButton.implicitWidth - 10;
+                    caffeineHoverBg.height = caffeineButton.implicitHeight + 10;
+                    caffeineHoverBg.opacity = 1;
+                }
+
+                onExited: {
+                    caffeineHoverBg.width = 0;
+                    caffeineHoverBg.height = 0;
+                    caffeineHoverBg.opacity = 0;
+                }
+            }
+
+            TextMetrics {
+                id: caffeineIconMetrics
+                font: caffeineIcon.font
+                text: caffeineIcon.name
+            }
+
+            MaterialIcon {
+                id: caffeineIcon
+                name: "local_cafe"
+                size: Fonts.sizing.large
+                color: Caffeine.active || caffeineMouseArea.containsMouse ? Colors.primary : Colors.foreground
+                anchors.horizontalCenter: parent.horizontalCenter
+                scale: caffeineMouseArea.containsMouse ? 1.1 : 1.0
+                Behavior on scale { NumberAnimation { duration: Animations.durations.fast; easing.type: Easing.BezierSpline; easing.bezierCurve: Animations.bezierCurves.snappy } }
+                Behavior on color { ColorAnimation { duration: Animations.durations.fast } }
+            }
+        }
+
         BarIcon {
             id: networkIcon
             visibility: visibilities.networkMenu
