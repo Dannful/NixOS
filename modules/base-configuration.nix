@@ -123,13 +123,14 @@ in {
         efi.canTouchEfiVariables = true;
       };
       kernelModules = ["v4l2loopback"];
+      kernelParams = lib.optionals cfg.use-nvidia ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
       extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
     };
 
     hardware = {
       nvidia = lib.mkIf cfg.use-nvidia {
         modesetting.enable = true;
-        powerManagement.enable = false;
+        powerManagement.enable = true;
         powerManagement.finegrained = false;
         open = false;
         nvidiaSettings = true;
@@ -254,7 +255,21 @@ in {
       printing.enable = true;
       blueman.enable = true;
       dbus.enable = true;
+
+      # Suspend/Resume
+      logind.settings.Login = {
+        HandleLidSwitch = "suspend";
+        HandlePowerKey = "suspend";
+        IdleAction = "ignore";
+      };
     };
+
+    # --- Sleep ---
+    systemd.sleep.extraConfig = ''
+      AllowSuspend=yes
+      AllowHibernation=no
+      SuspendState=mem
+    '';
 
     # --- Virtualisation ---
     virtualisation.docker.enable = true;
