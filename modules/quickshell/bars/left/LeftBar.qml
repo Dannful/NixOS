@@ -4,7 +4,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "root:/core"
 import "root:/bars/left/components"
-import "root:/bars/left/components/tray" as SystemTray
 import "root:/bars/left/components/ram" as Ram
 import "root:/bars/left/components/cpu" as Cpu
 import "root:/bars/left/components/volume" as Volume
@@ -58,11 +57,6 @@ CustomRect {
         Volume.Content {
             Layout.alignment: Qt.AlignCenter
             implicitHeight: Sizing.meter.height
-        }
-
-        SystemTray.Content {
-            id: systemTray
-            Layout.alignment: Qt.AlignCenter
         }
 
         Item {

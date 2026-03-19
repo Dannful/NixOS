@@ -4,6 +4,7 @@ import Quickshell
 
 import "root:/core"
 import "root:/services"
+import "root:/bars/top/components/tray" as SystemTray
 
 CustomRect {
     required property ShellScreen screen
@@ -30,5 +31,13 @@ CustomRect {
         id: timeText
         visibilities: parent.visibilities
         anchors.centerIn: parent
+    }
+
+    SystemTray.Content {
+        anchors {
+            right: parent.right
+            verticalCenter: parent.verticalCenter
+            rightMargin: Sizing.spacing.small
+        }
     }
 }
