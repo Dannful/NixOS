@@ -11,6 +11,7 @@ import "root:/bars/right"
 import "root:/bars/bottom"
 import "root:/bars"
 import "root:/services"
+import "root:/notifications"
 
 Scope {
     id: scope
@@ -40,7 +41,7 @@ Scope {
 
                 mask: Region {
                     id: mask
-                    regions: regions.instances
+                    regions: [...regions.instances, notificationRegion]
                 }
 
                 Variants {
@@ -53,6 +54,14 @@ Scope {
                         width: modelData.implicitWidth
                         height: modelData.implicitHeight
                     }
+                }
+
+                Region {
+                    id: notificationRegion
+                    x: notificationCenter.x
+                    y: notificationCenter.y
+                    width: notificationCenter.implicitWidth
+                    height: notificationCenter.implicitHeight
                 }
 
                 Panels {
@@ -103,6 +112,11 @@ Scope {
                         right: parent.right
                         margins: Sizing.margins.small
                     }
+                }
+
+                NotificationCenter {
+                    id: notificationCenter
+                    screen: root.screen
                 }
             }
         }

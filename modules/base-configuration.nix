@@ -254,11 +254,7 @@ in {
       printing.enable = true;
       blueman.enable = true;
       dbus.enable = true;
-      dbus.packages = [pkgs.swaynotificationcenter];
     };
-
-    # Enable systemd user service for swaync
-    systemd.packages = [pkgs.swaynotificationcenter];
 
     # --- Virtualisation ---
     virtualisation.docker.enable = true;
@@ -379,7 +375,6 @@ in {
 
         # UI / Theming
         feh
-        swaynotificationcenter
         custom-sddm-astronaut
 
         # Recording
