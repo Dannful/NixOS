@@ -20,26 +20,13 @@ Singleton {
         }
     }
 
-    // Check status once on startup
-    Component.onCompleted: checkStatus.running = true
-
-    // Monitor D-Bus for hypridle state changes (runs continuously)
-    Process {
-        id: monitor
-        command: [
-            "busctl", "--user", "--json=short", "monitor",
-            "--match", "type=signal,sender=org.freedesktop.systemd1,path=/org/freedesktop/systemd1/unit/hypridle_2eservice,interface=org.freedesktop.DBus.Properties,member=PropertiesChanged"
-        ]
+    // Poll status periodically
+    Timer {
+        interval: 1000
+        repeat: true
         running: true
-
-        stdout: SplitParser {
-            onRead: data => {
-                // When we receive a PropertiesChanged signal, check the new state
-                if (data.includes("PropertiesChanged")) {
-                    checkStatus.running = true;
-                }
-            }
-        }
+        triggeredOnStart: true
+        onTriggered: checkStatus.running = true
     }
 
     Process {
