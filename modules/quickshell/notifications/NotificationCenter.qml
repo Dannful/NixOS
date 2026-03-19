@@ -10,15 +10,17 @@ Item {
     required property ShellScreen screen
 
     // Position at top right, below the top bar
-    anchors {
-        top: parent.top
-        right: parent.right
-        topMargin: Sizing.topBarHeight + Sizing.margins.medium
-        rightMargin: Sizing.margins.medium
-    }
+    x: parent.width - implicitWidth - Sizing.margins.medium
+    y: Sizing.topBarHeight + Sizing.margins.medium + Sizing.margins.small
 
-    // Only take up space when there are notifications
-    readonly property bool hasNotifications: notificationColumn.implicitHeight > 0
+    // Only take up space when there are visible (non-expired) notifications
+    readonly property bool hasNotifications: {
+        for (let i = 0; i < notificationColumn.children.length; i++) {
+            const child = notificationColumn.children[i];
+            if (child.implicitHeight > 0) return true;
+        }
+        return false;
+    }
     implicitWidth: hasNotifications ? 380 : 0
     implicitHeight: notificationColumn.implicitHeight
 
@@ -27,11 +29,7 @@ Item {
 
     ColumnLayout {
         id: notificationColumn
-        anchors {
-            top: parent.top
-            right: parent.right
-        }
-        width: parent.width
+        width: 380
         spacing: Sizing.margins.small
 
         Repeater {

@@ -41,7 +41,9 @@ Scope {
 
                 mask: Region {
                     id: mask
-                    regions: [...regions.instances, notificationRegion]
+                    regions: notificationCenter.hasNotifications
+                        ? [...regions.instances, notificationRegion]
+                        : regions.instances
                 }
 
                 Variants {

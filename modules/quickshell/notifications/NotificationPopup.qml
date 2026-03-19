@@ -11,8 +11,13 @@ Item {
     id: root
     required property Notification notification
 
+    // Hide completely after expire animation to remove from layout
+    visible: !fullyExpired
+    property bool fullyExpired: false
+
     implicitWidth: 380
     implicitHeight: container.height
+    Layout.preferredHeight: container.height
 
 
     // Focus the app window using Hyprland native API
@@ -171,6 +176,9 @@ Item {
                         duration: Animations.durations.fast
                         easing.type: Easing.BezierSpline
                         easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
+                    }
+                    ScriptAction {
+                        script: root.fullyExpired = true
                     }
                 }
             }
