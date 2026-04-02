@@ -24,7 +24,7 @@
       gemini-cli
     ];
 
-    file."~/.claude/CLAUDE.md" = {
+    file.".claude/CLAUDE.md" = {
       text = ''
         # Global AI Instructions
 
