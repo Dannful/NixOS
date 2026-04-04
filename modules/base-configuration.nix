@@ -295,6 +295,10 @@ in {
         gamescopeSession.enable = true;
       };
       gamemode.enable = cfg.use-steam;
+      gamescope = lib.mkIf cfg.use-steam {
+        enable = true;
+        capSysNice = true;
+      };
     };
 
     # --- Portals & MIME ---
@@ -406,6 +410,7 @@ in {
       ]
       ++ lib.optionals cfg.use-steam [
         pkgs.protonup-ng
+        pkgs.gamescope-wsi
         pkgs.mangohud
         pkgs.wineWow64Packages.waylandFull
         pkgs.winetricks
