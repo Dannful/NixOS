@@ -44,7 +44,29 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable (let
+    gstPlugins = with pkgs.gst_all_1; [
+      gstreamer
+      gst-plugins-base
+      gst-plugins-good
+      gst-plugins-bad
+      gst-plugins-ugly
+      gst-libav
+    ];
+
+    quickshell-wrapped = pkgs.symlinkJoin {
+      name = "quickshell-with-multimedia";
+      paths = [inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default];
+      buildInputs = [pkgs.makeWrapper];
+      postBuild = ''
+        wrapProgram $out/bin/quickshell \
+          --prefix QML2_IMPORT_PATH : ${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtQmlPrefix} \
+          --prefix QT_PLUGIN_PATH : ${pkgs.qt6.qtmultimedia}/${pkgs.qt6.qtbase.qtPluginPrefix} \
+          --prefix GST_PLUGIN_SYSTEM_PATH_1_0 : ${pkgs.lib.makeSearchPath "lib/gstreamer-1.0" gstPlugins} \
+          --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath (gstPlugins ++ [pkgs.qt6.qtmultimedia])}
+      '';
+    };
+  in {
     home.packages = with pkgs; [
       alsa-utils
       grim
@@ -55,7 +77,7 @@ in {
       rofi
       playerctl
       brightnessctl
-      inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
+      quickshell-wrapped
     ];
     home.file = {
       ".config/rofi/config.rasi" = {text = ''@theme "arthur"'';};
@@ -103,7 +125,7 @@ in {
         PartOf = ["graphical-session.target"];
       };
       Service = {
-        ExecStart = "${inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/quickshell";
+        ExecStart = "${quickshell-wrapped}/bin/quickshell";
         Restart = "on-failure";
       };
       Install = {WantedBy = ["graphical-session.target"];};
@@ -238,5 +260,5 @@ in {
             9));
       };
     };
-  };
+  });
 }

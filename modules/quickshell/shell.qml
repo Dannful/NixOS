@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import QtQuick
+import QtMultimedia
 import "root:/core"
 import "root:/bars/left"
 import "root:/bars/top"
@@ -141,14 +142,44 @@ Scope {
 
                 WlrLayershell.layer: WlrLayer.Background
 
-                CustomImage {
-                    id: image
+                property string wallpaperPath: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("./wallpapers/ai.png")
+                property bool isVideo: {
+                    const path = wallpaperPath.toLowerCase();
+                    return path.endsWith(".mp4") || path.endsWith(".webm") || path.endsWith(".mkv") ||
+                           path.endsWith(".avi") || path.endsWith(".mov");
+                }
+                property string wallpaperUrl: wallpaperPath.startsWith("file://") ? wallpaperPath : "file://" + wallpaperPath
+
+                Loader {
                     width: backgroundPanel.screen.width
                     height: backgroundPanel.screen.height
-                    sourceSize.width: backgroundPanel.screen.width
-                    sourceSize.height: backgroundPanel.screen.height
-                    source: BackgroundManager.backgrounds[backgroundPanel.screen.model] ?? Qt.resolvedUrl("./wallpapers/ai.png")
-                    fillMode: Image.PreserveAspectCrop
+                    sourceComponent: backgroundPanel.isVideo ? videoBackground : imageBackground
+                }
+
+                Component {
+                    id: imageBackground
+                    CustomImage {
+                        width: backgroundPanel.screen.width
+                        height: backgroundPanel.screen.height
+                        sourceSize.width: backgroundPanel.screen.width
+                        sourceSize.height: backgroundPanel.screen.height
+                        source: backgroundPanel.wallpaperPath
+                        fillMode: Image.PreserveAspectCrop
+                        asynchronous: true
+                    }
+                }
+
+                Component {
+                    id: videoBackground
+                    Video {
+                        width: backgroundPanel.screen.width
+                        height: backgroundPanel.screen.height
+                        source: backgroundPanel.wallpaperUrl
+                        fillMode: VideoOutput.PreserveAspectCrop
+                        autoPlay: true
+                        loops: MediaPlayer.Infinite
+                        muted: true
+                    }
                 }
             }
         }
