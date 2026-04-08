@@ -49,6 +49,7 @@
       "192.168.203.67" = ["autoisp.brasiltecpar.com.br"];
       "192.168.200.141" = ["poa141.int6tech.com.br"];
       "192.168.200.175" = ["qa.int6tech.com.br"];
+      "192.168.200.155" = ["deploy.int6tech.com.br"];
     };
   };
 }
