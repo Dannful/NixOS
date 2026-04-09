@@ -20,6 +20,10 @@ CustomRect {
     border.color: Colors.darkSurface
     border.width: 1
 
+    property var responsiveSizing: Sizing.ResponsiveLeftBar {
+        screenHeight: screen.height
+    }
+
     property alias powerIcon: powerIcon
     property alias networkIcon: networkIcon
 
@@ -38,25 +42,25 @@ CustomRect {
 
     ColumnLayout {
         id: column
-        spacing: Sizing.margins.xlarge
+        spacing: responsiveSizing.itemSpacing
         anchors {
             bottom: parent.bottom
-            bottomMargin: Sizing.margins.xlarge
+            bottomMargin: responsiveSizing.bottomMargin
         }
 
         Cpu.Content {
             Layout.alignment: Qt.AlignCenter
-            implicitHeight: Sizing.meter.height
+            implicitHeight: responsiveSizing.meterHeight
         }
 
         Ram.Content {
             Layout.alignment: Qt.AlignCenter
-            implicitHeight: Sizing.meter.height
+            implicitHeight: responsiveSizing.meterHeight
         }
 
         Volume.Content {
             Layout.alignment: Qt.AlignCenter
-            implicitHeight: Sizing.meter.height
+            implicitHeight: responsiveSizing.meterHeight
         }
 
         Item {
@@ -109,7 +113,7 @@ CustomRect {
             MaterialIcon {
                 id: caffeineIcon
                 name: "local_cafe"
-                size: Fonts.sizing.large
+                size: root.responsiveSizing.iconSize
                 color: Caffeine.active || caffeineMouseArea.containsMouse ? Colors.primary : Colors.foreground
                 anchors.horizontalCenter: parent.horizontalCenter
                 scale: caffeineMouseArea.containsMouse ? 1.1 : 1.0
@@ -121,14 +125,15 @@ CustomRect {
         BarIcon {
             id: networkIcon
             visibility: visibilities.networkMenu
+            iconSize: root.responsiveSizing.iconSize
             iconName: {
                 if (Network.vpnConnected) return "vpn_lock";
                 if (Network.ethernetConnected) return "settings_ethernet";
                 if (!Network.wifiEnabled) return "wifi_off";
-                
+
                 const current = Network.connections.find(c => c.active && (c.type.includes("wireless") || c.type.includes("wifi")));
                 if (!current) return "signal_wifi_0_bar";
-                
+
                 const wifi = Network.wifiScanResults.find(w => w.ssid === current.name);
                 const strength = wifi ? wifi.strength : 100;
 
@@ -145,6 +150,7 @@ CustomRect {
         BarIcon {
             id: powerIcon
             visibility: visibilities.powerMenu
+            iconSize: root.responsiveSizing.iconSize
             iconName: "settings_power"
             setVisibility: visible => {
                 visibilities.powerMenu = visible;

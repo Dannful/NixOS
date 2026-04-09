@@ -8,7 +8,7 @@ Item {
     required property var setVisibility
     required property bool visibility
     required property string iconName
-    property string iconSize: Fonts.sizing.large
+    property int iconSize: Fonts.sizing.large
 
     // Expose hover state for menu closing logic
     property alias containsMouse: mouseArea.containsMouse
@@ -59,7 +59,7 @@ Item {
     MaterialIcon {
         id: icon
         name: root.iconName
-        size: parent.iconSize
+        size: root.iconSize
         color: mouseArea.containsMouse || root.visibility ? Colors.primary : Colors.foreground
         anchors {
             horizontalCenter: parent.horizontalCenter

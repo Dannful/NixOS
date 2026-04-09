@@ -40,4 +40,23 @@ Singleton {
         readonly property int large: 15
         readonly property int xlarge: 20
     }
+
+    component ResponsiveLeftBar: QtObject {
+        required property real screenHeight
+
+        // Calculate available height: 75% of screen minus bottom margin (32px)
+        readonly property real availableHeight: screenHeight * 0.75 - 32
+
+        // Baseline: original design at 1080p requires ~714px
+        readonly property real baselineHeight: 714
+
+        // Scale factor: 1.0 at baseline, constrained between 0.7-2.0
+        readonly property real scaleFactor: Math.max(0.7, Math.min(2.0, availableHeight / baselineHeight))
+
+        // Calculated sizes using scale factor
+        readonly property int meterHeight: Math.round(150 * scaleFactor)
+        readonly property int iconSize: Math.round(24 * scaleFactor)
+        readonly property int itemSpacing: Math.round(32 * scaleFactor)
+        readonly property int bottomMargin: Math.round(32 * scaleFactor)
+    }
 }
