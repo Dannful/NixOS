@@ -106,6 +106,6 @@
 
   custom-hyprland = {
     enable = true;
-    nvidia = true;
+    monitors = [];
   };
 }
