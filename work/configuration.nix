@@ -31,6 +31,7 @@
     ];
   };
   environment.etc."timezone".text = config.time.timeZone;
+  services.upower.enable = true;
   networking = {
     firewall.allowedUDPPorts = [19132 5520];
     networkmanager.plugins = [

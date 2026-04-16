@@ -33,11 +33,20 @@ CustomRect {
         anchors.centerIn: parent
     }
 
-    SystemTray.Content {
+    RowLayout {
         anchors {
             right: parent.right
             verticalCenter: parent.verticalCenter
             rightMargin: Sizing.spacing.small
+        }
+        spacing: Sizing.spacing.medium
+
+        Battery {
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        SystemTray.Content {
+            Layout.alignment: Qt.AlignVCenter
         }
     }
 }
