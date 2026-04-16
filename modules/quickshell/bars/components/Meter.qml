@@ -35,7 +35,7 @@ Item {
                 }
                 implicitHeight: parent.implicitHeight * root.progress
                 radius: parent.radius
-                
+
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: Colors.secondary }
                     GradientStop { position: 1.0; color: Colors.primary }
@@ -53,15 +53,12 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if (!mutable)
-                        return;
+                    if (!mutable) return;
                     const progress = (meter.height - mouseY) / meter.height;
                     root.changed(progress);
                 }
-
                 onWheel: wheel => {
-                    if (!mutable)
-                        return;
+                    if (!mutable) return;
                     const delta = wheel.angleDelta.y / 120;
                     let progress = root.progress + delta * 0.1;
                     progress = Math.max(0, Math.min(1, progress));
@@ -88,7 +85,6 @@ Item {
             }
 
             MouseArea {
-                id: iconArea
                 anchors.fill: icon
                 onClicked: root.iconClicked()
             }

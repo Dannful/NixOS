@@ -46,11 +46,26 @@ Singleton {
     }
 
     Timer {
-        interval: 5000
+        interval: 10000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: root.update()
+        onTriggered: {
+            checkWifiStatus.running = false;
+            checkWifiStatus.running = true;
+            refreshConnections.running = false;
+            refreshConnections.running = true;
+        }
+    }
+
+    Timer {
+        interval: 30000
+        running: true
+        repeat: true
+        onTriggered: {
+            networkInspector.running = false;
+            networkInspector.running = true;
+        }
     }
 
     Process {

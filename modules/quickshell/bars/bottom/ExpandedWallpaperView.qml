@@ -90,7 +90,7 @@ Item {
                         }
 
                         SequentialAnimation on x {
-                            running: !contentLoader.item
+                            running: wrapper.shouldLoad && !contentLoader.item
                             loops: Animation.Infinite
                             PauseAnimation { duration: 500 }
                             NumberAnimation {

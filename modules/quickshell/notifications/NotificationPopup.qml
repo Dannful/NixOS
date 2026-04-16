@@ -178,7 +178,10 @@ Item {
                         easing.bezierCurve: Animations.bezierCurves.easeInOutCubic
                     }
                     ScriptAction {
-                        script: root.fullyExpired = true
+                        script: {
+                            root.fullyExpired = true;
+                            notification.tracked = false;
+                        }
                     }
                 }
             }

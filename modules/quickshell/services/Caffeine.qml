@@ -11,21 +11,18 @@ Singleton {
     property bool active: false
 
     function toggle() {
+        root.active = !root.active;
         if (root.active) {
-            // Caffeine is on, turn it off by starting hypridle
-            startHypridle.running = true;
-        } else {
-            // Caffeine is off, turn it on by stopping hypridle
             stopHypridle.running = true;
+        } else {
+            startHypridle.running = true;
         }
     }
 
-    // Poll status periodically
+    // Check status once at startup
     Timer {
-        interval: 1000
-        repeat: true
+        interval: 0
         running: true
-        triggeredOnStart: true
         onTriggered: checkStatus.running = true
     }
 

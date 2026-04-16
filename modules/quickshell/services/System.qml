@@ -12,6 +12,9 @@ Singleton {
     property real memoryUsage: 0
     property real cpuUsage: 0
     property string time: ""
+    property real prevIdle: 0
+    property real prevTotal: 0
+    property real _memTotal: 0
 
     Process {
         id: lock
@@ -31,49 +34,29 @@ Singleton {
         running: false
     }
 
-    Timer {
-        interval: 1000
-        repeat: true
+    Process {
+        id: monitor
         running: true
-        onTriggered: {
-            memory.running = true;
-            cpu.running = true;
-        }
-    }
-
-    Process {
-        id: memory
-        command: ["free"]
-        running: false
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const numbersRegex = /(\d+)/g;
-                const matches = text.match(numbersRegex);
-                if (matches.length >= 2) {
-                    const totalMemory = parseInt(matches[0]);
-                    const usedMemory = parseInt(matches[1]);
-                    root.memoryUsage = usedMemory / totalMemory;
+        command: ["bash", "-c", "d=$(mktemp -d); mkfifo \"$d/p\"; exec 3<>\"$d/p\"; rm -rf \"$d\"; while true; do IFS= read -r l </proc/stat; echo \"$l\"; while IFS= read -r l; do case $l in MemTotal:*|MemAvailable:*) echo \"$l\";; esac; done </proc/meminfo; read -rt3 <&3 || true; done"]
+        stdout: SplitParser {
+            onRead: line => {
+                if (line.startsWith("cpu ")) {
+                    const parts = line.trim().split(/\s+/);
+                    if (parts.length < 6) return;
+                    const idle = parseInt(parts[4]) + parseInt(parts[5]);
+                    const total = parts.slice(1).reduce((s, v) => s + parseInt(v), 0);
+                    const deltaIdle = idle - root.prevIdle;
+                    const deltaTotal = total - root.prevTotal;
+                    root.cpuUsage = deltaTotal > 0 ? (1 - deltaIdle / deltaTotal) : 0;
+                    root.prevIdle = idle;
+                    root.prevTotal = total;
+                } else if (line.startsWith("MemTotal:")) {
+                    const m = line.match(/(\d+)/);
+                    if (m) root._memTotal = parseInt(m[1]);
+                } else if (line.startsWith("MemAvailable:") && root._memTotal > 0) {
+                    const m = line.match(/(\d+)/);
+                    if (m) root.memoryUsage = (root._memTotal - parseInt(m[1])) / root._memTotal;
                 }
-            }
-        }
-    }
-
-    Process {
-        id: cpu
-        command: ["vmstat", "1", "2"]
-        running: false
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const lines = text.trim().split("\n");
-                if (lines.length === 0)
-                    return;
-                const last = lines[lines.length - 1].trim();
-                const numbersRegex = /(\d+)/g;
-                const matches = last.match(numbersRegex);
-                if (matches.length < 15)
-                    return;
-                const idleTime = parseInt(matches[14]);
-                root.cpuUsage = (100 - idleTime) / 100;
             }
         }
     }

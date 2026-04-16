@@ -23,6 +23,7 @@ Text {
     }
 
     Behavior on text {
+        enabled: root.animationTarget !== ""
         SequentialAnimation {
             NumberAnimation {
                 target: root

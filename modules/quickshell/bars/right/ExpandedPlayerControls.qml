@@ -14,9 +14,25 @@ RowLayout {
     required property MprisPlayer currentPlayer
     property alias trackArt: trackArt
 
-    opacity: 0
-    scale: 0
+    opacity: playerRoot.contentExpanded ? 1 : 0
+    scale: playerRoot.contentExpanded ? 1 : 0
     visible: currentPlayer !== null
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: Animations.durations.medium
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.snappy
+        }
+    }
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: Animations.durations.medium
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Animations.bezierCurves.snappy
+        }
+    }
     spacing: Sizing.spacing.small
     anchors.fill: parent
     anchors.margins: Sizing.margins.medium
@@ -57,8 +73,24 @@ RowLayout {
             sourceSize.width: parent.implicitWidth
             sourceSize.height: parent.implicitHeight
             fillMode: Image.PreserveAspectCrop
-            scale: 0
+            scale: playerRoot.contentExpanded ? 1 : 0
+            rotation: playerRoot.contentExpanded ? 360 : 0
             asynchronous: true
+
+            Behavior on scale {
+                NumberAnimation {
+                    duration: Animations.durations.medium
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Animations.bezierCurves.snappy
+                }
+            }
+
+            Behavior on rotation {
+                RotationAnimation {
+                    duration: Animations.durations.medium
+                    direction: RotationAnimation.Clockwise
+                }
+            }
         }
     }
 
@@ -96,8 +128,10 @@ RowLayout {
             topPadding: 0
             bottomPadding: 0
 
-            FrameAnimation {
-                running: currentPlayer.playbackState == MprisPlaybackState.Playing
+            Timer {
+                running: currentPlayer.playbackState === MprisPlaybackState.Playing
+                interval: 1000
+                repeat: true
                 onTriggered: currentPlayer.positionChanged()
             }
         }

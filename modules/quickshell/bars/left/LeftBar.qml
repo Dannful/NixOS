@@ -131,10 +131,10 @@ CustomRect {
                 if (Network.ethernetConnected) return "settings_ethernet";
                 if (!Network.wifiEnabled) return "wifi_off";
 
-                const current = Network.connections.find(c => c.active && (c.type.includes("wireless") || c.type.includes("wifi")));
+                const current = Network.connections.find(c => c.connActive && (c.connType.includes("wireless") || c.connType.includes("wifi")));
                 if (!current) return "signal_wifi_0_bar";
 
-                const wifi = Network.wifiScanResults.find(w => w.ssid === current.name);
+                const wifi = Network.wifiScanResults.find(w => w.ssid === current.connName);
                 const strength = wifi ? wifi.strength : 100;
 
                 if (strength >= 80) return "wifi";

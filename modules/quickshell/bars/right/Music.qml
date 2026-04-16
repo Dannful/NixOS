@@ -22,6 +22,7 @@ CustomRect {
     readonly property list<MprisPlayer> players: Mpris.players.values.filter(player => player.positionSupported)
     readonly property list<MprisPlayer> playingPlayers: players.filter(player => player.isPlaying)
     readonly property MprisPlayer currentPlayer: playingPlayers.length > 0 ? playingPlayers[playingPlayers.length - 1] : (players[Math.min(0, players.length - 1)] ?? null)
+    readonly property bool contentExpanded: state === "expanded"
 
     opacity: currentPlayer ? 1 : 0
 
@@ -58,16 +59,6 @@ CustomRect {
                 scale: 0
                 rotation: 180
             }
-            PropertyChanges {
-                target: contentLoader.item ? contentLoader.item.trackArt : null
-                scale: 1
-                rotation: 360
-            }
-            PropertyChanges {
-                target: contentLoader.item
-                opacity: 1
-                scale: 1
-            }
         }
     ]
 
@@ -86,14 +77,6 @@ CustomRect {
         }
 
         NumberAnimation {
-            target: contentLoader.item
-            properties: "opacity, scale"
-            duration: Animations.durations.medium
-            easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.snappy
-        }
-
-        NumberAnimation {
             target: musicIcon
             properties: "scale"
             duration: Animations.durations.medium
@@ -104,17 +87,6 @@ CustomRect {
             target: musicIcon
             duration: Animations.durations.medium
             direction: RotationAnimation.Clockwise
-        }
-        NumberAnimation {
-            target: contentLoader.item ? contentLoader.item.trackArt : null
-            properties: "scale"
-            duration: Animations.durations.medium
-            easing.type: Easing.BezierSpline
-            easing.bezierCurve: Animations.bezierCurves.snappy
-        }
-        RotationAnimation {
-            target: contentLoader.item ? contentLoader.item.trackArt : null
-            duration: Animations.durations.medium
         }
     }
 
