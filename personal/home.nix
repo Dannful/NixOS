@@ -26,8 +26,8 @@
       prismlauncher
       droidcam
       gemini-cli
-      visidata
       deluge
+      logseq
     ];
 
     sessionVariables = {
