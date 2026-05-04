@@ -85,7 +85,16 @@
     enable = true;
   };
   programs.nvf.settings.vim = {
-    lsp.servers.ruby_lsp.cmd = pkgs.lib.mkForce ["ruby-lsp"];
+    lsp = {
+      servers = {
+        ruby_lsp.cmd = pkgs.lib.mkForce ["ruby-lsp"];
+        r-languageserver.cmd = pkgs.lib.mkForce ["R" "--no-echo" "-e" "languageserver::run()"];
+        texlab = {
+          enable = true;
+          cmd = pkgs.lib.mkForce [(pkgs.lib.getExe pkgs.texlab)];
+        };
+      };
+    };
     formatter.conform-nvim.setupOpts = {
       formatters_by_ft = {
         typescript = ["eslint_d"];
@@ -95,14 +104,20 @@
         tex = ["tex-fmt"];
         bib = ["bibtex-tidy"];
       };
-      formatters.rubocop.command = pkgs.lib.mkForce "rubocop";
-      formatters.eslint_d.command = pkgs.lib.getExe pkgs.eslint_d;
-      formatters."tex-fmt".command = pkgs.lib.getExe pkgs.tex-fmt;
-      formatters."bibtex-tidy".command = pkgs.lib.getExe pkgs.bibtex-tidy;
+      formatters = {
+        rubocop.command = pkgs.lib.mkForce "rubocop";
+        eslint_d.command = pkgs.lib.getExe pkgs.eslint_d;
+        "tex-fmt".command = pkgs.lib.getExe pkgs.tex-fmt;
+        "bibtex-tidy".command = pkgs.lib.getExe pkgs.bibtex-tidy;
+        styler.command = pkgs.lib.mkForce "R";
+      };
     };
     languages = {
       clang.enable = true;
-      r.enable = true;
+      r = {
+        enable = true;
+        format.type = ["styler"];
+      };
       ruby = {
         enable = true;
         lsp.servers = ["ruby_lsp"];
@@ -111,29 +126,6 @@
         enable = true;
         format.enable = false;
       };
-    };
-    lsp.servers.r_language_server.cmd = let
-      customRPackages = [
-        pkgs.rPackages.tidyverse
-        pkgs.rPackages.janitor
-        pkgs.rPackages.here
-        pkgs.rPackages.DoE_base
-        pkgs.rPackages.ggh4x
-        pkgs.rPackages.plotly
-      ];
-      r-with-languageserver = pkgs.rWrapper.override {
-        packages = [pkgs.rPackages.languageserver] ++ customRPackages;
-      };
-    in
-      pkgs.lib.mkForce [
-        (pkgs.lib.getExe r-with-languageserver)
-        "--no-echo"
-        "-e"
-        "languageserver::run()"
-      ];
-    lsp.servers.texlab = {
-      enable = true;
-      cmd = pkgs.lib.mkForce [(pkgs.lib.getExe pkgs.texlab)];
     };
     lazy.plugins = {
       "iron.nvim" = {
