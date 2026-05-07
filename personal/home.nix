@@ -24,7 +24,6 @@
       obs-studio
       mono
       prismlauncher
-      droidcam
       gemini-cli
       deluge
       logseq
@@ -87,7 +86,7 @@
   programs.nvf.settings.vim = {
     lsp = {
       servers = {
-        ruby_lsp.cmd = pkgs.lib.mkForce ["ruby-lsp"];
+        ruby-lsp.cmd = pkgs.lib.mkForce ["ruby-lsp"];
         r-languageserver.cmd = pkgs.lib.mkForce ["R" "--no-echo" "-e" "languageserver::run()"];
         texlab = {
           enable = true;
@@ -120,7 +119,7 @@
       };
       ruby = {
         enable = true;
-        lsp.servers = ["ruby_lsp"];
+        lsp.servers = ["ruby-lsp"];
       };
       ts = {
         enable = true;
