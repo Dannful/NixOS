@@ -26,7 +26,6 @@
       prismlauncher
       gemini-cli
       deluge
-      logseq
     ];
 
     sessionVariables = {
@@ -71,11 +70,6 @@
           Hostname gppd-hpc.inf.ufrgs.br
           User vdspadotto
           IdentityFile ~/.ssh/pcad
-
-        Host bitbucket.org
-          Hostname bitbucket.org
-          User git
-          IdentityFile ~/.ssh/bitbucket
       '';
     };
   };
@@ -116,14 +110,6 @@
       r = {
         enable = true;
         format.type = ["styler"];
-      };
-      ruby = {
-        enable = true;
-        lsp.servers = ["ruby-lsp"];
-      };
-      ts = {
-        enable = true;
-        format.enable = false;
       };
     };
     lazy.plugins = {

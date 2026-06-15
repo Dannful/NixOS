@@ -113,15 +113,5 @@
     networkmanager.plugins = [
       pkgs.networkmanager-l2tp
     ];
-    hosts = {
-      "255.255.255.255" = ["broadcasthost"];
-      "192.168.200.171" = ["dautoisp.int6tech.com.br"];
-      "192.168.200.181" = ["poa181.int6tech.com.br"];
-      "192.168.200.161" = ["autoisp.int6tech.com.br"];
-      "192.168.203.67" = ["autoisp.brasiltecpar.com.br"];
-      "192.168.200.141" = ["poa141.int6tech.com.br"];
-      "192.168.200.175" = ["qa.int6tech.com.br"];
-      "192.168.200.155" = ["deploy.int6tech.com.br"];
-    };
   };
 }

@@ -2,8 +2,8 @@
   description = "Home Manager configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    nixos.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    nixos.url = "github:nixos/nixpkgs/nixos-26.05";
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
@@ -48,11 +48,6 @@
           nix-minecraft.nixosModules.minecraft-servers
           {nixpkgs.overlays = [nix-minecraft.overlay];}
         ];
-      };
-      work = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs system;};
-
-        modules = [./work/configuration.nix];
       };
     };
     templates = {

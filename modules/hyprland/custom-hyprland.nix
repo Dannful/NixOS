@@ -137,6 +137,9 @@ in {
       systemd.enable = true;
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      plugins = [
+        inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
+      ];
 
       extraConfig = lib.optionalString cfg.nvidia ''
         env=LIBVA_DRIVER_NAME,nvidia
@@ -182,20 +185,53 @@ in {
             "overshot, 0.05, 0.9, 0.1, 1.05"
             "smoothOut, 0.36, 0, 0.66, -0.56"
             "smoothIn, 0.25, 1, 0.5, 1"
+            "snappy, 0.2, 1, 0.2, 1"
+            "linear, 0, 0, 1, 1"
           ];
           animation = [
             "windows, 1, 5, overshot, slide"
             "windowsOut, 1, 4, smoothOut, slide"
-            "windowsMove, 1, 4, default"
+            "windowsMove, 1, 4, snappy"
             "border, 1, 10, default"
+            "borderangle, 1, 100, linear, loop"
             "fade, 1, 10, smoothIn"
             "fadeDim, 1, 10, smoothIn"
-            "workspaces, 1, 6, default"
+            "layers, 1, 4, snappy, slide"
+            "workspaces, 1, 6, snappy, slide"
+            "specialWorkspace, 1, 6, overshot, slidevert"
           ];
         };
         dwindle = {
           pseudotile = true;
           preserve_split = true;
+        };
+        misc = {
+          animate_manual_resizes = true;
+          animate_mouse_windowdragging = true;
+        };
+        group = {
+          "col.border_active" = "rgba(cba6f7ff) rgba(89b4faff) 45deg";
+          "col.border_inactive" = "rgba(313244cc)";
+          groupbar = {
+            font_size = 12;
+            gradients = true;
+            "col.active" = "rgba(cba6f7ff)";
+            "col.inactive" = "rgba(313244cc)";
+          };
+        };
+        "plugin:hyprfocus" = {
+          enabled = true;
+          animate_floating = true;
+          animate_workspacechange = true;
+          focus_animation = "flash";
+          bezier = ["realsmooth, 0.28, 0.29, 0.69, 1.08"];
+          flash = {
+            flash_opacity = 0.7;
+            in_bezier = "realsmooth";
+            in_speed = 0.5;
+            out_bezier = "realsmooth";
+            out_speed = 3;
+          };
         };
         exec-once = [
           "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
@@ -204,6 +240,13 @@ in {
           builtins.map (monitor: "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
           cfg.monitors;
         binds = {drag_threshold = 10;};
+        binde = [
+          # Resize active window with keyboard
+          "$mod ALT, left, resizeactive, -50 0"
+          "$mod ALT, right, resizeactive, 50 0"
+          "$mod ALT, up, resizeactive, 0 -50"
+          "$mod ALT, down, resizeactive, 0 50"
+        ];
         bindm = ["$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow"];
         bindc = "$mod, mouse:272, togglefloating";
         bindel = [
@@ -230,19 +273,30 @@ in {
             "$mod, F, fullscreen"
             '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
             "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
-            
+
             # Quick lock screen
             "$mod, L, exec, loginctl lock-session"
-            
+
             # Window focus movement
             "$mod, left, movefocus, l"
             "$mod, right, movefocus, r"
             "$mod, up, movefocus, u"
             "$mod, down, movefocus, d"
-            
+
+            # Move windows
+            "$mod SHIFT, left, movewindow, l"
+            "$mod SHIFT, right, movewindow, r"
+            "$mod SHIFT, up, movewindow, u"
+            "$mod SHIFT, down, movewindow, d"
+
+            # Window groups (tabbed)
+            "$mod, G, togglegroup"
+            "$mod, tab, changegroupactive, f"
+            "$mod SHIFT, tab, changegroupactive, b"
+
             # Dwindle layout management
             "$mod, P, pseudo"
-            
+
             # Scratchpad (special workspace)
             "$mod, S, togglespecialworkspace, magic"
             "$mod SHIFT, S, movetoworkspace, special:magic"

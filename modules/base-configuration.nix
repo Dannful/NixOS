@@ -265,11 +265,11 @@ in {
     };
 
     # --- Sleep ---
-    systemd.sleep.extraConfig = ''
-      AllowSuspend=yes
-      AllowHibernation=no
-      SuspendState=mem
-    '';
+    systemd.sleep.settings.Sleep = {
+      AllowSuspend = "yes";
+      AllowHibernation = "yes";
+      SuspendState = "mem";
+    };
 
     # --- Virtualisation ---
     virtualisation.docker.enable = true;
@@ -355,6 +355,8 @@ in {
     );
 
     home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
       extraSpecialArgs = {inherit inputs;};
       users = builtins.listToAttrs (
         builtins.map (user: {
@@ -377,7 +379,6 @@ in {
         vim
         nixd
         nil
-        nixfmt-classic
 
         # Utilities
         ffmpeg
@@ -401,7 +402,7 @@ in {
 
         # Media / Social
         discord
-        youtube-music
+        pear-desktop
         zathura
         pavucontrol
 
