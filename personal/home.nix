@@ -90,10 +90,6 @@
     };
     formatter.conform-nvim.setupOpts = {
       formatters_by_ft = {
-        typescript = ["eslint_d"];
-        typescriptreact = ["eslint_d"];
-        javascript = ["eslint_d"];
-        javascriptreact = ["eslint_d"];
         tex = ["tex-fmt"];
         bib = ["bibtex-tidy"];
       };

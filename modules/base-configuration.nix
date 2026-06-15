@@ -297,7 +297,6 @@ in {
       gamemode.enable = cfg.use-steam;
       gamescope = lib.mkIf cfg.use-steam {
         enable = true;
-        capSysNice = true;
       };
     };
 
