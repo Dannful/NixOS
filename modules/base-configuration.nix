@@ -282,6 +282,7 @@ in {
 
       hyprland = {
         enable = true;
+        withUWSM = true;
         package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
         portalPackage =
           inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
@@ -303,13 +304,21 @@ in {
     # --- Portals & MIME ---
     xdg.portal = {
       enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      xdgOpenUsePortal = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.kdePackages.xdg-desktop-portal-kde
+      ];
       config = {
         common = {
           default = ["gtk"];
+          "org.freedesktop.impl.portal.OpenURI" = ["kde"];
+          "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
         };
         hyprland = {
           default = ["gtk"];
+          "org.freedesktop.impl.portal.OpenURI" = ["kde"];
+          "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
           "org.freedesktop.impl.portal.Screencast" = ["hyprland"];
           "org.freedesktop.impl.portal.Screenshot" = ["hyprland"];
         };
