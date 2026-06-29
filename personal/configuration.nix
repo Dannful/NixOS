@@ -35,8 +35,25 @@
   hardware.xone.enable = true;
   boot = {
     kernelModules = ["k10temp"];
+    extraModulePackages = [config.boot.kernelPackages.r8125];
+    blacklistedKernelModules = ["r8169"];
     resumeDevice = "/dev/disk/by-uuid/5e66a786-5dc1-4827-a80c-359d9665f880";
     kernelParams = ["resume_offset=464121856"];
+  };
+
+  systemd.services."lock-enp6s0-1g" = {
+    description = "Lock enp6s0 link advertisement to 1Gbps";
+    wantedBy = ["multi-user.target"];
+    after = ["sys-subsystem-net-devices-enp6s0.device"];
+    bindsTo = ["sys-subsystem-net-devices-enp6s0.device"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    path = [pkgs.ethtool];
+    script = ''
+      ethtool -s enp6s0 autoneg on speed 1000 duplex full
+    '';
   };
   services.minecraft-servers = {
     enable = true;
@@ -109,9 +126,6 @@
   };
   environment.etc."timezone".text = config.time.timeZone;
   networking = {
-    firewall.allowedUDPPorts = [19132 5520];
-    networkmanager.plugins = [
-      pkgs.networkmanager-l2tp
-    ];
+    # firewall.allowedUDPPorts = [19132 5520];
   };
 }
