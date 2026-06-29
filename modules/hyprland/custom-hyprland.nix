@@ -54,6 +54,18 @@ in {
       gst-libav
     ];
 
+    screenshot = pkgs.writeShellScriptBin "screenshot" ''
+      mode="''${1:-region}"
+      dir="$HOME/Pictures/Screenshots"
+      mkdir -p "$dir"
+      ${pkgs.hyprshot}/bin/hyprshot -z -m "$mode" --raw | ${pkgs.satty}/bin/satty \
+        --filename - \
+        --resize smart \
+        --early-exit \
+        --copy-command ${pkgs.wl-clipboard}/bin/wl-copy \
+        --output-filename "$dir/satty-$(date +%Y%m%d-%H%M%S).png"
+    '';
+
     quickshell-wrapped = pkgs.symlinkJoin {
       name = "quickshell-with-multimedia";
       paths = [inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default];
@@ -66,19 +78,22 @@ in {
           --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath (gstPlugins ++ [pkgs.qt6.qtmultimedia])}
       '';
     };
+
   in {
-    home.packages = with pkgs; [
-      alsa-utils
-      grim
-      slurp
-      wl-clipboard
-      cliphist
-      swappy
-      rofi
-      playerctl
-      brightnessctl
-      quickshell-wrapped
-    ];
+    home.packages =
+      [quickshell-wrapped]
+      ++ (with pkgs; [
+        alsa-utils
+        wl-clipboard
+        cliphist
+        rofi
+        playerctl
+        brightnessctl
+        hyprshot
+        grim
+        slurp
+        satty
+      ]);
     home.file = {
       ".config/rofi/config.rasi" = {text = ''@theme "arthur"'';};
       ".config/quickshell" = {
@@ -137,13 +152,12 @@ in {
       systemd.enable = true;
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      plugins = [
-        inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
-      ];
 
       extraConfig = lib.optionalString cfg.nvidia ''
         env=LIBVA_DRIVER_NAME,nvidia
         env=__GLX_VENDOR_LIBRARY_NAME,nvidia
+        env=GBM_BACKEND,nvidia-drm
+        env=AQ_NO_MODIFIERS,1
         env=ELECTRON_OZONE_PLATFORM_HINT,auto
       '';
 
@@ -218,20 +232,6 @@ in {
             "col.inactive" = "rgba(313244cc)";
           };
         };
-        "plugin:hyprfocus" = {
-          enabled = true;
-          animate_floating = true;
-          animate_workspacechange = true;
-          focus_animation = "flash";
-          bezier = ["realsmooth, 0.28, 0.29, 0.69, 1.08"];
-          flash = {
-            flash_opacity = 0.7;
-            in_bezier = "realsmooth";
-            in_speed = 0.5;
-            out_bezier = "realsmooth";
-            out_speed = 3;
-          };
-        };
         exec-once = [
           "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
         ];
@@ -270,7 +270,9 @@ in {
             "$mod, Q, exec, hyprctl kill"
             "$mod, C, killactive"
             "$mod, F, fullscreen"
-            '', Print, exec, grim -g "$(slurp)" - | swappy -f -''
+            ", Print, exec, ${screenshot}/bin/screenshot region"
+            "SHIFT, Print, exec, ${screenshot}/bin/screenshot output"
+            "$mod, Print, exec, ${screenshot}/bin/screenshot window"
             "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
 
             # Quick lock screen
