@@ -78,7 +78,6 @@ in {
           --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath (gstPlugins ++ [pkgs.qt6.qtmultimedia])}
       '';
     };
-
   in {
     home.packages =
       [quickshell-wrapped]
@@ -156,8 +155,6 @@ in {
       extraConfig = lib.optionalString cfg.nvidia ''
         env=LIBVA_DRIVER_NAME,nvidia
         env=__GLX_VENDOR_LIBRARY_NAME,nvidia
-        env=GBM_BACKEND,nvidia-drm
-        env=AQ_NO_MODIFIERS,1
         env=ELECTRON_OZONE_PLATFORM_HINT,auto
       '';
 
