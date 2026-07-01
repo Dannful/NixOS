@@ -66,6 +66,12 @@
             action = "<cmd>bdelete<CR>";
             desc = "Close buffer";
           }
+          {
+            key = "<leader>nh";
+            mode = ["n"];
+            action = "<cmd>nohlsearch<CR>";
+            desc = "Clear search highlights";
+          }
         ];
         augroups = [{name = "ForceConformKey";}];
         autocmds = [
@@ -106,7 +112,10 @@
           enableTreesitter = true;
           enableExtraDiagnostics = true;
 
-          nix.enable = true;
+          nix = {
+            enable = true;
+            lsp.servers = ["nixd"];
+          };
           markdown.enable = true;
           bash.enable = true;
         };
@@ -248,9 +257,6 @@
           breadcrumbs = {
             enable = true;
             navbuddy.enable = true;
-          };
-          smartcolumn = {
-            enable = true;
           };
           fastaction.enable = true;
         };

@@ -123,16 +123,12 @@ in {
         efi.canTouchEfiVariables = true;
       };
       kernelModules = ["v4l2loopback"];
-      kernelParams = lib.optionals cfg.use-nvidia ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
       extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
     };
 
     hardware = {
       nvidia = lib.mkIf cfg.use-nvidia {
         modesetting.enable = true;
-        powerManagement.enable = true;
-        powerManagement.finegrained = false;
-        open = false;
         nvidiaSettings = true;
         package = config.boot.kernelPackages.nvidiaPackages.stable;
       };
@@ -423,6 +419,18 @@ in {
         pkgs.mangohud
         pkgs.wineWow64Packages.waylandFull
         pkgs.winetricks
+        (pkgs.symlinkJoin {
+          name = "steam-nvidia-offload";
+          paths = [pkgs.steam];
+          buildInputs = [pkgs.makeWrapper];
+          postBuild = ''
+            wrapProgram $out/bin/steam \
+              --set __NV_PRIME_RENDER_OFFLOAD 1 \
+              --set __NV_PRIME_RENDER_OFFLOAD_PROVIDER NVIDIA-G0 \
+              --set __GLX_VENDOR_LIBRARY_NAME nvidia \
+              --set __VK_LAYER_NV_optimus NVIDIA_only
+          '';
+        })
       ]
       ++ lib.optionals cfg.use-nvidia [pkgs.egl-wayland];
 

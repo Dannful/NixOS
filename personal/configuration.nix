@@ -31,8 +31,23 @@
     "x-scheme-handler/magnet" = "deluge.desktop";
     "application/x-bittorrent" = "deluge.desktop";
   };
-  hardware.xpadneo.enable = true;
-  hardware.xone.enable = true;
+  hardware = {
+    xpadneo.enable = true;
+    xone.enable = true;
+    nvidia = {
+      powerManagement.enable = true;
+      powerManagement.finegrained = true;
+      open = true;
+      prime = {
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+        };
+        nvidiaBusId = "PCI:1:0:0";
+        amdgpuBusId = "PCI:19:0:0";
+      };
+    };
+  };
   boot = {
     kernelModules = ["k10temp"];
     extraModulePackages = [config.boot.kernelPackages.r8125];

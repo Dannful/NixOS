@@ -155,7 +155,6 @@ in {
       extraConfig = lib.optionalString cfg.nvidia ''
         env=LIBVA_DRIVER_NAME,nvidia
         env=__GLX_VENDOR_LIBRARY_NAME,nvidia
-        env=ELECTRON_OZONE_PLATFORM_HINT,auto
       '';
 
       settings = {
