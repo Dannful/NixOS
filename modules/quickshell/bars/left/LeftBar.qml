@@ -6,6 +6,7 @@ import "root:/core"
 import "root:/bars/left/components"
 import "root:/bars/left/components/ram" as Ram
 import "root:/bars/left/components/cpu" as Cpu
+import "root:/bars/left/components/gpu" as GpuWidget
 import "root:/bars/left/components/volume" as Volume
 import "root:/services"
 
@@ -26,6 +27,7 @@ CustomRect {
 
     property alias powerIcon: powerIcon
     property alias networkIcon: networkIcon
+    property alias displayIcon: displayIcon
 
     function getY(target, reference) {
         // Position menu aligned with icon, but ensure it doesn't go above top bar area
@@ -49,6 +51,11 @@ CustomRect {
         }
 
         Cpu.Content {
+            Layout.alignment: Qt.AlignCenter
+            implicitHeight: responsiveSizing.meterHeight
+        }
+
+        GpuWidget.Content {
             Layout.alignment: Qt.AlignCenter
             implicitHeight: responsiveSizing.meterHeight
         }
@@ -144,6 +151,16 @@ CustomRect {
             }
             setVisibility: visible => {
                 visibilities.networkMenu = visible;
+            }
+        }
+
+        BarIcon {
+            id: displayIcon
+            visibility: visibilities.displayMenu
+            iconSize: root.responsiveSizing.iconSize
+            iconName: "desktop_windows"
+            setVisibility: visible => {
+                visibilities.displayMenu = visible;
             }
         }
 

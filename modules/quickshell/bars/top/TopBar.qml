@@ -5,8 +5,11 @@ import Quickshell
 import "root:/core"
 import "root:/services"
 import "root:/bars/top/components/tray" as SystemTray
+import "root:/bars/top/components/netspeed" as NetSpeedWidget
+import "root:/bars/top/components/weather" as WeatherWidget
 
 CustomRect {
+    id: root
     required property ShellScreen screen
     required property PersistentProperties visibilities
 
@@ -18,6 +21,8 @@ CustomRect {
     implicitHeight: Sizing.topBarHeight
 
     property alias timeText: timeText
+    property alias netSpeedChip: netSpeedChip
+    property alias weatherChip: weatherChip
 
     Workspaces {
         anchors {
@@ -40,6 +45,18 @@ CustomRect {
             rightMargin: Sizing.spacing.small
         }
         spacing: Sizing.spacing.medium
+
+        WeatherWidget.Content {
+            id: weatherChip
+            visibilities: root.visibilities
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        NetSpeedWidget.Content {
+            id: netSpeedChip
+            visibilities: root.visibilities
+            Layout.alignment: Qt.AlignVCenter
+        }
 
         Battery {
             Layout.alignment: Qt.AlignVCenter

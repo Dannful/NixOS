@@ -9,8 +9,8 @@ Item {
     // Expose hover state for menu closing logic
     property alias containsMouse: mouseArea.containsMouse
 
-    implicitWidth: Fonts.sizing.medium / 2
-    implicitHeight: Fonts.sizing.medium / 2
+    implicitWidth: text.implicitWidth
+    implicitHeight: Sizing.topBarHeight
 
     SystemClock {
         id: clock
@@ -29,7 +29,7 @@ Item {
 
     MouseArea {
         id: mouseArea
-        anchors.fill: text
+        anchors.fill: parent
         hoverEnabled: true
 
         onClicked: {

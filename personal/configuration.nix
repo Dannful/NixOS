@@ -52,8 +52,6 @@
     kernelModules = ["k10temp"];
     extraModulePackages = [config.boot.kernelPackages.r8125];
     blacklistedKernelModules = ["r8169"];
-    resumeDevice = "/dev/disk/by-uuid/5e66a786-5dc1-4827-a80c-359d9665f880";
-    kernelParams = ["resume_offset=464121856"];
   };
 
   systemd.services."lock-enp6s0-1g" = {
@@ -133,11 +131,6 @@
       lm_sensors
       javaPackages.compiler.temurin-bin.jdk-25
     ];
-    sessionVariables = {
-      WLR_NO_HARDWARE_CURSORS = "1";
-      LIBVA_DRIVER_NAME = "nvidia";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    };
   };
   environment.etc."timezone".text = config.time.timeZone;
   networking = {

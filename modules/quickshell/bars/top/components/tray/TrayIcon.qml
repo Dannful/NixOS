@@ -10,12 +10,20 @@ MouseArea {
 
     implicitWidth: icon.implicitWidth
     implicitHeight: icon.implicitHeight
+    width: implicitWidth
+    height: implicitHeight
 
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-    onClicked: {
-        if (menu.menu) {
-            menu.open();
+    onClicked: mouse => {
+        if (mouse.button === Qt.RightButton) {
+            if (menu.menu) {
+                menu.open();
+            }
+        } else if (mouse.button === Qt.MiddleButton) {
+            root.modelData.secondaryActivate();
+        } else {
+            root.modelData.activate();
         }
     }
 

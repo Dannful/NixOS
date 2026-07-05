@@ -48,8 +48,9 @@ Singleton {
         // Calculate available height: 75% of screen minus bottom margin (32px)
         readonly property real availableHeight: screenHeight * 0.75 - 32
 
-        // Baseline: original design at 1080p requires ~714px
-        readonly property real baselineHeight: 714
+        // Baseline: original design at 1080p requires ~952px
+        // (4 meters @150 + 4 icons @24 + 7 gaps @32 + bottom margin 32)
+        readonly property real baselineHeight: 952
 
         // Scale factor: 1.0 at baseline, constrained between 0.7-2.0
         readonly property real scaleFactor: Math.max(0.7, Math.min(2.0, availableHeight / baselineHeight))

@@ -2,7 +2,10 @@ import Quickshell
 import QtQuick
 import "root:/bars/left/components/power_menu" as PowerMenu
 import "root:/bars/left/components/network_menu" as NetworkMenu
+import "root:/bars/left/components/display_menu" as DisplayMenu
 import "root:/bars/top/components/calendar" as Calendar
+import "root:/bars/top/components/netspeed" as NetSpeedWidget
+import "root:/bars/top/components/weather" as WeatherWidget
 import "root:/core"
 
 Item {
@@ -43,5 +46,40 @@ Item {
         onRequestClose: root.visibilities.networkMenu = false
         x: leftBar.getX(leftBar.networkIcon)
         y: leftBar.getY(this, leftBar.networkIcon)
+    }
+
+    DisplayMenu.Wrapper {
+        screen: root.screen
+        visibility: root.visibilities.displayMenu
+        triggerItem: leftBar.displayIcon
+        onRequestClose: root.visibilities.displayMenu = false
+        x: leftBar.getX(leftBar.displayIcon)
+        y: leftBar.getY(this, leftBar.displayIcon)
+    }
+
+    NetSpeedWidget.Wrapper {
+        screen: root.screen
+        visibility: root.visibilities.netSpeed
+        triggerItem: topBar.netSpeedChip
+        onRequestClose: root.visibilities.netSpeed = false
+        readonly property real chipCenterX: topBar.netSpeedChip.mapToItem(topBar, 0, 0).x + topBar.netSpeedChip.width / 2
+        x: Math.max(Sizing.margins.small, Math.min(
+            chipCenterX - implicitWidth / 2,
+            root.screen.width - implicitWidth - Sizing.margins.small
+        ))
+        y: Sizing.topBarHeight + Sizing.margins.small
+    }
+
+    WeatherWidget.Wrapper {
+        screen: root.screen
+        visibility: root.visibilities.weather
+        triggerItem: topBar.weatherChip
+        onRequestClose: root.visibilities.weather = false
+        readonly property real chipCenterX: topBar.weatherChip.mapToItem(topBar, 0, 0).x + topBar.weatherChip.width / 2
+        x: Math.max(Sizing.margins.small, Math.min(
+            chipCenterX - implicitWidth / 2,
+            root.screen.width - implicitWidth - Sizing.margins.small
+        ))
+        y: Sizing.topBarHeight + Sizing.margins.small
     }
 }

@@ -1,3 +1,4 @@
+//@ pragma UseQApplication
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
@@ -31,10 +32,13 @@ Scope {
                     property bool powerMenu: false
                     property bool networkMenu: false
                     property bool calendar: false
+                    property bool displayMenu: false
+                    property bool netSpeed: false
+                    property bool weather: false
                 }
 
                 WlrLayershell.layer: WlrLayer.Top
-                WlrLayershell.keyboardFocus: (visibilities.powerMenu || visibilities.networkMenu || visibilities.calendar)
+                WlrLayershell.keyboardFocus: (visibilities.powerMenu || visibilities.networkMenu || visibilities.calendar || visibilities.displayMenu || visibilities.netSpeed || visibilities.weather)
                     ? WlrKeyboardFocus.OnDemand
                     : WlrKeyboardFocus.None
 
@@ -73,11 +77,17 @@ Scope {
                     topBar: topBar
 
                     Item {
+                        // Track leftBar's actual x (it's anchored with a leftMargin), otherwise
+                        // this mask region is offset from the real bar and clips its right edge.
+                        x: leftBar.x
                         implicitWidth: leftBar.implicitWidth
                         implicitHeight: root.implicitHeight
                     }
 
                     Item {
+                        // Track topBar's actual y (it's anchored with a top margin), otherwise
+                        // this mask region is offset from the real bar and clips its bottom edge.
+                        y: topBar.y
                         implicitWidth: root.implicitWidth
                         implicitHeight: topBar.implicitHeight
                     }
