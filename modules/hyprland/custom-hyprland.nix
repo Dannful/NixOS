@@ -7,6 +7,46 @@
 }: let
   inherit (lib) mkOption types;
   cfg = config.custom-hyprland;
+
+  lua = lib.generators.mkLuaInline;
+  mod = "SUPER";
+  alt = "ALT";
+
+  accentGradient = {
+    colors = ["rgba(cba6f7ff)" "rgba(89b4faff)"];
+    angle = 45;
+  };
+
+  dsp = {
+    exec = cmd: lua ''hl.dsp.exec_cmd("${cmd}")'';
+    close = lua "hl.dsp.window.close()";
+    fullscreen = lua "hl.dsp.window.fullscreen()";
+    pseudo = lua "hl.dsp.window.pseudo()";
+    float = lua ''hl.dsp.window.float({ action = "toggle" })'';
+    focus = dir: lua ''hl.dsp.focus({ direction = "${dir}" })'';
+    move = dir: lua ''hl.dsp.window.move({ direction = "${dir}" })'';
+    resize = x: y: lua ''hl.dsp.window.resize({ x = ${toString x}, y = ${toString y} })'';
+    mouseResize = lua "hl.dsp.window.resize()";
+    drag = lua "hl.dsp.window.drag()";
+    toggleGroup = lua "hl.dsp.group.toggle()";
+    groupNext = lua "hl.dsp.group.next()";
+    groupPrev = lua "hl.dsp.group.prev()";
+    toggleSpecial = name: lua ''hl.dsp.workspace.toggle_special("${name}")'';
+    moveToSpecial = name: lua ''hl.dsp.window.move({ workspace = "special:${name}" })'';
+    focusWorkspace = ws: lua ''hl.dsp.focus({ workspace = "${toString ws}" })'';
+    moveToWorkspace = ws: lua ''hl.dsp.window.move({ workspace = "${toString ws}" })'';
+  };
+
+  bind = keys: dispatcher: {_args = [keys dispatcher];};
+  bindOpts = keys: dispatcher: opts: {_args = [keys dispatcher opts];};
+
+  workspaceBinds = builtins.concatLists (builtins.genList (i: let
+      ws = i + 1;
+    in [
+      (bind "${mod} + code:1${toString i}" (dsp.focusWorkspace ws))
+      (bind "${mod} + SHIFT + code:1${toString i}" (dsp.moveToWorkspace ws))
+    ])
+    9);
 in {
   options.custom-hyprland = {
     enable = lib.mkEnableOption "custom Hyprland";
@@ -147,168 +187,306 @@ in {
 
     wayland.windowManager.hyprland = {
       enable = true;
+      configType = "lua";
       xwayland.enable = true;
-      systemd.enable = true;
+      systemd.enable = false;
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
       extraConfig = lib.optionalString cfg.nvidia ''
-        env=LIBVA_DRIVER_NAME,nvidia
-        env=__GLX_VENDOR_LIBRARY_NAME,nvidia
+        hl.env("LIBVA_DRIVER_NAME", "nvidia")
+        hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
       '';
 
       settings = {
-        "$mod" = "SUPER";
-        "$alt" = "ALT";
-        general = {
-          gaps_in = 5;
-          gaps_out = "58, 18, 18, 63";
-          border_size = 2;
-          "col.active_border" = "rgba(cba6f7ff) rgba(89b4faff) 45deg";
-          "col.inactive_border" = "rgba(313244cc)";
-          layout = "dwindle";
-        };
-        cursor = {no_hardware_cursors = true;};
-        input = {
-          kb_layout = "us";
-          kb_variant = "alt-intl";
-        };
-        decoration = {
-          rounding = 10;
-          blur = {
+        config = {
+          general = {
+            gaps_in = 5;
+            gaps_out = {
+              top = 58;
+              right = 18;
+              bottom = 18;
+              left = 63;
+            };
+            border_size = 2;
+            col = {
+              active_border = accentGradient;
+              inactive_border = "rgba(313244cc)";
+            };
+            layout = "dwindle";
+          };
+          cursor = {no_hardware_cursors = true;};
+          input = {
+            kb_layout = "us";
+            kb_variant = "alt-intl";
+          };
+          decoration = {
+            rounding = 10;
+            blur = {
+              enabled = true;
+              size = 4;
+              passes = 3;
+              new_optimizations = true;
+              ignore_opacity = true;
+            };
+            shadow = {
+              enabled = true;
+              range = 10;
+              render_power = 3;
+              color = "rgba(1a1a1aee)";
+            };
+          };
+          animations = {
             enabled = true;
-            size = 4;
-            passes = 3;
-            new_optimizations = true;
-            ignore_opacity = true;
           };
-          shadow = {
-            enabled = true;
-            range = 10;
-            render_power = 3;
-            color = "rgba(1a1a1aee)";
+          dwindle = {
+            preserve_split = true;
           };
-        };
-        animations = {
-          enabled = true;
-          bezier = [
-            "overshot, 0.05, 0.9, 0.1, 1.05"
-            "smoothOut, 0.36, 0, 0.66, -0.56"
-            "smoothIn, 0.25, 1, 0.5, 1"
-            "snappy, 0.2, 1, 0.2, 1"
-            "linear, 0, 0, 1, 1"
-          ];
-          animation = [
-            "windows, 1, 5, overshot, slide"
-            "windowsOut, 1, 4, smoothOut, slide"
-            "windowsMove, 1, 4, snappy"
-            "border, 1, 10, default"
-            "borderangle, 1, 100, linear, loop"
-            "fade, 1, 10, smoothIn"
-            "fadeDim, 1, 10, smoothIn"
-            "layers, 1, 4, snappy, slide"
-            "workspaces, 1, 6, snappy, slide"
-            "specialWorkspace, 1, 6, overshot, slidevert"
-          ];
-        };
-        dwindle = {
-          preserve_split = true;
-        };
-        misc = {
-          animate_manual_resizes = true;
-          animate_mouse_windowdragging = true;
-        };
-        group = {
-          "col.border_active" = "rgba(cba6f7ff) rgba(89b4faff) 45deg";
-          "col.border_inactive" = "rgba(313244cc)";
-          groupbar = {
-            font_size = 12;
-            gradients = true;
-            "col.active" = "rgba(cba6f7ff)";
-            "col.inactive" = "rgba(313244cc)";
+          misc = {
+            animate_manual_resizes = true;
+            animate_mouse_windowdragging = true;
           };
+          group = {
+            col = {
+              border_active = accentGradient;
+              border_inactive = "rgba(313244cc)";
+            };
+            groupbar = {
+              font_size = 12;
+              gradients = true;
+              col = {
+                active = "rgba(cba6f7ff)";
+                inactive = "rgba(313244cc)";
+              };
+            };
+          };
+          binds = {drag_threshold = 10;};
         };
-        exec-once = [
-          "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
-        ];
+
         monitor =
-          builtins.map (monitor: "${monitor.name}, ${monitor.resolution}@${monitor.refresh-rate}, ${monitor.position}, 1")
+          map (monitor: {
+            inherit (monitor) position;
+
+            output = monitor.name;
+            mode = "${monitor.resolution}@${monitor.refresh-rate}";
+            scale = "1.0";
+          })
           cfg.monitors;
-        binds = {drag_threshold = 10;};
-        binde = [
-          # Resize active window with keyboard
-          "$mod ALT, left, resizeactive, -50 0"
-          "$mod ALT, right, resizeactive, 50 0"
-          "$mod ALT, up, resizeactive, 0 -50"
-          "$mod ALT, down, resizeactive, 0 50"
+
+        curve = [
+          {
+            _args = [
+              "overshot"
+              {
+                type = "bezier";
+                points = lua "{ {0.05, 0.9}, {0.1, 1.05} }";
+              }
+            ];
+          }
+          {
+            _args = [
+              "smoothOut"
+              {
+                type = "bezier";
+                points = lua "{ {0.36, 0}, {0.66, -0.56} }";
+              }
+            ];
+          }
+          {
+            _args = [
+              "smoothIn"
+              {
+                type = "bezier";
+                points = lua "{ {0.25, 1}, {0.5, 1} }";
+              }
+            ];
+          }
+          {
+            _args = [
+              "snappy"
+              {
+                type = "bezier";
+                points = lua "{ {0.2, 1}, {0.2, 1} }";
+              }
+            ];
+          }
+          {
+            _args = [
+              "linear"
+              {
+                type = "bezier";
+                points = lua "{ {0, 0}, {1, 1} }";
+              }
+            ];
+          }
         ];
-        bindm = ["$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow"];
-        bindc = "$mod, mouse:272, togglefloating";
-        bindel = [
-          ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
-          ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
+
+        animation = [
+          {
+            leaf = "windows";
+            enabled = true;
+            speed = 5;
+            bezier = "overshot";
+            style = "slide";
+          }
+          {
+            leaf = "windowsOut";
+            enabled = true;
+            speed = 4;
+            bezier = "smoothOut";
+            style = "slide";
+          }
+          {
+            leaf = "windowsMove";
+            enabled = true;
+            speed = 4;
+            bezier = "snappy";
+          }
+          {
+            leaf = "border";
+            enabled = true;
+            speed = 10;
+            bezier = "default";
+          }
+          {
+            leaf = "borderangle";
+            enabled = true;
+            speed = 100;
+            bezier = "linear";
+            style = "loop";
+          }
+          {
+            leaf = "fade";
+            enabled = true;
+            speed = 10;
+            bezier = "smoothIn";
+          }
+          {
+            leaf = "fadeDim";
+            enabled = true;
+            speed = 10;
+            bezier = "smoothIn";
+          }
+          {
+            leaf = "layers";
+            enabled = true;
+            speed = 4;
+            bezier = "snappy";
+            style = "slide";
+          }
+          {
+            leaf = "workspaces";
+            enabled = true;
+            speed = 6;
+            bezier = "snappy";
+            style = "slide";
+          }
+          {
+            leaf = "specialWorkspace";
+            enabled = true;
+            speed = 6;
+            bezier = "overshot";
+            style = "slidevert";
+          }
         ];
-        bindl = [
-          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ", XF86AudioPlay, exec, playerctl play-pause"
-          ", XF86AudioPrev, exec, playerctl previous"
-          ", XF86AudioNext, exec, playerctl next"
-        ];
+
+        on = {
+          _args = [
+            "hyprland.start"
+            (lua ''
+              function()
+                hl.exec_cmd("${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store")
+              end'')
+          ];
+        };
+
         bind =
           [
-            "$alt, B, exec, hyprctl dispatch exec ${pkgs.firefox}/bin/firefox"
-            "$alt, F, exec, hyprctl dispatch exec ${pkgs.nautilus}/bin/nautilus"
-            "$alt, D, exec, hyprctl dispatch exec ${pkgs.discord}/bin/discord"
-            "$mod, Return, exec, hyprctl dispatch exec ${pkgs.kitty}/bin/kitty"
-            "$mod, D, exec, hyprctl dispatch exec '${pkgs.rofi}/bin/rofi -show drun'"
-            "$mod, Q, exec, hyprctl kill"
-            "$mod, C, killactive"
-            "$mod, F, fullscreen"
-            ", Print, exec, ${screenshot}/bin/screenshot region"
-            "SHIFT, Print, exec, ${screenshot}/bin/screenshot output"
-            "$mod, Print, exec, ${screenshot}/bin/screenshot window"
-            "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
+            # App launchers
+            (bind "${alt} + B" (dsp.exec "${pkgs.firefox}/bin/firefox"))
+            (bind "${alt} + F" (dsp.exec "${pkgs.nautilus}/bin/nautilus"))
+            (bind "${alt} + D" (dsp.exec "${pkgs.discord}/bin/discord"))
+            (bind "${mod} + Return" (dsp.exec "${pkgs.kitty}/bin/kitty"))
+            (bind "${mod} + D" (dsp.exec "${pkgs.rofi}/bin/rofi -show drun"))
+
+            # Window management
+            (bind "${mod} + Q" (dsp.exec "hyprctl kill"))
+            (bind "${mod} + C" dsp.close)
+            (bind "${mod} + F" dsp.fullscreen)
+            (bind "${mod} + P" dsp.pseudo)
+
+            # Screenshots
+            (bind "Print" (dsp.exec "${screenshot}/bin/screenshot region"))
+            (bind "SHIFT + Print" (dsp.exec "${screenshot}/bin/screenshot output"))
+            (bind "${mod} + Print" (dsp.exec "${screenshot}/bin/screenshot window"))
+
+            # Clipboard history
+            (bind "${mod} + V" (dsp.exec "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -display-columns 2 | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"))
 
             # Quick lock screen
-            "$mod, L, exec, loginctl lock-session"
+            (bind "${mod} + L" (dsp.exec "loginctl lock-session"))
 
             # Window focus movement
-            "$mod, left, movefocus, l"
-            "$mod, right, movefocus, r"
-            "$mod, up, movefocus, u"
-            "$mod, down, movefocus, d"
+            (bind "${mod} + left" (dsp.focus "left"))
+            (bind "${mod} + right" (dsp.focus "right"))
+            (bind "${mod} + up" (dsp.focus "up"))
+            (bind "${mod} + down" (dsp.focus "down"))
 
             # Move windows
-            "$mod SHIFT, left, movewindow, l"
-            "$mod SHIFT, right, movewindow, r"
-            "$mod SHIFT, up, movewindow, u"
-            "$mod SHIFT, down, movewindow, d"
+            (bind "${mod} + SHIFT + left" (dsp.move "left"))
+            (bind "${mod} + SHIFT + right" (dsp.move "right"))
+            (bind "${mod} + SHIFT + up" (dsp.move "up"))
+            (bind "${mod} + SHIFT + down" (dsp.move "down"))
 
             # Window groups (tabbed)
-            "$mod, G, togglegroup"
-            "$mod, tab, changegroupactive, f"
-            "$mod SHIFT, tab, changegroupactive, b"
-
-            # Dwindle layout management
-            "$mod, P, pseudo"
+            (bind "${mod} + G" dsp.toggleGroup)
+            (bind "${mod} + tab" dsp.groupNext)
+            (bind "${mod} + SHIFT + tab" dsp.groupPrev)
 
             # Scratchpad (special workspace)
-            "$mod, S, togglespecialworkspace, magic"
-            "$mod SHIFT, S, movetoworkspace, special:magic"
+            (bind "${mod} + S" (dsp.toggleSpecial "magic"))
+            (bind "${mod} + SHIFT + S" (dsp.moveToSpecial "magic"))
 
             # Scroll through existing workspaces with mouse
-            "$mod, mouse_down, workspace, e+1"
-            "$mod, mouse_up, workspace, e-1"
+            (bind "${mod} + mouse_down" (dsp.focusWorkspace "e+1"))
+            (bind "${mod} + mouse_up" (dsp.focusWorkspace "e-1"))
+
+            # Resize active window with keyboard (repeating)
+            (bindOpts "${mod} + ${alt} + left" (dsp.resize (-50) 0) {repeating = true;})
+            (bindOpts "${mod} + ${alt} + right" (dsp.resize 50 0) {repeating = true;})
+            (bindOpts "${mod} + ${alt} + up" (dsp.resize 0 (-50)) {repeating = true;})
+            (bindOpts "${mod} + ${alt} + down" (dsp.resize 0 50) {repeating = true;})
+
+            # Mouse move/resize/float
+            (bindOpts "${mod} + mouse:272" dsp.drag {mouse = true;})
+            (bindOpts "${mod} + mouse:273" dsp.mouseResize {mouse = true;})
+            (bindOpts "${mod} + mouse:272" dsp.float {mouse = true;})
+
+            # Volume/brightness (repeating, locked)
+            (bindOpts "XF86AudioRaiseVolume" (dsp.exec "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+") {
+              repeating = true;
+              locked = true;
+            })
+            (bindOpts "XF86AudioLowerVolume" (dsp.exec "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-") {
+              repeating = true;
+              locked = true;
+            })
+            (bindOpts "XF86MonBrightnessUp" (dsp.exec "${pkgs.brightnessctl}/bin/brightnessctl s 10%+") {
+              repeating = true;
+              locked = true;
+            })
+            (bindOpts "XF86MonBrightnessDown" (dsp.exec "${pkgs.brightnessctl}/bin/brightnessctl s 10%-") {
+              repeating = true;
+              locked = true;
+            })
+
+            # Media keys (locked)
+            (bindOpts "XF86AudioMute" (dsp.exec "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle") {locked = true;})
+            (bindOpts "XF86AudioPlay" (dsp.exec "playerctl play-pause") {locked = true;})
+            (bindOpts "XF86AudioPrev" (dsp.exec "playerctl previous") {locked = true;})
+            (bindOpts "XF86AudioNext" (dsp.exec "playerctl next") {locked = true;})
           ]
-          ++ (builtins.concatLists (builtins.genList (i: let
-              ws = i + 1;
-            in [
-              "$mod, code:1${toString i}, workspace, ${toString ws}"
-              "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-            ])
-            9));
+          ++ workspaceBinds;
       };
     };
   });
