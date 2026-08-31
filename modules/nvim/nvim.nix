@@ -200,7 +200,7 @@
         telescope = {
           enable = true;
           mappings = {
-            lspDocumentSymbols = "<leader>fds";
+            lspDocumentSymbols = "gs";
           };
           setupOpts = {
             defaults.mappings = {
