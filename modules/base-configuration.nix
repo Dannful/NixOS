@@ -334,6 +334,16 @@ in {
       "image/bmp" = "feh.desktop";
       "image/svg+xml" = "feh.desktop";
       "image/webp" = "feh.desktop";
+      "video/mp4" = "mpv.desktop";
+      "video/x-matroska" = "mpv.desktop";
+      "video/webm" = "mpv.desktop";
+      "video/x-msvideo" = "mpv.desktop";
+      "video/quicktime" = "mpv.desktop";
+      "video/mpeg" = "mpv.desktop";
+      "video/x-flv" = "mpv.desktop";
+      "video/3gpp" = "mpv.desktop";
+      "video/ogg" = "mpv.desktop";
+      "video/x-ms-wmv" = "mpv.desktop";
     };
 
     # --- Users & Home Manager ---
@@ -408,6 +418,7 @@ in {
         discord
         pear-desktop
         zathura
+        mpv
         pavucontrol
 
         # AI
