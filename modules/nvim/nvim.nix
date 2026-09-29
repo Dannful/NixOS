@@ -14,7 +14,12 @@
         viAlias = true;
         vimAlias = true;
 
-        opts.expandtab = true;
+        opts = {
+          expandtab = true;
+          shiftwidth = 2;
+          tabstop = 2;
+          softtabstop = 2;
+        };
 
         spellcheck = {
           enable = true;
@@ -92,6 +97,8 @@
         lsp = {
           enable = true;
 
+          mappings.codeAction = "g.";
+          mappings.renameSymbol = "cd";
           formatOnSave = true;
           lightbulb.enable = true;
           otter-nvim.enable = true;

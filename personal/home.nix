@@ -107,6 +107,7 @@
         enable = true;
         format.type = ["styler"];
       };
+      typescript.enable = true;
     };
     lazy.plugins = {
       "iron.nvim" = {
