@@ -181,7 +181,7 @@
     nvidia = true;
     monitors = [
       {
-        name = "DP-4";
+        name = "DP-5";
         resolution = "1920x1080";
         refresh-rate = "165.00";
         position = "0x0";
