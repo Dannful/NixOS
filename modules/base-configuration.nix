@@ -135,6 +135,7 @@ in {
       graphics = {
         enable = true;
         enable32Bit = true;
+        extraPackages = lib.mkIf cfg.use-nvidia [pkgs.nvidia-vaapi-driver];
       };
       enableAllFirmware = true;
       bluetooth.enable = true;
@@ -278,7 +279,6 @@ in {
 
       hyprland = {
         enable = true;
-        withUWSM = true;
         package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
         portalPackage =
           inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;

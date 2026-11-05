@@ -189,12 +189,16 @@ in {
       enable = true;
       configType = "lua";
       xwayland.enable = true;
-      systemd.enable = false;
+      systemd.enable = true;
+      # Prevent HomeManager from overriding NixOS-level
+      # portal settings
+      portalPackage = null;
       package =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
       extraConfig = lib.optionalString cfg.nvidia ''
         hl.env("LIBVA_DRIVER_NAME", "nvidia")
+        hl.env("NVD_BACKEND", "direct")
         hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
       '';
 

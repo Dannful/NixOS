@@ -22,7 +22,7 @@
     ];
     login = {
       display = {
-        name = "DP-4";
+        name = "DP-5";
         mode = "1920x1080@165";
       };
     };
@@ -36,16 +36,9 @@
     xone.enable = true;
     nvidia = {
       powerManagement.enable = true;
-      powerManagement.finegrained = true;
+      powerManagement.finegrained = false;
       open = true;
-      prime = {
-        offload = {
-          enable = true;
-          enableOffloadCmd = true;
-        };
-        nvidiaBusId = "PCI:1:0:0";
-        amdgpuBusId = "PCI:19:0:0";
-      };
+      modesetting.enable = true;
     };
   };
   boot = {
